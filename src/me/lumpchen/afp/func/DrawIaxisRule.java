@@ -5,6 +5,7 @@ import java.io.IOException;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public class DrawIaxisRule extends Function {
 
@@ -37,7 +38,7 @@ public class DrawIaxisRule extends Function {
 	}
 
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		// TODO Auto-generated method stub
 		
 	}

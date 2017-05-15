@@ -6,6 +6,7 @@ import java.io.IOException;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 /**
  * The Absolute Move Baseline control sequence moves the baseline coordinate 
@@ -28,7 +29,7 @@ public class AbsoluteMoveBaseline extends Function {
 	}
 
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		double amb = page.unit2Point(this.displacement);
 		graphics.setTranslateY(amb);
 	}

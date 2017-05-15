@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import me.lumpchen.afp.render.PageRenderer;
+import me.lumpchen.afp.render.AFPRenderer;
 
 public class Test {
 
@@ -19,9 +19,8 @@ public class Test {
 			reader.read(new File(file));
 			PrintFile pf = reader.getPrintFile();
 			
-			Page page = pf.getDocuments().get(0).getPageList().get(0);
-			PageRenderer render = new PageRenderer(page);
-			Image image = render.render();
+			AFPRenderer render = new AFPRenderer(null, pf);
+			Image image = render.getPageImage(0, 0);
 			
 	        File temp = new File("c:/temp/afp/page.jpg");
 	        temp.createNewFile();
@@ -29,7 +28,5 @@ public class Test {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		System.err.println(Integer.toHexString(-32768));
 	}
 }

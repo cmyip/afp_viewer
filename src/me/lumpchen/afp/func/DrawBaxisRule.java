@@ -5,6 +5,7 @@ import java.io.IOException;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public class DrawBaxisRule extends Function {
 
@@ -16,7 +17,7 @@ public class DrawBaxisRule extends Function {
 	}
 
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 	}
 	
 	@Override

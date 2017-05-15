@@ -1,19 +1,44 @@
 package me.lumpchen.afp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.StructureField;
 
 public class ResourceGroup extends AFPContainer {
 
+	private List<Resource> resourceList;
+	
 	public ResourceGroup(StructureField structField) {
 		super(structField);
+		this.resourceList = new ArrayList<Resource>();
 		if (this.structField != null) {
 			this.nameStr = this.structField.getNameStr();
 		}
 	}
 	
-	public boolean addResource(Resource resource) {
-		return this.addChild(resource);
+	public Resource[] getAllResource() {
+		return this.resourceList.toArray(new Resource[this.resourceList.size()]);
+	}
+	
+	public Resource getResource(String resName) {
+		for (Resource res : this.resourceList) {
+			if (resName.equals(res.getNameStr())) {
+				return res;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public void collect() {
+		for (AFPObject child : this.children) {
+			if (child instanceof Resource) {
+				Resource res = (Resource) child;
+				this.resourceList.add(res);
+			}
+		}
 	}
 	
 	@Override
@@ -26,10 +51,5 @@ public class ResourceGroup extends AFPContainer {
 		return false;
 	}
 
-	@Override
-	public void collect() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

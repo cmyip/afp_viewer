@@ -30,7 +30,7 @@ public class X21Triplet extends Triplet {
 	 * X'06' Image
 	 * */
 	private int objType;
-	
+
 	private int ArchVrsn;
 	
 	private int DCAFnSet;
@@ -57,6 +57,16 @@ public class X21Triplet extends Triplet {
 			in.readBytes(in.remain());
 		}
 	}
+	
+	
+	public int getObjType() {
+		return objType;
+	}
+
+	public void setObjType(int objType) {
+		this.objType = objType;
+	}
+
 
 }
 

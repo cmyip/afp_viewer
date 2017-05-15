@@ -47,12 +47,15 @@ public class FontDescriptor extends AFPObject {
 		super(structField);
 		this.parseData(this.structField.getData());
 	}
+	
+	public byte[] getTypeFcDesc() {
+		return this.TypeFcDesc;
+	}
 
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		try {
 			this.TypeFcDesc = in.readBytes(32);
-			System.err.println(AFPConst.ebcdic2Ascii(data));
 			this.FtWtClass = in.readCode();
 			this.FtWdClass = in.readCode();
 			this.MaxPtSize = in.readUBin(2);

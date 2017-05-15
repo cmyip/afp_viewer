@@ -6,6 +6,7 @@ import java.io.IOException;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public class AbsoluteMoveInline extends Function {
 
@@ -22,7 +23,7 @@ public class AbsoluteMoveInline extends Function {
 	}
 	
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		double ami = page.unit2Point(this.DSPLCMNT);
 		graphics.setTranslateX(ami);
 	}

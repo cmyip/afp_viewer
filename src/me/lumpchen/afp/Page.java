@@ -5,6 +5,7 @@ import java.util.List;
 
 import me.lumpchen.afp.func.Function;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.StructureField;
 
@@ -71,12 +72,14 @@ public class Page extends AFPContainer {
 		return this.aeg.getMapCodedFontFormat2().getResourceAttributes(ResLID);
 	}
 	
-	public void render(AFPGraphics graphics) {
+	public void render(AFPGraphics graphics, ResourceManager resourceManager) {
 		for (PresentationTextObject ptx : this.ptxList) {
+			graphics.beginText();
 			List<Function> cs = ptx.getPTX().getControlSequence();
 			for (Function func : cs) {
-				func.render(this, graphics);
+				func.render(this, graphics, resourceManager);
 			}
+			graphics.endText();
 		}
 	}
 	

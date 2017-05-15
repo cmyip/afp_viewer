@@ -1,10 +1,8 @@
 package me.lumpchen.afp;
 
 import java.io.IOException;
+import java.util.Map;
 
-import org.apache.fontbox.type1.Type1Font;
-
-import me.lumpchen.afp.FontPatterns.PatTech;
 import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.StructureField;
 
@@ -26,13 +24,20 @@ public class Font extends AFPContainer {
 		}
 	}
 	
-	public void parse() throws IOException {
-		PatTech patTech = this.patterns.getPatTech();
-		if (patTech == PatTech.PFB_Type1) {
-			byte[] fdata = this.patterns.getFontData();
-			Type1Font type1Font = Type1Font.createWithPFB(fdata);
-			System.err.println(type1Font.getFamilyName());
+	public Map<String, String> getNameMap() {
+		return this.nameMap.getNameMap();
+	}
+	
+	public String getTypefaceStr() {
+		if (this.desciptor == null) {
+			return "";
 		}
+		String face = AFPConst.ebcdic2Ascii(this.desciptor.getTypeFcDesc());
+		return face;
+	}
+	
+	public FontPatterns getFontPatterns() {
+		return this.patterns;
 	}
 	
 	@Override
@@ -90,7 +95,6 @@ public class Font extends AFPContainer {
 			}
 			if (this.patterns != null) {
 				this.patterns.parseData(this.control.getPatTech(), this.control.getPatAlign(), this.control.getRPatDCnt());
-				this.parse();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -7,6 +7,7 @@ import me.lumpchen.afp.MapCodedFontFormat2;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.font.AFPFont;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public class SetCodedFontLocal extends Function {
 
@@ -33,11 +34,11 @@ public class SetCodedFontLocal extends Function {
 	}
 
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		MapCodedFontFormat2.Attribute mcf = page.getMapCodedFont(this.LID);
 		if (mcf != null) {
-			AFPFont font = new AFPFont(mcf.codePageName, mcf.characterSetName, mcf.fontSize);
-			graphics.setAFPFont(font);
+			AFPFont font = resourceManager.getFontManager().getFont(mcf.codePageName, mcf.characterSetName);
+			graphics.setAFPFont(font, mcf.fontSize);
 		}
 	}
 }

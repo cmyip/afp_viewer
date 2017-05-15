@@ -7,6 +7,7 @@ import me.lumpchen.afp.AFPConst.ColorSpace;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public class SetExtendedTextColor extends Function {
 
@@ -84,7 +85,7 @@ public class SetExtendedTextColor extends Function {
 	}
 
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		graphics.setColor(Color.red);
 	}
 }

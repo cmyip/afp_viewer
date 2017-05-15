@@ -1,12 +1,11 @@
 package me.lumpchen.afp.func;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.io.IOException;
 
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public class TransparentData extends Function {
 
@@ -17,16 +16,15 @@ public class TransparentData extends Function {
 	}
 
 	@Override
-	public void render(Page page, AFPGraphics graphics) {
-		graphics.drawString(new String(this.TRNDATA), 0, 0);
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+//		graphics.drawString(new String(this.TRNDATA), 0, 0);
+		graphics.drawString(this.TRNDATA, 0, 0);
 	}
 	
 	@Override
 	void readFunction(AFPInputStream in) throws IOException {
 		if (this.remain > 0) {
 			this.TRNDATA = in.readBytes(this.remain);
-			
-			System.err.println(new String(this.TRNDATA));
 			this.remain = 0;
 		}
 	}

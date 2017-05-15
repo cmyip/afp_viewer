@@ -6,6 +6,7 @@ import me.lumpchen.afp.AFPConst;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.ResourceManager;
 
 public abstract class Function {
 	
@@ -60,7 +61,7 @@ public abstract class Function {
 	
 	abstract void readFunction(AFPInputStream in) throws IOException;
 	
-	abstract public void render(Page page, AFPGraphics graphics);
+	abstract public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager);
 	
 	public static Function readControlSequence(AFPInputStream in) throws IOException {
 		int LENGTH = in.read();

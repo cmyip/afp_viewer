@@ -22,6 +22,10 @@ public abstract class AFPContainer extends AFPObject {
 		return this.children.add(child);
 	}
 	
+	public AFPObject[] getChildren() {
+		return this.children.toArray(new AFPObject[this.children.size()]);
+	}
+	
 	public String getNameStr() {
 		return this.nameStr;
 	}

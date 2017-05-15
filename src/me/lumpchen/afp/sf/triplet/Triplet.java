@@ -23,6 +23,10 @@ public abstract class Triplet {
 		this.length = length;
 	}
 	
+	public int getIdentifier() {
+		return this.identifier;
+	}
+	
 	abstract protected void readContents(AFPInputStream in) throws IOException;
 	
 	public static Triplet readTriple(AFPInputStream in) throws IOException {
@@ -61,6 +65,12 @@ public abstract class Triplet {
 			break;
 		case X4CTriplet.ID:
 			triplet = new X4CTriplet();
+			break;
+		case X62Triplet.ID:
+			triplet = new X62Triplet();
+			break;
+		case X63Triplet.ID:
+			triplet = new X63Triplet();
 			break;
 		default:
 			throw new IllegalArgumentException("unknown id: " + AFPConst.bytesToHex((byte) identifier));

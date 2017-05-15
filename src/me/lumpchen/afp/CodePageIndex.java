@@ -47,10 +47,21 @@ public class CodePageIndex extends AFPObject {
 		}
 	}
 	
+	public Entry[] getEntries() {
+		if (this.entries == null) {
+			return new Entry[0];
+		}
+		return this.entries.toArray(new Entry[this.entries.size()]);
+	}
+	
 	class Entry {
 		public byte[] GCGID;
 		public int PrtFlags;
 		public int CodePoint;
+		
+		public String getGCGIDStr() {
+			return AFPConst.ebcdic2Ascii(this.GCGID);
+		}
 	}
 		
 }

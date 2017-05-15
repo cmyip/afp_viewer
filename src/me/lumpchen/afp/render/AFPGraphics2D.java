@@ -1,9 +1,12 @@
 package me.lumpchen.afp.render;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.NoninvertibleTransformException;
+import java.io.IOException;
 
 import me.lumpchen.afp.font.AFPFont;
 
@@ -11,47 +14,77 @@ public class AFPGraphics2D implements AFPGraphics {
 	
 	private Graphics2D g2;
 	
+	private GraphicsState state;
+	
 	private double tx = 0;
 	private double ty = 0;
-	private AFPFont afpFont;
+	
+	private Matrix textMatrix;
+	private Matrix textLineMatrix;
 	
 	public AFPGraphics2D(Graphics2D g2) {
 		this.g2 = g2;
+		
+		this.state = new GraphicsState();
+		this.textMatrix = new Matrix();
+		this.textLineMatrix = new Matrix();
 	}
 	
-	@Override
-	public void transform(AffineTransform Tx) {
-		this.g2.transform(Tx);
-	}
-	
-	public void setTransform(AffineTransform Tx) {
-		this.g2.setTransform(Tx);
-	}
-
-	public void setFont(Font font) {
-		this.g2.setFont(font);
-	}
-	
-	@Override
-	public AffineTransform getTransform() {
-		return this.g2.getTransform();
-	}
-
 	@Override
 	public void drawString(String str, float x, float y) {
-		this.g2.setFont(new Font("TimesRoman", Font.PLAIN, (int) this.afpFont.fontSize));
-		
 		this.g2.drawString(str, x, y);
+		char[] chars = str.toCharArray();
+	}
+	
+	@Override
+	public void drawString(byte[] text, float x, float y) {
+		this.textMatrix.concatenate(Matrix.getTranslateInstance(x, y));
+		
+		float fontSize = this.state.fontSize;
+        Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
+        
+		for (byte b : text) {
+			int unicode = this.state.font.getEncoding().getUnicode(b & 0xFF);
+			String gcgid = this.state.font.getEncoding().getCharacterName(b & 0xFF);
+			try {
+				Matrix ctm = this.state.getCTM();
+				Matrix textRenderingMatrix = parameters.multiply(this.textMatrix).multiply(ctm);
+				
+				AffineTransform at = textRenderingMatrix.createAffineTransform();
+
+				Matrix fm = new Matrix(0.001d, 0, 0, 0.001d, 0, 0);
+				at.concatenate(fm.createAffineTransform());
+				
+				GeneralPath glyph = this.state.font.getPath(gcgid);
+				Matrix gm = new Matrix(1, 0, 0, -1, 0, 0);
+				Shape gp = gm.createAffineTransform().createTransformedShape(glyph);
+				
+				Shape s = at.createTransformedShape(gp);
+				
+				this.g2.setColor(this.state.color);
+				this.g2.fill(s);
+				
+				double advance = this.state.font.getWidth(gcgid) / 1000d;
+				this.textMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, ty));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println(b + "  " + unicode + "  " + gcgid);
+		}
+		
+		this.textMatrix = new Matrix();
 	}
 	
 	@Override
 	public void scale(double sx, double sy) {
-		this.g2.scale(sx, sy);
+		this.state.getCTM().scale(sx, sy);
 	}
 
 	@Override
 	public void setBackground(Color color) {
-		this.g2.setBackground(color);
+		this.state.backgroundColor = color;
+		this.g2.setBackground(this.state.backgroundColor);
 	}
 
 	@Override
@@ -76,25 +109,38 @@ public class AFPGraphics2D implements AFPGraphics {
 
 	@Override
 	public void setColor(Color c) {
-		this.g2.setColor(c);
+		this.state.color = c;
 	}
 
 	@Override
 	public void setTranslateX(double tx) {
-		this.g2.translate(-this.tx, -this.ty);
-		this.tx = tx;
-		this.g2.translate(this.tx, this.ty);
+//		this.g2.translate(-this.tx, -this.ty);
+//		this.tx = tx;
+//		this.g2.translate(this.tx, this.ty);
+		
+		this.textMatrix.concatenate(Matrix.getTranslateInstance(tx, 0));
 	}
 
 	@Override
 	public void setTranslateY(double ty) {
-		this.g2.translate(-this.tx, -this.ty);
-		this.ty = ty;
-		this.g2.translate(this.tx, this.ty);
+//		this.g2.translate(-this.tx, -this.ty);
+//		this.ty = ty;
+//		this.g2.translate(this.tx, this.ty);
+		
+		this.textMatrix.concatenate(Matrix.getTranslateInstance(0, ty));
 	}
 
 	@Override
-	public void setAFPFont(AFPFont afpFont) {
-		this.afpFont = afpFont;
+	public void setAFPFont(AFPFont afpFont, float fontSize) {
+		this.state.font = afpFont;
+		this.state.fontSize = fontSize;
+	}
+
+	@Override
+	public void beginText() {
+	}
+
+	@Override
+	public void endText() {
 	}
 }

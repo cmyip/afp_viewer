@@ -7,6 +7,7 @@ import me.lumpchen.afp.sf.Identifier;
 import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.Introducer;
 import me.lumpchen.afp.sf.StructureField;
+import me.lumpchen.afp.sf.triplet.Triplet;
 
 public class StructureFieldReader {
 	
@@ -55,10 +56,15 @@ public class StructureFieldReader {
 					return;
 				}
 				
+				if (sf.getStructureTag() == Tag.BDT
+						|| sf.getStructureTag() == Tag.BRS) {
+					in.readBytes(2);
+				}
+				
 				while (in.remain() > 0) {
-//					Triplet triplet = Triplet.readTriple(in);
-//					sf.addTriplet(triplet);
-					in.readBytes(in.remain());
+					Triplet triplet = Triplet.readTriple(in);
+					sf.addTriplet(triplet);
+//					in.readBytes(in.remain());
 				}
 			} finally {
 				in.close();

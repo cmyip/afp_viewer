@@ -16,6 +16,13 @@ public class PrintFile extends AFPContainer {
 	public ResourceGroup getResourceGroup() {
 		return resourceGroup;
 	}
+	
+	public Resource getResource(String resName) {
+		if (this.resourceGroup != null) {
+			return this.resourceGroup.getResource(resName);
+		}
+		return null;
+	}
 
 	public List<Document> getDocuments() {
 		return documents;

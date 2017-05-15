@@ -53,6 +53,13 @@ public class StructureField {
 		this.triplets.add(triplet);
 	}
 	
+	public Triplet[] getAllTriplet() {
+		if (this.triplets == null) {
+			return new Triplet[0];
+		}
+		return this.triplets.toArray(new Triplet[this.triplets.size()]);
+	}
+	
 	public void read(AFPInputStream in, SFDataReader dataReader) throws IOException {
 		int hasRead = this.introducer.getLength();
 		
