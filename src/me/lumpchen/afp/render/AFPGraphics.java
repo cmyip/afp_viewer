@@ -2,6 +2,7 @@ package me.lumpchen.afp.render;
 
 import java.awt.Color;
 
+import me.lumpchen.afp.AFPColor;
 import me.lumpchen.afp.font.AFPFont;
 
 public interface AFPGraphics {
@@ -22,7 +23,7 @@ public interface AFPGraphics {
 	
 	public void rotate(double theta, double x, double y);
 	
-	public void setColor(Color c);
+	public void setColor(AFPColor c);
 	
 	public void setAFPFont(AFPFont afpFont, float fontSize);
 	

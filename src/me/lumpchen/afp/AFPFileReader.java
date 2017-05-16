@@ -136,6 +136,10 @@ public class AFPFileReader {
 			obj = new Font(sf);
 		} else if (Tag.BCP == tag || Tag.ECP == tag) {
 			obj = new CodePage(sf);
+		} else if (Tag.BIM == tag || Tag.EIM == tag) {
+			obj = new ImageObject(sf);
+		} else if (Tag.BOG == tag || Tag.EOG == tag) {
+			obj = new ObjectEnvironmentGroup(sf);
 		} else {
 			if (Tag.OCD == tag) {
 				obj = new ObjectContainerData(sf);
@@ -171,6 +175,16 @@ public class AFPFileReader {
 				obj = new FontPatterns(sf);
 			} else if (Tag.MCF == tag) {
 				obj = new MapCodedFontFormat2(sf);
+			} else if (Tag.OBD == tag) {
+				obj = new ObjectAreaDescriptor(sf);
+			} else if (Tag.OBP == tag) {
+				obj = new ObjectAreaPosition(sf);
+			} else if (Tag.MIO == tag) {
+				obj = new MapImageObject(sf);
+			} else if (Tag.IDD == tag) {
+				obj = new ImageDataDescriptor(sf);
+			} else if (Tag.IPD == tag) {
+				obj = new ImagePictureData(sf);
 			}
 			
 		}

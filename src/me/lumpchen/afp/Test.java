@@ -12,7 +12,7 @@ import me.lumpchen.afp.render.AFPRenderer;
 public class Test {
 
 	public static void main(String[] args) {
-		String file = "C:/temp/afp/XPR-91009.afp";
+		String file = "C:/temp/afp/20170516882301871.afp";
 		
 		AFPFileReader reader = new AFPFileReader();
 		try {
@@ -22,7 +22,9 @@ public class Test {
 			AFPRenderer render = new AFPRenderer(null, pf);
 			Image image = render.getPageImage(0, 0);
 			
-	        File temp = new File("c:/temp/afp/page.jpg");
+//	        File temp = new File("c:/temp/afp/page.jpg");
+			File temp = new File("c:/temp/afp/20170516882301871.jpg");
+	        
 	        temp.createNewFile();
 	        ImageIO.write((BufferedImage) image, "png",temp);
 		} catch (IOException e) {

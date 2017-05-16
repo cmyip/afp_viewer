@@ -37,8 +37,22 @@ public class MapCodedFontFormat2 extends AFPObject {
 	public void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		try {
-			int RGLength = in.readUBin(2);
-			int repeat = data.length / RGLength;
+			
+			while (in.remain() > 0) {
+				int RGLength = in.readUBin(2);
+				byte[] repeatBytes = in.readBytes(RGLength - 2);
+				AFPInputStream repeatStream = new AFPInputStream(repeatBytes);
+				List<Triplet> group = new ArrayList<Triplet>();
+				while (repeatStream.remain() > 0) {
+					// read triplets
+					Triplet triplet = Triplet.readTriple(repeatStream);
+					group.add(triplet);
+				}
+				this.Triplets.add(group.toArray(new Triplet[group.size()]));
+			}
+			
+			
+			/*int repeat = data.length / RGLength;
 			
 			List<Triplet> all = new ArrayList<Triplet>();
 			while (in.remain() > 0) {
@@ -65,7 +79,7 @@ public class MapCodedFontFormat2 extends AFPObject {
 				} else {
 					index++;
 				}
-			}
+			}*/
 			
 		} finally {
 			in.close();

@@ -1,6 +1,5 @@
 package me.lumpchen.afp.func;
 
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 
 import me.lumpchen.afp.AFPInputStream;

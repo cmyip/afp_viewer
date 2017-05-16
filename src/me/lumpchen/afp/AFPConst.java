@@ -16,7 +16,7 @@ public class AFPConst {
 		return cm / 2.54;
 	}
 	
-	public enum ColorSpace{
+	public enum ColorSpace {
 		RGB("RGB", 3), CMYK("CMYK", 4), Highlight("Highlight color space", 3), 
 		CIELAB("CIELAB", 3), OCA("Standard OCA color space", 1);
 		

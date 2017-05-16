@@ -86,7 +86,7 @@ public class X1FTriplet extends Triplet {
 			remain -= 1;
 		}
 		
-		while (remain > 0) {
+		if (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;
 		}

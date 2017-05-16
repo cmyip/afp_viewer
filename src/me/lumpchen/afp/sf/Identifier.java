@@ -169,8 +169,19 @@ public class Identifier {
 		instanceMap.put(toInt(SF_BNG), new Identifier(Tag.BNG, SF_BNG));
 		instanceMap.put(toInt(SF_ENG), new Identifier(Tag.ENG, SF_ENG));
 		
+		instanceMap.put(toInt(SF_BOG), new Identifier(Tag.BOG, SF_BOG));
+		instanceMap.put(toInt(SF_EOG), new Identifier(Tag.EOG, SF_EOG));
 		
+		instanceMap.put(toInt(SF_BIM), new Identifier(Tag.BIM, SF_BIM));
+		instanceMap.put(toInt(SF_EIM), new Identifier(Tag.EIM, SF_EIM));
 		
+		instanceMap.put(toInt(SF_OBD), new Identifier(Tag.OBD, SF_OBD));
+		instanceMap.put(toInt(SF_OBP), new Identifier(Tag.OBP, SF_OBP));
+		instanceMap.put(toInt(SF_MIO), new Identifier(Tag.MIO, SF_MIO));
+		instanceMap.put(toInt(SF_IDD), new Identifier(Tag.IDD, SF_IDD));
+		instanceMap.put(toInt(SF_IPD), new Identifier(Tag.IPD, SF_IPD));
+		
+
 		instanceMap.put(toInt(SF_NOP), new Identifier(Tag.NOP, SF_NOP));
 	}
 	

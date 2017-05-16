@@ -3,6 +3,7 @@ package me.lumpchen.afp.func;
 import java.awt.Color;
 import java.io.IOException;
 
+import me.lumpchen.afp.AFPColor;
 import me.lumpchen.afp.AFPConst.ColorSpace;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
@@ -79,6 +80,7 @@ public class SetExtendedTextColor extends Function {
 	public String getCommandString() {
 		return "SEC";
 	}
+	
 	@Override
 	public String getCommandDesc() {
 		return "Set Extended Text Color";
@@ -86,6 +88,7 @@ public class SetExtendedTextColor extends Function {
 
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		graphics.setColor(Color.red);
+		AFPColor c = new AFPColor(this.colorspace, this.COLVALUE);
+		graphics.setColor(c);
 	}
 }

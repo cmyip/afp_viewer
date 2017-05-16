@@ -8,6 +8,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.io.IOException;
 
+import me.lumpchen.afp.AFPColor;
 import me.lumpchen.afp.font.AFPFont;
 
 public class AFPGraphics2D implements AFPGraphics {
@@ -38,6 +39,8 @@ public class AFPGraphics2D implements AFPGraphics {
 	
 	@Override
 	public void drawString(byte[] text, float x, float y) {
+		this.g2.setColor(this.state.color);
+		
 		this.textMatrix.concatenate(Matrix.getTranslateInstance(x, y));
 		
 		float fontSize = this.state.fontSize;
@@ -108,11 +111,6 @@ public class AFPGraphics2D implements AFPGraphics {
 	}
 
 	@Override
-	public void setColor(Color c) {
-		this.state.color = c;
-	}
-
-	@Override
 	public void setTranslateX(double tx) {
 //		this.g2.translate(-this.tx, -this.ty);
 //		this.tx = tx;
@@ -142,5 +140,11 @@ public class AFPGraphics2D implements AFPGraphics {
 
 	@Override
 	public void endText() {
+	}
+
+	@Override
+	public void setColor(AFPColor c) {
+		Color awtColor = c.toJavaColor();
+		this.state.color = awtColor;
 	}
 }
