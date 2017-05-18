@@ -30,12 +30,12 @@ public class FontManager {
 		return font;
 	}
 	
-	public void addCodePage(CodePage codePage) {
-		this.codePageMap.put(codePage.getNameStr(), codePage);
+	public void addCodePage(String resName, CodePage codePage) {
+		this.codePageMap.put(resName, codePage);
 	}
 	
-	public void addCharset(Font charset) {
-		this.charsetMap.put(charset.getNameStr(), charset);
+	public void addCharset(String resName, Font charset) {
+		this.charsetMap.put(resName, charset);
 	}
 	
 }

@@ -26,7 +26,9 @@ public class Test {
 			File temp = new File("c:/temp/afp/20170516882301871.jpg");
 	        
 	        temp.createNewFile();
-	        ImageIO.write((BufferedImage) image, "png",temp);
+	        ImageIO.write((BufferedImage) image, "jpg",temp);
+	        
+	        reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

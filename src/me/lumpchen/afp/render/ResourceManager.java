@@ -28,14 +28,14 @@ public class ResourceManager {
 					AFPObject[] children = res.getChildren();
 					for (AFPObject child : children) {
 						if (child instanceof CodePage) {
-							this.fontManager.addCodePage((CodePage) child);
+							this.fontManager.addCodePage(res.getNameStr(), (CodePage) child);
 						}
 					}
 				} else if (Resource.Type.CHARACTER_SET == type) {
 					AFPObject[] children = res.getChildren();
 					for (AFPObject child : children) {
 						if (child instanceof Font) {
-							this.fontManager.addCharset((Font) child);
+							this.fontManager.addCharset(res.getNameStr(), (Font) child);
 						}
 					}
 				}

@@ -70,9 +70,9 @@ public class AFPRenderer {
         
         BufferedImage image;
         if (rotationAngle == 90 || rotationAngle == 270) {
-            image = new BufferedImage(heightPx, widthPx, BufferedImage.TYPE_INT_BGR);
+            image = new BufferedImage(heightPx, widthPx, BufferedImage.TYPE_INT_RGB);
         } else {
-            image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_BGR);
+            image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB);
         }
         Graphics2D g = image.createGraphics();
         

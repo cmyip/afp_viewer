@@ -39,7 +39,7 @@ public class AFPGraphics2D implements AFPGraphics {
 	
 	@Override
 	public void drawString(byte[] text, float x, float y) {
-		this.g2.setColor(this.state.color);
+		this.g2.setColor(this.state.color == null ? Color.black : this.state.color);
 		
 		this.textMatrix.concatenate(Matrix.getTranslateInstance(x, y));
 		
