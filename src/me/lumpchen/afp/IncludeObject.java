@@ -14,6 +14,10 @@ import me.lumpchen.afp.render.Renderable;
 import me.lumpchen.afp.render.ResourceManager;
 import me.lumpchen.afp.sf.StructureField;
 import me.lumpchen.afp.sf.triplet.Triplet;
+import me.lumpchen.afp.sf.triplet.X04Triplet;
+import me.lumpchen.afp.sf.triplet.X04Triplet.MapOption;
+import me.lumpchen.afp.sf.triplet.X4BTriplet;
+import me.lumpchen.afp.sf.triplet.X4CTriplet;
 
 public class IncludeObject extends AFPObject implements Renderable {
 
@@ -27,11 +31,16 @@ public class IncludeObject extends AFPObject implements Renderable {
 	private int YocaOset;
 	private int RefCSys;
 	private List<Triplet> Triplets;
+	
+	private MapOption mapOption;
+	private double width;
+	private double height;
 
 	public IncludeObject(StructureField structField) throws IOException {
 		super(structField);
 		this.Triplets = new ArrayList<Triplet>();
 		this.parseData(this.structField.getData());
+		this.calcSize();
 	}
 
 	private void parseData(byte[] data) throws IOException {
@@ -102,11 +111,54 @@ public class IncludeObject extends AFPObject implements Renderable {
 	public List<Triplet> getTriplets() {
 		return Triplets;
 	}
+	
+	public MapOption getMapOption() {
+		return this.mapOption;
+	}
+	
+	public double getWidth() {
+		return this.width;
+	}
+	
+	public double getHeight() {
+		return this.height;
+	}
 
+	private void calcSize() {
+		int XoaBase = 10;
+		int YoaBase = 10;
+		int XoaUnits = 1;
+		int YoaUnits = 1;
+		int XoaSize = 0;
+		int YoaSize = 0;
+		
+		for (Triplet triplet : this.Triplets) {
+			if (triplet instanceof X4BTriplet) {
+				X4BTriplet t = (X4BTriplet) triplet;
+				XoaBase = t.getXoaBase() == 0 ? XoaBase : t.getXoaBase();
+				YoaBase = t.getYoaBase() == 0 ? YoaBase : t.getYoaBase();
+				XoaUnits = t.getXoaUnits();
+				YoaUnits = t.getYoaUnits();
+			} else if (triplet instanceof X04Triplet) {
+				X04Triplet t = (X04Triplet) triplet;
+				this.mapOption = t.getMapValue();
+			} else if (triplet instanceof X4CTriplet) {
+				X4CTriplet t = (X4CTriplet) triplet;
+				XoaSize = t.getXoaSize();
+				YoaSize = t.getYoaSize();
+			}
+		}
+		
+		this.width = ((double) XoaSize / XoaUnits) * XoaBase;
+		this.height = ((double) YoaSize / YoaUnits) * YoaBase;
+	}
+	
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		int x = (int) Math.round(page.unit2Point(this.XoaOset));
 		int y = (int) Math.round(page.unit2Point(this.YoaOset));
+		int w = (int) Math.round(this.width * 72);
+		int h = (int) Math.round(height * 72);
 		
 		String resName = AFPConst.ebcdic2Ascii(this.ObjName);
 		
@@ -116,7 +168,7 @@ public class IncludeObject extends AFPObject implements Renderable {
 			byte[] imageData = resourceManager.getObjectData(resName);
 			try {
 				BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
-				graphics.drawImage(bimg, x, y);
+				graphics.drawImage(bimg, x, y, w, h);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

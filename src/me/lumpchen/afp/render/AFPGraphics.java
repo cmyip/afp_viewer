@@ -2,7 +2,6 @@ package me.lumpchen.afp.render;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 
 import me.lumpchen.afp.AFPColor;
 import me.lumpchen.afp.font.AFPFont;
@@ -37,6 +36,6 @@ public interface AFPGraphics {
 	
 	public void endText();
 	
-    public abstract void drawImage(BufferedImage img, int x, int y);
+    public abstract void drawImage(BufferedImage img, float x, float y, float w, float h);
 
 }

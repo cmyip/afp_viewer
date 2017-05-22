@@ -113,19 +113,11 @@ public class AFPGraphics2D implements AFPGraphics {
 
 	@Override
 	public void setTranslateX(double tx) {
-//		this.g2.translate(-this.tx, -this.ty);
-//		this.tx = tx;
-//		this.g2.translate(this.tx, this.ty);
-		
 		this.textMatrix.concatenate(Matrix.getTranslateInstance(tx, 0));
 	}
 
 	@Override
 	public void setTranslateY(double ty) {
-//		this.g2.translate(-this.tx, -this.ty);
-//		this.ty = ty;
-//		this.g2.translate(this.tx, this.ty);
-		
 		this.textMatrix.concatenate(Matrix.getTranslateInstance(0, ty));
 	}
 
@@ -150,7 +142,7 @@ public class AFPGraphics2D implements AFPGraphics {
 	}
 
 	@Override
-	public void drawImage(BufferedImage img, int x, int y) {
-		this.g2.drawImage(img, x, y, 144, 72, null);
+	public void drawImage(BufferedImage img, float x, float y, float w, float h) {
+		this.g2.drawImage(img, Math.round(x), Math.round(y), Math.round(w), Math.round(h), null);
 	}
 }
