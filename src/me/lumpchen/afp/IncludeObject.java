@@ -1,13 +1,21 @@
 package me.lumpchen.afp;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import me.lumpchen.afp.ObjectContainer.ObjectTypeIdentifier;
+import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.Renderable;
+import me.lumpchen.afp.render.ResourceManager;
 import me.lumpchen.afp.sf.StructureField;
 import me.lumpchen.afp.sf.triplet.Triplet;
 
-public class IncludeObject extends AFPObject {
+public class IncludeObject extends AFPObject implements Renderable {
 
 	private byte[] ObjName;
 	private int ObjType;
@@ -93,6 +101,27 @@ public class IncludeObject extends AFPObject {
 
 	public List<Triplet> getTriplets() {
 		return Triplets;
+	}
+
+	@Override
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+		int x = (int) Math.round(page.unit2Point(this.XoaOset));
+		int y = (int) Math.round(page.unit2Point(this.YoaOset));
+		
+		String resName = AFPConst.ebcdic2Ascii(this.ObjName);
+		
+		ObjectTypeIdentifier objectTypeIdentifier = resourceManager.getObjectTypeIdentifier(resName);
+		ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
+		if (ObjectTypeIdentifier.Component.JFIF == component) {
+			byte[] imageData = resourceManager.getObjectData(resName);
+			try {
+				BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
+				graphics.drawImage(bimg, x, y);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 }
 

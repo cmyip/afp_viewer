@@ -6,6 +6,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import me.lumpchen.afp.AFPColor;
@@ -146,5 +147,10 @@ public class AFPGraphics2D implements AFPGraphics {
 	public void setColor(AFPColor c) {
 		Color awtColor = c.toJavaColor();
 		this.state.color = awtColor;
+	}
+
+	@Override
+	public void drawImage(BufferedImage img, int x, int y) {
+		this.g2.drawImage(img, x, y, 144, 72, null);
 	}
 }

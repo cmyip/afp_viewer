@@ -6,9 +6,10 @@ import me.lumpchen.afp.AFPConst;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.Renderable;
 import me.lumpchen.afp.render.ResourceManager;
 
-public abstract class Function {
+public abstract class Function implements Renderable {
 	
 //  PTOCA SFX record data control sequences
 

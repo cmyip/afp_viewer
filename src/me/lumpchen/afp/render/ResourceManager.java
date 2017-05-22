@@ -1,23 +1,46 @@
 package me.lumpchen.afp.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.lumpchen.afp.AFPObject;
 import me.lumpchen.afp.CodePage;
 import me.lumpchen.afp.Font;
+import me.lumpchen.afp.ObjectContainer;
+import me.lumpchen.afp.ObjectContainer.ObjectTypeIdentifier;
 import me.lumpchen.afp.Resource;
 import me.lumpchen.afp.ResourceGroup;
 
 public class ResourceManager {
 
 	private FontManager fontManager;
+	private Map<String, ObjectContainer> objMap;
 
 	public ResourceManager(ResourceGroup resourceGroup) {
 		this.fontManager = new FontManager();
+		this.objMap = new HashMap<String, ObjectContainer>();
 		
 		this.collect(resourceGroup);
 	}
 	
 	public FontManager getFontManager() {
 		return this.fontManager;
+	}
+	
+	public ObjectTypeIdentifier getObjectTypeIdentifier(String resName) {
+		ObjectContainer obj = this.objMap.get(resName);
+		if (obj == null) {
+			return null;
+		}
+		return obj.getObjectTypeIdentifier();
+	}
+	
+	public byte[] getObjectData(String resName) {
+		ObjectContainer obj = this.objMap.get(resName);
+		if (obj == null) {
+			return null;
+		}
+		return obj.getObjectData();
 	}
 	
 	private void collect(ResourceGroup resourceGroup) {
@@ -38,6 +61,16 @@ public class ResourceManager {
 							this.fontManager.addCharset(res.getNameStr(), (Font) child);
 						}
 					}
+				} else if (Resource.Type.OBJECT_CONTAINER == type) {
+					String key = res.getNameStr();
+					AFPObject[] children = res.getChildren();
+					for (AFPObject child : children) {
+						if (child instanceof ObjectContainer) {
+							this.objMap.put(key, (ObjectContainer) child);
+						}
+					}
+				} else {
+					System.out.println(type);
 				}
 			}
 		}

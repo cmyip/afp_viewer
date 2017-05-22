@@ -5,6 +5,7 @@ import java.util.List;
 
 import me.lumpchen.afp.func.Function;
 import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.Renderable;
 import me.lumpchen.afp.render.ResourceManager;
 import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.StructureField;
@@ -80,6 +81,14 @@ public class Page extends AFPContainer {
 				func.render(this, graphics, resourceManager);
 			}
 			graphics.endText();
+		}
+		
+		AFPObject[] children = this.getChildren();
+		for (AFPObject child : children) {
+			if (child instanceof Renderable) {
+				Renderable renderObj = (Renderable) child;
+				renderObj.render(this, graphics, resourceManager);
+			}
 		}
 	}
 	
