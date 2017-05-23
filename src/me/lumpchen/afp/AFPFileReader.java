@@ -185,6 +185,8 @@ public class AFPFileReader {
 				obj = new ImageDataDescriptor(sf);
 			} else if (Tag.IPD == tag) {
 				obj = new ImagePictureData(sf);
+			} else if (Tag.TLE == tag) {
+				obj = new TagLogicalElement(sf);
 			}
 			
 		}

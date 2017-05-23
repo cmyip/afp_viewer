@@ -50,6 +50,9 @@ public class AFPGraphics2D implements AFPGraphics {
 		for (byte b : text) {
 			int unicode = this.state.font.getEncoding().getUnicode(b & 0xFF);
 			String gcgid = this.state.font.getEncoding().getCharacterName(b & 0xFF);
+			if (gcgid == null) {
+				continue;
+			}
 			try {
 				Matrix ctm = this.state.getCTM();
 				Matrix textRenderingMatrix = parameters.multiply(this.textMatrix).multiply(ctm);
@@ -60,6 +63,10 @@ public class AFPGraphics2D implements AFPGraphics {
 				at.concatenate(fm.createAffineTransform());
 				
 				GeneralPath glyph = this.state.font.getPath(gcgid);
+				if (glyph == null) {
+					continue;
+				}
+				
 				Matrix gm = new Matrix(1, 0, 0, -1, 0, 0);
 				Shape gp = gm.createAffineTransform().createTransformedShape(glyph);
 				
@@ -74,10 +81,10 @@ public class AFPGraphics2D implements AFPGraphics {
 				e.printStackTrace();
 			}
 			
-			System.out.println(b + "  " + unicode + "  " + gcgid);
+//			System.out.println(b + "  " + unicode + "  " + gcgid);
 		}
 		
-		this.textMatrix = new Matrix();
+//		this.textMatrix = new Matrix();
 	}
 	
 	@Override
@@ -127,12 +134,15 @@ public class AFPGraphics2D implements AFPGraphics {
 		this.state.fontSize = fontSize;
 	}
 
+	private Matrix savedTextMatrix;
 	@Override
 	public void beginText() {
+		this.textMatrix = new Matrix();
 	}
 
 	@Override
 	public void endText() {
+//		this.textMatrix = this.savedTextMatrix.clone();
 	}
 
 	@Override

@@ -163,6 +163,10 @@ public class IncludeObject extends AFPObject implements Renderable {
 		String resName = AFPConst.ebcdic2Ascii(this.ObjName);
 		
 		ObjectTypeIdentifier objectTypeIdentifier = resourceManager.getObjectTypeIdentifier(resName);
+		if (objectTypeIdentifier == null) {
+			return;
+		}
+		
 		ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
 		if (ObjectTypeIdentifier.Component.JFIF == component) {
 			byte[] imageData = resourceManager.getObjectData(resName);

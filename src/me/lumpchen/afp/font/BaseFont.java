@@ -52,7 +52,6 @@ public class BaseFont implements AFPFont {
 
 	@Override
 	public Encoding getEncoding() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

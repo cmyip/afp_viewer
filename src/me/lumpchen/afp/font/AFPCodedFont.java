@@ -110,14 +110,18 @@ public class AFPCodedFont implements AFPFont {
 	@Override
 	public GeneralPath getPath(String name) throws IOException {
 		String techSpecName = this.getTechSpecName(name);
-		System.err.println(techSpecName);
-		
+		if (techSpecName == null) {
+			return null;
+		}
 		return this.baseFont.getPath(techSpecName);
 	}
 
 	@Override
 	public float getWidth(String name) throws IOException {
 		String techSpecName = this.getTechSpecName(name);
+		if (techSpecName == null) {
+			return 0;
+		}
 		return this.baseFont.getWidth(techSpecName);
 	}
 
