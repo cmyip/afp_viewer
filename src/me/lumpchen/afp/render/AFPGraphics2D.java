@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -17,9 +16,6 @@ public class AFPGraphics2D implements AFPGraphics {
 	private Graphics2D g2;
 	
 	private GraphicsState state;
-	
-	private double tx = 0;
-	private double ty = 0;
 	
 	private Matrix textMatrix;
 	private Matrix textLineMatrix;
@@ -42,7 +38,8 @@ public class AFPGraphics2D implements AFPGraphics {
 	public void drawString(byte[] text, float x, float y) {
 		this.g2.setColor(this.state.color == null ? Color.black : this.state.color);
 		
-		this.textMatrix.concatenate(Matrix.getTranslateInstance(x, y));
+//		this.textMatrix.concatenate(Matrix.getTranslateInstance(x, y));
+//		this.textLineMatrix.multiply(this.textMatrix);
 		
 		float fontSize = this.state.fontSize;
         Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
@@ -50,12 +47,9 @@ public class AFPGraphics2D implements AFPGraphics {
 		for (byte b : text) {
 			int unicode = this.state.font.getEncoding().getUnicode(b & 0xFF);
 			String gcgid = this.state.font.getEncoding().getCharacterName(b & 0xFF);
-			if (gcgid == null) {
-				continue;
-			}
 			try {
 				Matrix ctm = this.state.getCTM();
-				Matrix textRenderingMatrix = parameters.multiply(this.textMatrix).multiply(ctm);
+				Matrix textRenderingMatrix = parameters.multiply(this.textLineMatrix).multiply(this.textMatrix).multiply(ctm);
 				
 				AffineTransform at = textRenderingMatrix.createAffineTransform();
 
@@ -76,15 +70,13 @@ public class AFPGraphics2D implements AFPGraphics {
 				this.g2.fill(s);
 				
 				double advance = this.state.font.getWidth(gcgid) / 1000d;
-				this.textMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, ty));
+				this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, 0));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 //			System.out.println(b + "  " + unicode + "  " + gcgid);
 		}
-		
-//		this.textMatrix = new Matrix();
 	}
 	
 	@Override
@@ -120,11 +112,13 @@ public class AFPGraphics2D implements AFPGraphics {
 
 	@Override
 	public void setTranslateX(double tx) {
-		this.textMatrix.concatenate(Matrix.getTranslateInstance(tx, 0));
+		this.textLineMatrix = new Matrix();
+		this.textLineMatrix.concatenate(Matrix.getTranslateInstance(tx, 0));
 	}
 
 	@Override
 	public void setTranslateY(double ty) {
+		this.textMatrix = new Matrix();
 		this.textMatrix.concatenate(Matrix.getTranslateInstance(0, ty));
 	}
 
@@ -134,7 +128,6 @@ public class AFPGraphics2D implements AFPGraphics {
 		this.state.fontSize = fontSize;
 	}
 
-	private Matrix savedTextMatrix;
 	@Override
 	public void beginText() {
 		this.textMatrix = new Matrix();
@@ -142,7 +135,6 @@ public class AFPGraphics2D implements AFPGraphics {
 
 	@Override
 	public void endText() {
-//		this.textMatrix = this.savedTextMatrix.clone();
 	}
 
 	@Override
