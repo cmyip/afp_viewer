@@ -13,6 +13,8 @@ public final class GraphicsState implements Cloneable {
 	
 	public AFPFont font;
 	public float fontSize;
+	
+	public float lineWidth;
 
 	public GraphicsState() {
 

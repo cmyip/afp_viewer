@@ -1,10 +1,12 @@
 package me.lumpchen.afp.render;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -131,6 +133,7 @@ public class AFPGraphics2D implements AFPGraphics {
 	@Override
 	public void beginText() {
 		this.textMatrix = new Matrix();
+		this.textLineMatrix = new Matrix();
 	}
 
 	@Override
@@ -147,4 +150,23 @@ public class AFPGraphics2D implements AFPGraphics {
 	public void drawImage(BufferedImage img, float x, float y, float w, float h) {
 		this.g2.drawImage(img, Math.round(x), Math.round(y), Math.round(w), Math.round(h), null);
 	}
+
+	@Override
+	public void drawLine(float x1, float y1, float x2, float y2) {
+		Matrix ctm = this.state.getCTM();
+		Matrix textRenderingMatrix = this.textLineMatrix.multiply(this.textMatrix).multiply(ctm);
+		AffineTransform at = textRenderingMatrix.createAffineTransform();
+		
+		Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
+		Shape s = at.createTransformedShape(line);
+		this.g2.setColor(this.state.color);
+		this.g2.setStroke(new BasicStroke(this.state.lineWidth));
+		this.g2.draw(s);
+	}
+	
+	@Override
+	public void setLineWidth(float w) {
+		this.state.lineWidth = w;
+	}
+
 }

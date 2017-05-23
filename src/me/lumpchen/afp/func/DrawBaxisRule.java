@@ -18,6 +18,13 @@ public class DrawBaxisRule extends Function {
 
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+		float len = (float) page.unit2Point(this.RLENGTH);
+		
+		int dw = this.RWIDTH >> 8; // skip the third byte for fraction
+		float w = (float) page.unit2Point(dw);
+		graphics.setLineWidth(w);
+		
+		graphics.drawLine(0, 0, 0, len);
 	}
 	
 	@Override

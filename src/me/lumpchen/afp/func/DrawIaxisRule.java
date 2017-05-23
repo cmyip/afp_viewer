@@ -17,6 +17,17 @@ public class DrawIaxisRule extends Function {
 	}
 	
 	@Override
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+		float len = (float) page.unit2Point(this.RLENGTH);
+		
+		int dw = this.RWIDTH >> 8; // skip the third byte for fraction
+		float w = (float) page.unit2Point(dw);
+		graphics.setLineWidth(w);
+		
+		graphics.drawLine(0, 0, len, 0);
+	}
+	
+	@Override
 	void readFunction(AFPInputStream in) throws IOException {
 		this.RLENGTH = in.readSBin(2);
 		this.remain -= 2;
@@ -37,9 +48,4 @@ public class DrawIaxisRule extends Function {
 		return "Draw I-axis Rule";
 	}
 
-	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -36,6 +36,9 @@ public interface AFPGraphics {
 	
 	public void endText();
 	
-    public abstract void drawImage(BufferedImage img, float x, float y, float w, float h);
+    public void drawImage(BufferedImage img, float x, float y, float w, float h);
 
+    public void setLineWidth(float w);
+    
+    public void drawLine(float x1, float y1, float x2, float y2);
 }
