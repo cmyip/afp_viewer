@@ -152,15 +152,23 @@ public class AFPGraphics2D implements AFPGraphics {
 	}
 
 	@Override
-	public void drawLine(float x1, float y1, float x2, float y2) {
+	public void drawLine(float x1, float y1, float x2, float y2, boolean horizon) {
 		Matrix ctm = this.state.getCTM();
-		Matrix textRenderingMatrix = this.textLineMatrix.multiply(this.textMatrix).multiply(ctm);
+		Matrix m;
+		if (horizon) {
+			m = new Matrix(1, 0, 0, 1, 0, this.state.lineWidth / 2);
+		} else {
+			m = new Matrix(1, 0, 0, 1, this.state.lineWidth / 2, 0);
+		}
+		
+		Matrix textRenderingMatrix = m.multiply(this.textLineMatrix).multiply(this.textMatrix).multiply(ctm);
 		AffineTransform at = textRenderingMatrix.createAffineTransform();
 		
 		Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
 		Shape s = at.createTransformedShape(line);
+		
 		this.g2.setColor(this.state.color);
-		this.g2.setStroke(new BasicStroke(this.state.lineWidth));
+		this.g2.setStroke(new BasicStroke(this.state.lineWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		this.g2.draw(s);
 	}
 	

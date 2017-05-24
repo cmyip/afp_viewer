@@ -20,6 +20,10 @@ public class X4DTriplet extends Triplet {
 			in.readBytes(remain);
 			remain = 0;
 		}
+		
+		if (remain != 0) {
+			throw new IOException("Triplet reading error." + remain);
+		}
 	}
 
 }

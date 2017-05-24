@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.lumpchen.afp.sf.StructureField;
+import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.triplet.Triplet;
 
-public class ImageObject extends AFPObject {
+public class ImageObject extends AFPContainer {
 
 	private byte[] IdoName;
 	private List<Triplet> triplets;
@@ -17,6 +18,11 @@ public class ImageObject extends AFPObject {
 		this.parseData(this.structField.getData());
 	}
 	
+	@Override
+	public void collect() {
+		
+	}
+
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		try {
@@ -35,5 +41,15 @@ public class ImageObject extends AFPObject {
 		} finally {
 			in.close();
 		}
+	}
+
+	@Override
+	public boolean isBegin() {
+		if (Tag.BIM == this.structField.getStructureTag()) {
+			return true;
+		} else if (Tag.EIM == this.structField.getStructureTag()) {
+			return false;
+		}
+		return false;
 	}
 }

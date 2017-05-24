@@ -96,6 +96,8 @@ public class AFPFileReader {
 		pairedStructureField.put(Tag.BFN, Tag.EFN);
 		pairedStructureField.put(Tag.BCP, Tag.ECP);
 		pairedStructureField.put(Tag.BNG, Tag.ENG);
+		pairedStructureField.put(Tag.BIM, Tag.EIM);
+		pairedStructureField.put(Tag.BOG, Tag.EOG);
 	}
 	
 	private boolean isMatchedStructure(AFPObject begin, AFPObject end) {

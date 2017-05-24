@@ -69,6 +69,9 @@ public class ResourceManager {
 							this.objMap.put(key, (ObjectContainer) child);
 						}
 					}
+				} else if (Resource.Type.IOCA == type) {
+					String key = res.getNameStr();
+					System.out.println(key);
 				} else {
 					System.out.println(type);
 				}
