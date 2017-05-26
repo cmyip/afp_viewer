@@ -21,7 +21,7 @@ public class Test {
 			PrintFile pf = reader.getPrintFile();
 			
 			AFPRenderer render = new AFPRenderer(null, pf);
-			Image image = render.getPageImage(0, 1);
+			Image image = render.getPageImage(0, 0);
 			
 //			File temp = new File("c:/temp/afp/20170516882301871.jpg");
 			File temp = new File(args[1]);

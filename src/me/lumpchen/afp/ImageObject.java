@@ -1,17 +1,22 @@
 package me.lumpchen.afp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.lumpchen.afp.sf.StructureField;
 import me.lumpchen.afp.sf.Identifier.Tag;
+import me.lumpchen.afp.sf.StructureField;
 import me.lumpchen.afp.sf.triplet.Triplet;
 
 public class ImageObject extends AFPContainer {
 
 	private byte[] IdoName;
 	private List<Triplet> triplets;
+	
+	private ObjectEnvironmentGroup oeg;
+	
+	private byte[] imageSegmentData;
 	
 	public ImageObject(StructureField structField) throws IOException {
 		super(structField);
@@ -20,6 +25,28 @@ public class ImageObject extends AFPContainer {
 	
 	@Override
 	public void collect() {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try {
+			for (AFPObject child : this.children) {
+				if (child instanceof ObjectEnvironmentGroup) {
+					this.oeg = (ObjectEnvironmentGroup) child;
+				} else if (child instanceof ImagePictureData) {
+					ImagePictureData ipd = (ImagePictureData) child;
+					os.write(ipd.getIOCAdata());
+				}
+			}
+			
+			this.imageSegmentData = os.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				os.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		
 	}
 

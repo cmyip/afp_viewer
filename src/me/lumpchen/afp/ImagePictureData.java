@@ -13,6 +13,10 @@ public class ImagePictureData extends AFPObject {
 		this.parseData(this.structField.getData());
 	}
 	
+	public byte[] getIOCAdata() {
+		return this.IOCAdat;
+	}
+	
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		try {
