@@ -1,5 +1,6 @@
 package me.lumpchen.afp.ioca;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import me.lumpchen.afp.AFPInputStream;
@@ -10,6 +11,10 @@ public class ImageSegment {
 	public static final int End = 0x71;
 	
 	public static final int IDE_Size_ID = 0x96;
+	public static final int IDE_LUT_ID = 0x97;
+	public static final int Band_Image_ID = 0x98;
+	
+	public static final int Double_Byte_ID_0 = 0xFE;
 	
 	private ImageContent imageContent;
 	private byte[] name;
@@ -17,54 +22,28 @@ public class ImageSegment {
 	public ImageSegment() {
 	}
 	
-	private void readBegin(AFPInputStream in) throws IOException {
-		int length = in.readUBin(1);
-		
-		if (length > 0) {
-			this.name = in.readBytes(4);
-		}
-	}
-	
-	private void readEnd(AFPInputStream in) throws IOException {
-		int length = in.readUBin(1);
-	}
-	
 	public void setImageContent(ImageContent imageContent) {
 		this.imageContent = imageContent;
 	}
 	
-	public static ImageSegment parse(byte[] data) throws IOException {
-		ImageSegment imageSegment = new ImageSegment();
-		ImageContent imageContent = null;
-		AFPInputStream in = new AFPInputStream(data);
-		
-		while (in.remain() > 0) {
-			int id = in.readCode();
-			if (id == ImageSegment.Begin) {
-				imageSegment.readBegin(in);
-			} else if (id == ImageSegment.End) {
-				imageSegment.readEnd(in);
-				break; // read over
-			} else if (id == ImageContent.Begin) {
-				imageContent = new ImageContent();
-				imageContent.readBegin(in);
-			} else if (id == ImageContent.End) {
-				imageSegment.setImageContent(imageContent);
-			} else if (id == ImageSize.ID) {
-				ImageSize size = new ImageSize();
-				size.read(in);
-				imageContent.setImageSize(size);
-			} else if (id == ImageEncoding.ID) {
-				ImageEncoding encoding = new ImageEncoding();
-				encoding.read(in);
-				imageContent.setImageEncoding(encoding);
-			} else if (id == ImageSegment.IDE_Size_ID) {
-				int length = in.readUBin(1);
-				int IDESZ = in.readUBin(1);
-				imageContent.setIDESize(IDESZ);
-			}
+	public void read(AFPInputStream in) throws IOException {
+		int id = in.readCode();
+		if (id != ImageSegment.Begin) {
+			throw new IOException("Invalid Image Segment begin mark(0x70): " + id);
 		}
-
-		return imageSegment;
+		int length = in.readUBin(1);
+		if (length > 0) {
+			this.name = in.readBytes(4);
+		}
+		
+		ImageContent imageContent = new ImageContent();
+		imageContent.read(in);
+		this.setImageContent(imageContent);
+		
+		id = in.readCode();
+		if (id != ImageSegment.End) {
+			throw new IOException("Invalid Image Segment end mark(0x71): " + id);
+		}
+		length = in.readUBin(1);
 	}
 }

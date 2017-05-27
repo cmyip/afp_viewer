@@ -58,4 +58,5 @@ public class AFPConst {
 		String s = new String(ebcdicBytes, Charset.forName("IBM-1047"));
 		return s;
 	}
+	
 }

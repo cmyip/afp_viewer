@@ -21,8 +21,29 @@ import me.lumpchen.afp.sf.triplet.X4CTriplet;
 
 public class IncludeObject extends AFPObject implements Renderable {
 
+	public enum ObjectType {
+		PageSegment, ObjectData, GOCA, BCOCA, IOCA;
+		
+		public static ObjectType getObjectType(int id) {
+			switch ((byte) id) {
+			case (byte) 0x5F:
+				return PageSegment;
+			case (byte) 0x92:
+				return ObjectData;
+			case (byte) 0xBB:
+				return GOCA;
+			case (byte) 0xEB:
+				return BCOCA;
+			case (byte) 0xFB:
+				return IOCA;
+			default:
+				throw new java.lang.IllegalArgumentException("Invalid Object Type: " + id);
+			}
+		}
+	}
+	
 	private byte[] ObjName;
-	private int ObjType;
+	private ObjectType objType;
 	private int XoaOset;
 	private int YoaOset;
 	private int XoaOrent;
@@ -49,7 +70,7 @@ public class IncludeObject extends AFPObject implements Renderable {
 			this.ObjName = in.readBytes(8);
 			in.read(); // reserverd
 			
-			this.ObjType = in.readCode();
+			this.objType = ObjectType.getObjectType(in.readCode());
 			
 			this.XoaOset = in.readSBin(3);
 			this.YoaOset = in.readSBin(3);
@@ -76,8 +97,8 @@ public class IncludeObject extends AFPObject implements Renderable {
 		return ObjName;
 	}
 
-	public int getObjType() {
-		return ObjType;
+	public ObjectType getObjType() {
+		return this.objType;
 	}
 
 	public int getXoaOset() {
@@ -161,21 +182,28 @@ public class IncludeObject extends AFPObject implements Renderable {
 		int h = (int) Math.round(height * 72);
 		
 		String resName = AFPConst.ebcdic2Ascii(this.ObjName);
-		
-		ObjectTypeIdentifier objectTypeIdentifier = resourceManager.getObjectTypeIdentifier(resName);
-		if (objectTypeIdentifier == null) {
-			return;
-		}
-		
-		ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
-		if (ObjectTypeIdentifier.Component.JFIF == component) {
-			byte[] imageData = resourceManager.getObjectData(resName);
-			try {
-				BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
-				graphics.drawImage(bimg, x, y, w, h);
-			} catch (IOException e) {
-				e.printStackTrace();
+		if (this.objType == ObjectType.ObjectData) {
+			ObjectTypeIdentifier objectTypeIdentifier = resourceManager.getObjectTypeIdentifier(resName);
+			if (objectTypeIdentifier == null) {
+				return;
 			}
+			
+			ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
+			if (ObjectTypeIdentifier.Component.JFIF == component) {
+				byte[] imageData = resourceManager.getObjectData(resName);
+				try {
+					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
+					graphics.drawImage(bimg, x, y, w, h);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else if (this.objType == ObjectType.IOCA) {
+			ImageObject ioca = resourceManager.getIOCAObject(resName);
+			if (ioca == null) {
+				return;
+			}
+			ioca.render(page, graphics, resourceManager);
 		}
 		
 	}

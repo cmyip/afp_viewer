@@ -6,6 +6,7 @@ import java.util.Map;
 import me.lumpchen.afp.AFPObject;
 import me.lumpchen.afp.CodePage;
 import me.lumpchen.afp.Font;
+import me.lumpchen.afp.ImageObject;
 import me.lumpchen.afp.ObjectContainer;
 import me.lumpchen.afp.ObjectContainer.ObjectTypeIdentifier;
 import me.lumpchen.afp.Resource;
@@ -15,10 +16,12 @@ public class ResourceManager {
 
 	private FontManager fontManager;
 	private Map<String, ObjectContainer> objMap;
+	private Map<String, ImageObject> iocaObjMap;
 
 	public ResourceManager(ResourceGroup resourceGroup) {
 		this.fontManager = new FontManager();
 		this.objMap = new HashMap<String, ObjectContainer>();
+		this.iocaObjMap = new HashMap<String, ImageObject>();
 		
 		this.collect(resourceGroup);
 	}
@@ -41,6 +44,14 @@ public class ResourceManager {
 			return null;
 		}
 		return obj.getObjectData();
+	}
+	
+	public ImageObject getIOCAObject(String resName) {
+		if (this.iocaObjMap.containsKey(resName)) {
+			return this.iocaObjMap.get(resName);
+		}
+		
+		return null;
 	}
 	
 	private void collect(ResourceGroup resourceGroup) {
@@ -71,9 +82,14 @@ public class ResourceManager {
 					}
 				} else if (Resource.Type.IOCA == type) {
 					String key = res.getNameStr();
-					System.out.println(key);
+					AFPObject[] children = res.getChildren();
+					for (AFPObject child : children) {
+						if (child instanceof ImageObject) {
+							this.iocaObjMap.put(key, (ImageObject) child);
+						}
+					}
 				} else {
-					System.out.println(type);
+					System.err.println(type);
 				}
 			}
 		}

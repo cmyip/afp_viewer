@@ -5,18 +5,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.lumpchen.afp.ioca.ImageSegment;
+import me.lumpchen.afp.render.AFPGraphics;
+import me.lumpchen.afp.render.Renderable;
+import me.lumpchen.afp.render.ResourceManager;
 import me.lumpchen.afp.sf.Identifier.Tag;
 import me.lumpchen.afp.sf.StructureField;
 import me.lumpchen.afp.sf.triplet.Triplet;
 
-public class ImageObject extends AFPContainer {
+public class ImageObject extends AFPContainer implements Renderable {
 
 	private byte[] IdoName;
 	private List<Triplet> triplets;
 	
 	private ObjectEnvironmentGroup oeg;
 	
-	private byte[] imageSegmentData;
+	private ImageSegment imgSegment;
 	
 	public ImageObject(StructureField structField) throws IOException {
 		super(structField);
@@ -36,7 +40,9 @@ public class ImageObject extends AFPContainer {
 				}
 			}
 			
-			this.imageSegmentData = os.toByteArray();
+			byte[] imageSegmentData = os.toByteArray();
+			this.imgSegment = new ImageSegment();
+			this.imgSegment.read(new AFPInputStream(imageSegmentData));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -46,8 +52,6 @@ public class ImageObject extends AFPContainer {
 				e.printStackTrace();
 			}
 		}
-		
-		
 	}
 
 	private void parseData(byte[] data) throws IOException {
@@ -69,6 +73,11 @@ public class ImageObject extends AFPContainer {
 			in.close();
 		}
 	}
+	
+	@Override
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+
+	}
 
 	@Override
 	public boolean isBegin() {
@@ -79,4 +88,5 @@ public class ImageObject extends AFPContainer {
 		}
 		return false;
 	}
+
 }
