@@ -87,7 +87,7 @@ public class AFPInputStream extends DataInputStream {
 			val = (int) (this.readByte() & 0xFF);
 			break;
 		case 2:
-			val = (int) (this.readShort() & 0xFF);
+			val = (int) (this.readShort() & 0xFFFF);
 			break;
 		default:
 			throw new IOException("Invalid number of bytes: " + numOfBytes);

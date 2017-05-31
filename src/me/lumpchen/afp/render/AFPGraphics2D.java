@@ -177,4 +177,18 @@ public class AFPGraphics2D implements AFPGraphics {
 		this.state.lineWidth = w;
 	}
 
+	private Graphics2D savedGraphics;
+	@Override
+	public void save() {
+		this.savedGraphics = this.g2;
+		this.g2 = (Graphics2D) this.g2.create();
+	}
+
+	@Override
+	public void restore() {
+		this.g2.dispose();
+		this.g2 = this.savedGraphics;
+		this.savedGraphics = null;
+	}
+
 }

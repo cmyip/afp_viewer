@@ -50,4 +50,48 @@ public class ObjectAreaPosition extends AFPObject {
 			in.close();
 		}
 	}
+
+	public int getOAPosID() {
+		return OAPosID;
+	}
+
+	public int getRGLength() {
+		return RGLength;
+	}
+
+	public int getXoaOset() {
+		return XoaOset;
+	}
+
+	public int getYoaOset() {
+		return YoaOset;
+	}
+
+	public int getXoaOrent() {
+		return XoaOrent;
+	}
+
+	public int getYoaOrent() {
+		return YoaOrent;
+	}
+
+	public int getXocaOset() {
+		return XocaOset;
+	}
+
+	public int getYocaOset() {
+		return YocaOset;
+	}
+
+	public int getXocaOrent() {
+		return XocaOrent;
+	}
+
+	public int getYocaOrent() {
+		return YocaOrent;
+	}
+
+	public int getRefCSys() {
+		return RefCSys;
+	}
 }

@@ -12,8 +12,9 @@ import me.lumpchen.afp.render.AFPRenderer;
 public class Test {
 
 	public static void main(String[] args) {
-//		String file = "C:/temp/afp/20170516882301871.afp";
 		String file = args[0];
+		int docIndex = Integer.parseInt(args[2]);
+		int pageIndex = Integer.parseInt(args[3]);
 		
 		AFPFileReader reader = new AFPFileReader();
 		try {
@@ -21,9 +22,7 @@ public class Test {
 			PrintFile pf = reader.getPrintFile();
 			
 			AFPRenderer render = new AFPRenderer(null, pf);
-			Image image = render.getPageImage(0, 0);
-			
-//			File temp = new File("c:/temp/afp/20170516882301871.jpg");
+			Image image = render.getPageImage(docIndex, pageIndex);
 			File temp = new File(args[1]);
 	        
 	        temp.createNewFile();

@@ -174,12 +174,24 @@ public class IncludeObject extends AFPObject implements Renderable {
 		this.height = ((double) YoaSize / YoaUnits) * YoaBase;
 	}
 	
+	private int getRotation() {
+		return AFPConst.toDegree(this.XoaOrent);
+	}
+	
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		int x = (int) Math.round(page.unit2Point(this.XoaOset));
 		int y = (int) Math.round(page.unit2Point(this.YoaOset));
 		int w = (int) Math.round(this.width * 72);
-		int h = (int) Math.round(height * 72);
+		int h = (int) Math.round(this.height * 72);
+		
+		graphics.save();
+		
+		int rotation = this.getRotation();
+		if (rotation != 0) {
+			graphics.translate(x, y );
+			graphics.rotate(Math.toRadians(rotation));
+		}
 		
 		String resName = AFPConst.ebcdic2Ascii(this.ObjName);
 		if (this.objType == ObjectType.ObjectData) {
@@ -203,9 +215,14 @@ public class IncludeObject extends AFPObject implements Renderable {
 			if (ioca == null) {
 				return;
 			}
-			ioca.render(page, graphics, resourceManager);
+			BufferedImage img = ioca.getJavaImage();
+			if (img != null) {
+//				graphics.drawImage(img, x, y, w, h);
+				graphics.drawImage(img, 0, 0, w, h);
+			}
 		}
 		
+		graphics.restore();
 	}
 }
 

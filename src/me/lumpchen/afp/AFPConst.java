@@ -37,6 +37,28 @@ public class AFPConst {
 		}
 	};
 	
+	public static int toDegree(int afpRotation) {
+		int degree = 0;
+		switch (afpRotation) {
+		case 0x0000:
+		case 0xFFFF:
+			degree = 0;
+			break;
+		case 0x2D00:
+			degree = 90;
+			break;
+		case 0x5A00:
+			degree = 180;
+			break;
+		case 0x8700:
+			degree = 270;
+			break;
+		default:
+			throw new java.lang.IllegalArgumentException("Invalid rotation value: " + afpRotation);
+		}
+		return degree;
+	}
+	
 	public static final byte Carriage_Control_Character = 0x5A;
 	
 	public static final char[] hexArray = "0123456789ABCDEF".toCharArray();

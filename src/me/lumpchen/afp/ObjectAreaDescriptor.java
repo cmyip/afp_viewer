@@ -32,6 +32,14 @@ public class ObjectAreaDescriptor extends AFPObject {
 		this.parseData(this.structField.getData());
 	}
 	
+	public int getXoaSize() {
+		return XoaSize;
+	}
+
+	public int getYoaSize() {
+		return YoaSize;
+	}
+
 	public float getWdith() {
 		return this.width;
 	}

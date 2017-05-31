@@ -18,6 +18,14 @@ public class ImageSize {
 		
 	}
 	
+	public int getRow() {
+		return this.VSIZE;
+	}
+	
+	public int getCol() {
+		return this.HSIZE;
+	}
+	
 	public void read(AFPInputStream in) throws IOException {
 		int length = in.readUBin(1); // must =9
 		

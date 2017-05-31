@@ -1,5 +1,6 @@
 package me.lumpchen.afp;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +54,18 @@ public class ImageObject extends AFPContainer implements Renderable {
 			}
 		}
 	}
+	
+	@Override
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+		float x = (float) page.unit2Point(this.oeg.getObjectAreaPosition().getXoaOset());
+		float y = (float) page.unit2Point(this.oeg.getObjectAreaPosition().getYoaOset());
+		float w = (float) page.unit2Point(this.oeg.getObjectAreaDescriptor().getXoaSize());
+		float h = (float) page.unit2Point(this.oeg.getObjectAreaDescriptor().getYoaSize());
+		
+		BufferedImage img = this.imgSegment.getJavaImage();
+		graphics.drawImage(img, x, y, w, h);
+		
+	}
 
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
@@ -74,9 +87,11 @@ public class ImageObject extends AFPContainer implements Renderable {
 		}
 	}
 	
-	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-
+	public BufferedImage getJavaImage() {
+		if (this.imgSegment != null) {
+			return this.imgSegment.getJavaImage();
+		}
+		return null;
 	}
 
 	@Override
@@ -88,5 +103,4 @@ public class ImageObject extends AFPContainer implements Renderable {
 		}
 		return false;
 	}
-
 }

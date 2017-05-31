@@ -98,6 +98,8 @@ public class AFPFileReader {
 		pairedStructureField.put(Tag.BNG, Tag.ENG);
 		pairedStructureField.put(Tag.BIM, Tag.EIM);
 		pairedStructureField.put(Tag.BOG, Tag.EOG);
+		pairedStructureField.put(Tag.BFM, Tag.EFM);
+		pairedStructureField.put(Tag.BMM, Tag.EMM);
 	}
 	
 	private boolean isMatchedStructure(AFPObject begin, AFPObject end) {
@@ -142,6 +144,10 @@ public class AFPFileReader {
 			obj = new ImageObject(sf);
 		} else if (Tag.BOG == tag || Tag.EOG == tag) {
 			obj = new ObjectEnvironmentGroup(sf);
+		} else if (Tag.BFM == tag || Tag.EFM == tag) {
+			obj = new FormMap(sf);
+		} else if (Tag.BMM == tag || Tag.EMM == tag) {
+			obj = new MediumMap(sf);
 		} else {
 			if (Tag.OCD == tag) {
 				obj = new ObjectContainerData(sf);
@@ -187,6 +193,18 @@ public class AFPFileReader {
 				obj = new ImageDataDescriptor(sf);
 			} else if (Tag.IPD == tag) {
 				obj = new ImagePictureData(sf);
+			} else if (Tag.PGP == tag) {
+				obj = new PagePosition(sf);
+			} else if (Tag.MDD == tag) {
+				obj = new MediumDescriptor(sf);
+			} else if (Tag.MCC == tag) {
+				obj = new MediumCopyCount(sf);
+			} else if (Tag.PEC == tag) {
+				obj = new PresentationEnvironmentControl(sf);
+			} else if (Tag.MMC == tag) {
+				obj = new MediumModificationControl(sf);
+			} else if (Tag.IMM == tag) {
+				obj = new InvokeMediumMap(sf);	
 			} else if (Tag.TLE == tag) {
 				obj = new TagLogicalElement(sf);
 			}

@@ -1,9 +1,16 @@
 package me.lumpchen.afp.ioca;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import me.lumpchen.afp.AFPInputStream;
+import me.lumpchen.afp.ioca.ImageEncoding.BitOrder;
+import me.lumpchen.afp.ioca.ImageEncoding.CompressionAlgrithm;
+import me.lumpchen.afp.ioca.filter.CCITTFaxxFilter;
+import me.lumpchen.afp.ioca.filter.TIFFExtension;
 
 public class ImageContent {
 	
@@ -56,8 +63,31 @@ public class ImageContent {
 		return this.imageData;
 	}
 	
-	public void decodeData() {
+	public byte[] decodeData() {
+		CompressionAlgrithm compressionAlg = this.encoding.getAlgorhtim();
+		BitOrder bitOrder = this.encoding.getBitOrder();
 		
+		try {
+			byte[] src = CCITTFaxxFilter.decode(new ByteArrayInputStream(this.imageData), 
+					this.size.getCol(), this.size.getRow(), TIFFExtension.COMPRESSION_CCITT_T6, 
+					TIFFExtension.FILL_LEFT_TO_RIGHT, false, false);
+			return src;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public BufferedImage getJavaImage() {
+		byte[] src = this.decodeData();
+		
+		int col = (this.size.getCol() + 7) / 8;
+		int row = this.size.getRow();
+		BufferedImage img = new BufferedImage(col, row, BufferedImage.TYPE_BYTE_BINARY);
+		WritableRaster newRaster = img.getRaster();
+		newRaster.setDataElements(0, 0, col, row, src);
+		img.setData(newRaster);
+		return img;
 	}
 	
 	public void read(AFPInputStream in) throws IOException {
@@ -125,12 +155,4 @@ public class ImageContent {
 		imageDataStream.close();
 	}
 	
-	public void readBegin(AFPInputStream in) throws IOException {
-
-		
-	}
-	
-	private void readEnd(AFPInputStream in) throws IOException {
-
-	}
 }

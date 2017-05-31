@@ -2,6 +2,7 @@ package me.lumpchen.afp.func;
 
 import java.io.IOException;
 
+import me.lumpchen.afp.AFPConst;
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.Page;
 import me.lumpchen.afp.render.AFPGraphics;
@@ -14,6 +15,13 @@ public class SetTextOrientation extends Function {
 	
 	SetTextOrientation() {
 		this.type = PTX_STO;
+	}
+	
+	@Override
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+		AFPConst.toDegree(this.IORNTION);
+		
+		
 	}
 	
 	@Override
@@ -36,9 +44,5 @@ public class SetTextOrientation extends Function {
 	@Override
 	public String getCommandDesc() {
 		return "Set Text Orientation";
-	}
-	
-	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 	}
 }

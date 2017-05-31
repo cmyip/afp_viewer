@@ -26,6 +26,10 @@ public class ImageSegment {
 		this.imageContent = imageContent;
 	}
 	
+	public BufferedImage getJavaImage() {
+		return this.imageContent.getJavaImage();
+	}
+	
 	public void read(AFPInputStream in) throws IOException {
 		int id = in.readCode();
 		if (id != ImageSegment.Begin) {
@@ -42,8 +46,11 @@ public class ImageSegment {
 		
 		id = in.readCode();
 		if (id != ImageSegment.End) {
-			throw new IOException("Invalid Image Segment end mark(0x71): " + id);
+//			throw new IOException("Invalid Image Segment end mark(0x71): " + id);
 		}
 		length = in.readUBin(1);
+		if (length > 0) {
+			in.readBytes(length);
+		}
 	}
 }
