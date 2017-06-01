@@ -2,6 +2,7 @@ package me.lumpchen.afp;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,9 +188,9 @@ public class IncludeObject extends AFPObject implements Renderable {
 		
 		graphics.save();
 		
+		graphics.translate(x, y );
 		int rotation = this.getRotation();
 		if (rotation != 0) {
-			graphics.translate(x, y );
 			graphics.rotate(Math.toRadians(rotation));
 		}
 		
@@ -205,7 +206,7 @@ public class IncludeObject extends AFPObject implements Renderable {
 				byte[] imageData = resourceManager.getObjectData(resName);
 				try {
 					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
-					graphics.drawImage(bimg, x, y, w, h);
+					graphics.drawImage(bimg, 0, 0, w, h);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -217,7 +218,13 @@ public class IncludeObject extends AFPObject implements Renderable {
 			}
 			BufferedImage img = ioca.getJavaImage();
 			if (img != null) {
-//				graphics.drawImage(img, x, y, w, h);
+				
+				try {
+					ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
+ 				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 				graphics.drawImage(img, 0, 0, w, h);
 			}
 		}

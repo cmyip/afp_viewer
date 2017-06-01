@@ -80,12 +80,14 @@ public class ImageContent {
 	
 	public BufferedImage getJavaImage() {
 		byte[] src = this.decodeData();
-		
-		int col = (this.size.getCol() + 7) / 8;
 		int row = this.size.getRow();
-		BufferedImage img = new BufferedImage(col, row, BufferedImage.TYPE_BYTE_BINARY);
+		BufferedImage img = new BufferedImage(this.size.getCol(), row, BufferedImage.TYPE_BYTE_BINARY);
 		WritableRaster newRaster = img.getRaster();
-		newRaster.setDataElements(0, 0, col, row, src);
+
+		int size = newRaster.getDataBuffer().getSize();
+		for (int i = 0; i < size; i++) {
+			newRaster.getDataBuffer().setElem(i, src[i]);	
+		}
 		img.setData(newRaster);
 		return img;
 	}
