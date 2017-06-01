@@ -19,9 +19,8 @@ public class SetTextOrientation extends Function {
 	
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		AFPConst.toDegree(this.IORNTION);
-		
-		
+		int degree = AFPConst.toDegree(this.IORNTION);
+		graphics.setTextRotation(degree);
 	}
 	
 	@Override

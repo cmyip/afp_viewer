@@ -24,8 +24,8 @@ public class AbsoluteMoveInline extends Function {
 	
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		double ami = page.unit2Point(this.DSPLCMNT);
-		graphics.setTranslateX(ami);
+		float ami = (float) page.unit2Point(this.DSPLCMNT);
+		graphics.setTextPosX(ami);
 	}
 	
 	@Override

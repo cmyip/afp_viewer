@@ -11,13 +11,20 @@ public final class GraphicsState implements Cloneable {
 	public Color backgroundColor;
 	public Color color;
 	
-	public AFPFont font;
-	public float fontSize;
+	public static class TextState {
+		public float posX;
+		public float posY;
+		public AFPFont font;
+		public float fontSize;
+		public Color color;
+		public float rotation;
+		public float ruleWidth;
+	}
 	
-	public float lineWidth;
+	public TextState textState;
 
 	public GraphicsState() {
-
+		this.textState = new TextState();
 	}
 
 	public Matrix getCTM() {

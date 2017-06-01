@@ -54,8 +54,8 @@ public class AFPRenderer {
 	}
 	
 	private BufferedImage renderPage(Page page) {
-		double pw = page.getPageWidth() * 72;
-		double ph = page.getPageHeight() * 72;
+		double pw = page.getPageWidth();
+		double ph = page.getPageHeight();
 		double hRes = page.getHorResolution();
 		double vRes = page.getVerResolution();
 		
@@ -102,7 +102,7 @@ public class AFPRenderer {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, image.getWidth(), image.getHeight());
         
-        AFPGraphics2D graphics = new AFPGraphics2D(g);
+        AFPGraphics2D graphics = new AFPGraphics2D(g, (float) pw, (float) ph);
         page.render(graphics, this.resourceManager);
         return image;
 	}

@@ -24,7 +24,7 @@ public class DrawBaxisRule extends Function {
 		float w = (float) page.unit2Point(dw);
 		graphics.setLineWidth(w);
 		
-		graphics.drawLine(0, 0, 0, len, false);
+		graphics.drawRule(0, 0, 0, len, false);
 	}
 	
 	@Override

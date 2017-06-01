@@ -64,8 +64,8 @@ public class Page extends AFPContainer {
 			this.vRes = ((double) pgd.getXpgUnits()) / pgd.getXpgBase();
 			
 			this.scaleRatio = pgd.getXpgBase() / pgd.getXpgUnits();
-			this.width = this.unit2Inch(pgd.getXpgSize());
-			this.height = this.unit2Inch(pgd.getYpgSize());
+			this.width = this.unit2Point(pgd.getXpgSize());
+			this.height = this.unit2Point(pgd.getYpgSize());
 		}
 	}
 	
@@ -75,12 +75,12 @@ public class Page extends AFPContainer {
 	
 	public void render(AFPGraphics graphics, ResourceManager resourceManager) {
 		for (PresentationTextObject ptx : this.ptxList) {
-			graphics.beginText();
+//			graphics.beginText();
 			List<Function> cs = ptx.getPTX().getControlSequence();
 			for (Function func : cs) {
 				func.render(this, graphics, resourceManager);
 			}
-			graphics.endText();
+//			graphics.endText();
 		}
 		
 		AFPObject[] children = this.getChildren();

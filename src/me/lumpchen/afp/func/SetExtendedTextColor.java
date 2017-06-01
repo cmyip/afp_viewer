@@ -89,6 +89,6 @@ public class SetExtendedTextColor extends Function {
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		AFPColor c = new AFPColor(this.colorspace, this.COLVALUE);
-		graphics.setColor(c);
+		graphics.setTextColor(c);
 	}
 }

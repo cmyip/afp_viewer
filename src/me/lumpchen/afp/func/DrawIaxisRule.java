@@ -24,7 +24,7 @@ public class DrawIaxisRule extends Function {
 		float w = (float) page.unit2Point(dw);
 		graphics.setLineWidth(w);
 		
-		graphics.drawLine(0, 0, len, 0, true);
+		graphics.drawRule(0, 0, len, 0, true);
 	}
 	
 	@Override

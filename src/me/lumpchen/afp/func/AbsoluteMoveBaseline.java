@@ -29,8 +29,8 @@ public class AbsoluteMoveBaseline extends Function {
 
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		double amb = page.unit2Point(this.displacement);
-		graphics.setTranslateY(amb);
+		float amb = (float) page.unit2Point(this.displacement);
+		graphics.setTextPosY(amb);
 	}
 	
 	@Override
