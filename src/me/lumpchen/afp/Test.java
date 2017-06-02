@@ -3,15 +3,84 @@ package me.lumpchen.afp;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 
 import me.lumpchen.afp.render.AFPRenderer;
+import me.lumpchen.afp.tool.AFPTool;
 
 public class Test {
 
+	private static Logger logger = Logger.getLogger(Test.class.getName());
+	
 	public static void main(String[] args) {
+/*		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+		while (readers.hasNext()) {
+		    System.out.println("reader: " + readers.next());
+		}*/
+		
+		if (args.length == 1) {
+			render(args);
+			return;
+		}
+		
+		if (args.length == 4) {
+			renderPage(args);
+			return;
+		}
+
+		System.err.println("Invalid parameters!");
+	}
+	
+	static void render(String[] args) {
+		String path = args[0];
+		File afpFile = new File(path);
+		
+		try {
+			if (afpFile.isDirectory()) {
+				File[] files = afpFile.listFiles(new FileFilter() {
+					@Override
+					public boolean accept(File pathname) {
+						if (pathname.isFile() && pathname.getName().toLowerCase().endsWith(".afp")) {
+							return true;
+						}
+						return false;
+					}
+				});
+				for (File f : files) {
+					logger.info("Start rendering " + f.getAbsolutePath());
+					String s = f.getParentFile().getAbsolutePath() + "\\" + f.getName().substring(0, f.getName().length() - 4);
+					File outputFolder = new File(s);
+					outputFolder.mkdirs();
+					
+					try {
+						AFPTool.render(f, outputFolder);
+					} catch (Exception e) {
+						logger.log(Level.SEVERE, f.getAbsolutePath(), e);
+						String error = f.getParentFile().getAbsolutePath() + "\\fail";
+						File errorFolder = new File(error);
+						boolean res = f.renameTo(new File(errorFolder.getAbsolutePath() + "\\" + f.getName()));
+						if (res) {
+							f.delete();
+						}
+					}
+				}
+			} else {
+				File outputFolder = afpFile.getParentFile();
+				AFPTool.render(afpFile, outputFolder);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	static void renderPage(String[] args) {
 		String file = args[0];
 		int docIndex = Integer.parseInt(args[2]);
 		int pageIndex = Integer.parseInt(args[3]);

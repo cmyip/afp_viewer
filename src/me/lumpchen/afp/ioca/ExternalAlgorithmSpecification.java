@@ -17,7 +17,9 @@ public class ExternalAlgorithmSpecification {
 	
 	public void read(AFPInputStream in) throws IOException {
 		int length = in.readUBin(1);
-		
+		if (length <= 0) {
+			return;
+		}
 		this.ALGTYPE = in.readCode();
 		length--;
 		

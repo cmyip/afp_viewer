@@ -45,7 +45,7 @@ public class AFPRenderer {
 		Page page = this.documents.get(documentIndex).getPageList().get(pageIndex);
 		BufferedImage pageImage = this.renderPage(page);
 		
-		this.pageImageMap.put(key, pageImage);
+//		this.pageImageMap.put(key, pageImage);
 		return pageImage;
 	}
 	

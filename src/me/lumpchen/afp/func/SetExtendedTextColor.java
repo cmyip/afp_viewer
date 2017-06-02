@@ -13,7 +13,7 @@ import me.lumpchen.afp.render.ResourceManager;
 public class SetExtendedTextColor extends Function {
 
 	private int COLSPCE;
-	private byte[] COLVALUE;
+	private int[] COLVALUE;
 	private int COLSIZE1;
 	private int COLSIZE2;
 	private int COLSIZE3;
@@ -68,7 +68,10 @@ public class SetExtendedTextColor extends Function {
 		this.remain -= 1;
 		
 		int componentLength = this.colorspace.getComponentLength();
-		this.COLVALUE = in.readBytes(componentLength);
+		this.COLVALUE = new int[componentLength];
+		for (int i = 0; i < componentLength; i++) {
+			this.COLVALUE[i] = in.readUBin(1);
+		}
 		this.remain -= componentLength;
 		
 		if (this.remain > 0) {
@@ -76,6 +79,13 @@ public class SetExtendedTextColor extends Function {
 		}
 		this.remain = 0;
 	}
+	
+	@Override
+	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+		AFPColor c = new AFPColor(this.colorspace, this.COLVALUE);
+		graphics.setTextColor(c);
+	}
+	
 	@Override
 	public String getCommandString() {
 		return "SEC";
@@ -84,11 +94,5 @@ public class SetExtendedTextColor extends Function {
 	@Override
 	public String getCommandDesc() {
 		return "Set Extended Text Color";
-	}
-
-	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		AFPColor c = new AFPColor(this.colorspace, this.COLVALUE);
-		graphics.setTextColor(c);
 	}
 }

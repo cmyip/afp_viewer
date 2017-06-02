@@ -55,6 +55,10 @@ public class ImageObject extends AFPContainer implements Renderable {
 		}
 	}
 	
+	private int getRotation() {
+		return AFPConst.toDegree(this.oeg.getObjectAreaPosition().getXoaOrent());
+	}
+	
 	@Override
 	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
 		float x = (float) page.unit2Point(this.oeg.getObjectAreaPosition().getXoaOset());
@@ -62,9 +66,18 @@ public class ImageObject extends AFPContainer implements Renderable {
 		float w = (float) page.unit2Point(this.oeg.getObjectAreaDescriptor().getXoaSize());
 		float h = (float) page.unit2Point(this.oeg.getObjectAreaDescriptor().getYoaSize());
 		
-		BufferedImage img = this.imgSegment.getJavaImage();
-		graphics.drawImage(img, x, y, w, h);
+		graphics.save();
 		
+		graphics.translate(x, y );
+		int rotation = this.getRotation();
+		if (rotation != 0) {
+			graphics.rotate(Math.toRadians(rotation));
+		}
+		
+		BufferedImage img = this.imgSegment.getJavaImage();
+		graphics.drawImage(img, 0, 0, w, h);
+		
+		graphics.restore();
 	}
 
 	private void parseData(byte[] data) throws IOException {

@@ -100,6 +100,7 @@ public class AFPFileReader {
 		pairedStructureField.put(Tag.BOG, Tag.EOG);
 		pairedStructureField.put(Tag.BFM, Tag.EFM);
 		pairedStructureField.put(Tag.BMM, Tag.EMM);
+		pairedStructureField.put(Tag.BGR, Tag.EGR);
 	}
 	
 	private boolean isMatchedStructure(AFPObject begin, AFPObject end) {
@@ -142,6 +143,8 @@ public class AFPFileReader {
 			obj = new CodePage(sf);
 		} else if (Tag.BIM == tag || Tag.EIM == tag) {
 			obj = new ImageObject(sf);
+		} else if (Tag.BGR == tag || Tag.EGR == tag) {
+			obj = new GraphicsObject(sf);
 		} else if (Tag.BOG == tag || Tag.EOG == tag) {
 			obj = new ObjectEnvironmentGroup(sf);
 		} else if (Tag.BFM == tag || Tag.EFM == tag) {
@@ -207,6 +210,10 @@ public class AFPFileReader {
 				obj = new InvokeMediumMap(sf);	
 			} else if (Tag.TLE == tag) {
 				obj = new TagLogicalElement(sf);
+			} else if (Tag.TLE == tag) {
+				obj = new GraphicsDataDescriptor(sf);
+			} else if (Tag.TLE == tag) {
+				obj = new GraphicsData(sf);
 			}
 			
 		}

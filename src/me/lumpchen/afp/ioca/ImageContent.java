@@ -5,6 +5,7 @@ import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.ioca.ImageEncoding.BitOrder;
@@ -67,11 +68,23 @@ public class ImageContent {
 		CompressionAlgrithm compressionAlg = this.encoding.getAlgorhtim();
 		BitOrder bitOrder = this.encoding.getBitOrder();
 		
+		int compression = TIFFExtension.COMPRESSION_CCITT_T6;
+		if (compressionAlg == CompressionAlgrithm.G4) {
+			compression = TIFFExtension.COMPRESSION_CCITT_T6;
+		}
+		
+		int order = TIFFExtension.FILL_LEFT_TO_RIGHT;
+		if (bitOrder == BitOrder.Left_to_right) {
+			order = TIFFExtension.FILL_LEFT_TO_RIGHT;
+		} else if (bitOrder == BitOrder.Right_to_left) {
+			order = TIFFExtension.FILL_RIGHT_TO_LEFT;
+		}
 		try {
-			byte[] src = CCITTFaxxFilter.decode(new ByteArrayInputStream(this.imageData), 
-					this.size.getCol(), this.size.getRow(), TIFFExtension.COMPRESSION_CCITT_T6, 
-					TIFFExtension.FILL_LEFT_TO_RIGHT, false, false);
-			return src;
+			InputStream src = new ByteArrayInputStream(this.imageData);
+			int col = this.size.getCol();
+			int row = this.size.getRow();
+			byte[] dest = CCITTFaxxFilter.decode(src, col, row, compression, order, false, false);
+			return dest;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -86,7 +99,7 @@ public class ImageContent {
 
 		int size = newRaster.getDataBuffer().getSize();
 		for (int i = 0; i < size; i++) {
-			newRaster.getDataBuffer().setElem(i, src[i]);	
+			newRaster.getDataBuffer().setElem(i, (src[i] & 0xFF));	
 		}
 		img.setData(newRaster);
 		return img;

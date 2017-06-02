@@ -188,7 +188,7 @@ public class IncludeObject extends AFPObject implements Renderable {
 		
 		graphics.save();
 		
-		graphics.translate(x, y );
+		graphics.translate(x, y);
 		int rotation = this.getRotation();
 		if (rotation != 0) {
 			graphics.rotate(Math.toRadians(rotation));
