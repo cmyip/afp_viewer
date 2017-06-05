@@ -29,14 +29,17 @@ public class IDEStructure {
 		length -= 1;
 		if (length > 0) {
 			this.SIZE2 = in.readUBin(1);
+			length -= 1;
 		}
 		
 		if (length > 0) {
 			this.SIZE3 = in.readUBin(1);
+			length -= 1;
 		}
 		
 		if (length > 0) {
 			this.SIZE4 = in.readUBin(1);
+			length -= 1;
 		}
 	}
 }

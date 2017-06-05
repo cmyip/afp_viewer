@@ -1,11 +1,14 @@
 package me.lumpchen.afp;
 
-import me.lumpchen.afp.sf.StructureField;
+import java.util.ArrayList;
+import java.util.List;
+
 import me.lumpchen.afp.sf.Identifier.Tag;
+import me.lumpchen.afp.sf.StructureField;
 
 public class PresentationTextObject extends AFPContainer {
 	
-	private PresentationTextData ptx;
+	private List<PresentationTextData> ptxList;
 	
 	public PresentationTextObject(StructureField structField) {
 		super(structField);
@@ -13,10 +16,11 @@ public class PresentationTextObject extends AFPContainer {
 		if (this.structField != null) {
 			this.nameStr = this.structField.getNameStr();
 		}
+		this.ptxList = new ArrayList<PresentationTextData>();
 	}
 	
-	public PresentationTextData getPTX() {
-		return this.ptx;
+	public PresentationTextData[] getPTX() {
+		return this.ptxList.toArray(new PresentationTextData[this.ptxList.size()]);
 	}
 	
 	@Override
@@ -33,7 +37,7 @@ public class PresentationTextObject extends AFPContainer {
 	public void collect() {
 		for (AFPObject child : this.children) {
 			if (child instanceof PresentationTextData) {
-				this.ptx = (PresentationTextData) child;
+				this.ptxList.add((PresentationTextData) child);
 			}
 		}
 	}

@@ -212,7 +212,7 @@ public class AFPFileReader {
 				obj = new TagLogicalElement(sf);
 			} else if (Tag.TLE == tag) {
 				obj = new GraphicsDataDescriptor(sf);
-			} else if (Tag.TLE == tag) {
+			} else if (Tag.GAD == tag) {
 				obj = new GraphicsData(sf);
 			}
 			

@@ -68,7 +68,7 @@ public class ImageObject extends AFPContainer implements Renderable {
 		
 		graphics.save();
 		
-		graphics.translate(x, y );
+		graphics.translate(x, y);
 		int rotation = this.getRotation();
 		if (rotation != 0) {
 			graphics.rotate(Math.toRadians(rotation));

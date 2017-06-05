@@ -132,6 +132,8 @@ public class AFPGraphics2D implements AFPGraphics {
 		
 		if (tstate.rotation == 0) {
 			this.g2.translate(0, 0);
+		}  else if (tstate.rotation == 180) {
+			this.g2.translate(this.width, this.height);	
 		} else if (tstate.rotation == 270) {
 			this.g2.translate(0, this.height);	
 		}

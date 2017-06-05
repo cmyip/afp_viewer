@@ -13,7 +13,7 @@ import me.lumpchen.afp.sf.StructureField;
 public class Page extends AFPContainer {
 
 	private ActiveEnvironmentGroup aeg;
-	private List<PresentationTextObject> ptxList;
+	private List<PresentationTextObject> ptxObjList;
 	
 	private double scaleRatio;
 	
@@ -29,7 +29,7 @@ public class Page extends AFPContainer {
 		if (this.structField != null) {
 			this.nameStr = this.structField.getNameStr();
 		}
-		this.ptxList = new ArrayList<PresentationTextObject>();
+		this.ptxObjList = new ArrayList<PresentationTextObject>();
 	}
 	
 	public double getPageWidth() {
@@ -54,7 +54,7 @@ public class Page extends AFPContainer {
 			if (child instanceof ActiveEnvironmentGroup) {
 				this.aeg = (ActiveEnvironmentGroup) child;
 			} else if (child instanceof PresentationTextObject) {
-				this.ptxList.add((PresentationTextObject) child);
+				this.ptxObjList.add(((PresentationTextObject) child));
 			}
 		}
 		if (this.aeg != null && this.aeg.getPageDescriptor() != null) {
@@ -74,11 +74,13 @@ public class Page extends AFPContainer {
 	}
 	
 	public void render(AFPGraphics graphics, ResourceManager resourceManager) {
-		for (PresentationTextObject ptx : this.ptxList) {
+		for (PresentationTextObject ptxObj : this.ptxObjList) {
 //			graphics.beginText();
-			List<Function> cs = ptx.getPTX().getControlSequence();
-			for (Function func : cs) {
-				func.render(this, graphics, resourceManager);
+			for (PresentationTextData ptx : ptxObj.getPTX()) {
+				List<Function> cs = ptx.getControlSequence();
+				for (Function func : cs) {
+					func.render(this, graphics, resourceManager);
+				}
 			}
 //			graphics.endText();
 		}

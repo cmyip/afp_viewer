@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -13,6 +14,8 @@ import me.lumpchen.afp.render.AFPRenderer;
 
 public class AFPTool {
 
+	private static Logger logger = Logger.getLogger(AFPTool.class.getName());
+	
 	public AFPTool() {
 	}
 	
@@ -23,6 +26,7 @@ public class AFPTool {
 			PrintFile pf = reader.getPrintFile();
 			
 			AFPRenderer render = new AFPRenderer(null, pf);
+			int pageNo = 0;
 			int docCount = pf.getDocuments().size();
 			for (int i = 0; i < docCount; i++) {
 				int pageCount = pf.getDocuments().get(i).getPageList().size();
@@ -31,6 +35,8 @@ public class AFPTool {
 					Image image = render.getPageImage(i, j);
 					File f = createImageFile(outputFolder, afpFile, i + 1, j + 1, "jpg");
 					ImageIO.write((BufferedImage) image, "jpg", f);
+					
+					logger.info("Rendering page " + ++pageNo);
 				}
 			}
 		} finally {

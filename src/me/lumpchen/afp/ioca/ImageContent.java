@@ -1,11 +1,15 @@
 package me.lumpchen.afp.ioca;
 
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 
 import me.lumpchen.afp.AFPInputStream;
 import me.lumpchen.afp.ioca.ImageEncoding.BitOrder;
@@ -71,38 +75,59 @@ public class ImageContent {
 		int compression = TIFFExtension.COMPRESSION_CCITT_T6;
 		if (compressionAlg == CompressionAlgrithm.G4) {
 			compression = TIFFExtension.COMPRESSION_CCITT_T6;
+			int order = TIFFExtension.FILL_LEFT_TO_RIGHT;
+			if (bitOrder == BitOrder.Left_to_right) {
+				order = TIFFExtension.FILL_LEFT_TO_RIGHT;
+			} else if (bitOrder == BitOrder.Right_to_left) {
+				order = TIFFExtension.FILL_RIGHT_TO_LEFT;
+			}
+			try {
+				InputStream src = new ByteArrayInputStream(this.imageData);
+				int col = this.size.getCol();
+				int row = this.size.getRow();
+				byte[] dest = CCITTFaxxFilter.decode(src, col, row, compression, order, false, false);
+				return dest;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if (compressionAlg == CompressionAlgrithm.JPEG) {
+			return this.imageData;
 		}
 		
-		int order = TIFFExtension.FILL_LEFT_TO_RIGHT;
-		if (bitOrder == BitOrder.Left_to_right) {
-			order = TIFFExtension.FILL_LEFT_TO_RIGHT;
-		} else if (bitOrder == BitOrder.Right_to_left) {
-			order = TIFFExtension.FILL_RIGHT_TO_LEFT;
-		}
-		try {
-			InputStream src = new ByteArrayInputStream(this.imageData);
-			int col = this.size.getCol();
+		throw new java.lang.IllegalArgumentException("Unspported compression algoritm: " + compressionAlg);
+	}
+	
+	private BufferedImage getBufferedImage() throws IOException {
+		CompressionAlgrithm alg = this.encoding.getAlgorhtim();
+		byte[] decoded = this.decodeData();
+		
+		if (alg == CompressionAlgrithm.G4) {
 			int row = this.size.getRow();
-			byte[] dest = CCITTFaxxFilter.decode(src, col, row, compression, order, false, false);
-			return dest;
+			BufferedImage img = new BufferedImage(this.size.getCol(), row, BufferedImage.TYPE_BYTE_BINARY);
+			WritableRaster newRaster = img.getRaster();
+
+			int size = newRaster.getDataBuffer().getSize();
+			for (int i = 0; i < size; i++) {
+				newRaster.getDataBuffer().setElem(i, (decoded[i] & 0xFF));
+			}
+			img.setData(newRaster);
+			return img;
+		} else if (alg == CompressionAlgrithm.JPEG) {
+			BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(decoded));
+			return bimg;
+		}
+		throw new java.lang.IllegalArgumentException("Unspported compression algoritm: " + alg);
+	}
+	
+	public BufferedImage getJavaImage() {
+		try {
+			BufferedImage img = this.getBufferedImage();
+//			ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
+			return img;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
-	}
-	
-	public BufferedImage getJavaImage() {
-		byte[] src = this.decodeData();
-		int row = this.size.getRow();
-		BufferedImage img = new BufferedImage(this.size.getCol(), row, BufferedImage.TYPE_BYTE_BINARY);
-		WritableRaster newRaster = img.getRaster();
-
-		int size = newRaster.getDataBuffer().getSize();
-		for (int i = 0; i < size; i++) {
-			newRaster.getDataBuffer().setElem(i, (src[i] & 0xFF));	
-		}
-		img.setData(newRaster);
-		return img;
 	}
 	
 	public void read(AFPInputStream in) throws IOException {

@@ -73,7 +73,9 @@ public class Test {
 				}
 			} else {
 				File outputFolder = afpFile.getParentFile();
+				logger.info("Start rendering: " + afpFile.getAbsolutePath());
 				AFPTool.render(afpFile, outputFolder);
+				logger.info("Complete rendering: " + afpFile.getAbsolutePath());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -94,10 +96,13 @@ public class Test {
 			Image image = render.getPageImage(docIndex, pageIndex);
 			File temp = new File(args[1]);
 	        
+			logger.info("Start rendering " + temp.getAbsolutePath());
+			
 	        temp.createNewFile();
 	        ImageIO.write((BufferedImage) image, "jpg",temp);
-	        
 	        reader.close();
+	        
+	        logger.info("Done! " + temp.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

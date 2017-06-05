@@ -2,6 +2,7 @@ package me.lumpchen.afp.ioca;
 
 import java.io.IOException;
 
+import me.lumpchen.afp.AFPConst;
 import me.lumpchen.afp.AFPInputStream;
 
 public class ImageEncoding {
@@ -24,7 +25,7 @@ public class ImageEncoding {
 			X'83' JPEG algorithms (See the External Algorithm Specification parameter for detail)
 	 * */
 	public enum CompressionAlgrithm {
-		G4
+		G4, JPEG
 	};
 	private CompressionAlgrithm compressionAlg;
 	
@@ -85,6 +86,11 @@ public class ImageEncoding {
 		case 0x82:
 			this.compressionAlg = CompressionAlgrithm.G4;
 			break;
+		case 0x83:
+			this.compressionAlg = CompressionAlgrithm.JPEG;
+			break;
+		default:
+			throw new java.lang.IllegalArgumentException("Unspported compression algoritm: " + AFPConst.bytesToHex((byte) (recid & 0xFF)));
 		}
 	}
 	
@@ -113,6 +119,7 @@ public class ImageEncoding {
 		if (length > 0) {
 			int BITORDR = in.readUBin(1);
 			this.setBitOrder(BITORDR);
+			length--;
 		}
 	}
 }
