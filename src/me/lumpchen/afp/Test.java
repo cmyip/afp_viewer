@@ -60,7 +60,7 @@ public class Test {
 					outputFolder.mkdirs();
 					
 					try {
-						AFPTool.render(f, outputFolder);
+						AFPTool.render(f, outputFolder, "jpg");
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, f.getAbsolutePath(), e);
 						String error = f.getParentFile().getAbsolutePath() + "\\fail";
@@ -74,7 +74,7 @@ public class Test {
 			} else {
 				File outputFolder = afpFile.getParentFile();
 				logger.info("Start rendering: " + afpFile.getAbsolutePath());
-				AFPTool.render(afpFile, outputFolder);
+				AFPTool.render(afpFile, outputFolder, "jpg");
 				logger.info("Complete rendering: " + afpFile.getAbsolutePath());
 			}
 		} catch (IOException e) {

@@ -19,7 +19,7 @@ public class AFPTool {
 	public AFPTool() {
 	}
 	
-	public static void render(File afpFile, File outputFolder) throws IOException {
+	public static void render(File afpFile, File outputFolder, String imageFomat) throws IOException {
 		AFPFileReader reader = new AFPFileReader();
 		try {
 			reader.read(afpFile);
@@ -33,8 +33,8 @@ public class AFPTool {
 				
 				for (int j = 0; j < pageCount; j++) {
 					Image image = render.getPageImage(i, j);
-					File f = createImageFile(outputFolder, afpFile, i + 1, j + 1, "jpg");
-					ImageIO.write((BufferedImage) image, "jpg", f);
+					File f = createImageFile(outputFolder, afpFile, i + 1, j + 1, imageFomat);
+					ImageIO.write((BufferedImage) image, imageFomat, f);
 					
 					logger.info("Rendering page " + ++pageNo);
 				}

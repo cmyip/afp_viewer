@@ -1,11 +1,9 @@
 package me.lumpchen.afp.ioca;
 
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -90,6 +88,7 @@ public class ImageContent {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
 		} else if (compressionAlg == CompressionAlgrithm.JPEG) {
 			return this.imageData;
 		}
