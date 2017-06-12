@@ -23,6 +23,10 @@ public class Document extends AFPContainer {
 		return this.pages;
 	}
 	
+	public int getPageCount() {
+		return this.pages.size();
+	}
+	
 	@Override
 	public boolean isBegin() {
 		if (Tag.BDT == this.structField.getStructureTag()) {

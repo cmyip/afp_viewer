@@ -59,7 +59,7 @@ public class TestCase0 extends TestCase {
 		return true;
 	}
 	
-	private boolean compare(File outputFolder, String imageFomat) {
+	private boolean compare(File outputFolder, final String imageFomat) {
 		File baseFolder = new File(outputFolder, "baseline");
 		if (!baseFolder.exists()) {
 			logger.severe("Not find baseline folder: " + baseFolder.getAbsolutePath());

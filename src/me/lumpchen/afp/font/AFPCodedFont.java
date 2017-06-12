@@ -47,7 +47,7 @@ public class AFPCodedFont implements AFPFont {
 		}
 	}
 	
-	private void initEncoding(CodePage codePage) {
+	private void initEncoding(final CodePage codePage) {
 		this.encoding = new Encoding() {
 			@Override
 			public int getMaxCodePoint() {

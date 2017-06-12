@@ -7,10 +7,12 @@ public class PrintFile extends AFPContainer {
 
 	private ResourceGroup resourceGroup;
 	private List<Document> documents;
+	private List<Page> pageList;
 
 	public PrintFile() {
 		super(null);
 		this.documents = new ArrayList<Document>();
+		this.pageList = new ArrayList<Page>();
 	}
 	
 	public ResourceGroup getResourceGroup() {
@@ -22,6 +24,17 @@ public class PrintFile extends AFPContainer {
 			return this.resourceGroup.getResource(resName);
 		}
 		return null;
+	}
+	
+	public int getPageCount() {
+		return this.pageList.size();
+	}
+	
+	public Page getPage(int pageNo) {
+		if (pageNo < 0 || pageNo >= this.pageList.size()) {
+			throw new java.lang.IllegalArgumentException("Invalid page number: " + pageNo);
+		}
+		return this.pageList.get(pageNo);
 	}
 
 	public List<Document> getDocuments() {
@@ -59,6 +72,10 @@ public class PrintFile extends AFPContainer {
 			} else if (child instanceof Document) {
 				this.documents.add((Document) child);
 			}
+		}
+		
+		for (Document doc : this.documents) {
+			this.pageList.addAll(doc.getPageList());
 		}
 	}
 	
