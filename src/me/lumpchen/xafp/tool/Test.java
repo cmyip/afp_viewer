@@ -1,4 +1,4 @@
-package me.lumpchen.xafp;
+package me.lumpchen.xafp.tool;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -12,9 +12,10 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 
+import me.lumpchen.xafp.AFPFileReader;
+import me.lumpchen.xafp.PrintFile;
 import me.lumpchen.xafp.render.AFPRenderer;
 import me.lumpchen.xafp.render.RenderParameter;
-import me.lumpchen.xafp.tool.AFPTool;
 
 public class Test {
 

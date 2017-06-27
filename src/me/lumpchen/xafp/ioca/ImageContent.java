@@ -128,7 +128,6 @@ public class ImageContent {
 //				newRaster.getDataBuffer().setElem(i, (decoded[i] & 0xFF));
 //			}
 //			img.setData(newRaster);
-//			
 //			return makeTransprency(img);
 		} else if (alg == CompressionAlgrithm.JPEG) {
 			BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(decoded));
