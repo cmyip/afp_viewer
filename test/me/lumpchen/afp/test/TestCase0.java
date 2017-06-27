@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import junit.framework.TestCase;
-import me.lumpchen.afp.tool.AFPTool;
+import me.lumpchen.xafp.render.RenderParameter;
+import me.lumpchen.xafp.tool.AFPTool;
 
 public class TestCase0 extends TestCase {
 
@@ -34,6 +35,10 @@ public class TestCase0 extends TestCase {
 	private boolean compare(String afpName) {
 		String s = this.root.getAbsolutePath() + "\\" + afpName.substring(0, afpName.length() - 4);
 		File outputFolder = new File(s);
+		
+		RenderParameter para = new RenderParameter();
+		para.usePageResolution = true;
+		
 		if (!outputFolder.exists()) {
 			outputFolder.mkdirs();
 		}
@@ -41,7 +46,7 @@ public class TestCase0 extends TestCase {
 		File afpFile = new File(this.root, afpName);
 		try {
 			logger.info("Start rendering " + afpFile.getAbsolutePath());
-			AFPTool.render(afpFile, outputFolder, "jpg");
+			AFPTool.render(afpFile, outputFolder, para, "jpg");
 			logger.info("Complete rendering: " + afpFile.getAbsolutePath());
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Render fail: " + afpFile.getAbsolutePath(), e);
