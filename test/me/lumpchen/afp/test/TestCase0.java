@@ -53,15 +53,16 @@ public class TestCase0 extends TestCase {
 			return false;
 		}
 		
+		boolean result = true;
 		try {
 			logger.info("Start comparing bitmaps: " + outputFolder.getAbsolutePath());
-			assertTrue(compare(outputFolder, "jpg"));
+			result &= compare(outputFolder, "jpg");
 			logger.info("Complete comparing bitmaps: " + outputFolder.getAbsolutePath());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Bitmap compare fail: " + afpFile.getAbsolutePath(), e);
 		}
-		
-		return true;
+		assertTrue(result);
+		return result;
 	}
 	
 	private boolean compare(File outputFolder, final String imageFomat) {
@@ -83,12 +84,13 @@ public class TestCase0 extends TestCase {
 			
 		});
 		
+		boolean result = true;
 		for (File img : images) {
 			String name = img.getName();
 			File baseline = new File(baseFolder, name);
 			if (!baseline.exists()) {
 				logger.severe("Not find baseline image: " + baseline.getAbsolutePath());
-				return false;
+				continue;
 			}
 			
 			BufferedImage bimg1;
@@ -99,18 +101,18 @@ public class TestCase0 extends TestCase {
 				bimg2 = ImageIO.read(new FileInputStream(img));
 				diff = BitmapComparor.diffImages(bimg1, bimg2, "black");
 				if (diff != null) {
-					logger.log(Level.WARNING, "Different as baseline: " + baseline.getAbsolutePath());
+					logger.log(Level.WARNING, "Different with baseline: " + baseline.getAbsolutePath());
 					
 					ImageIO.write(diff, "jpg", new File(img.getParentFile(), img.getName() + ".diff.jpg"));
-					return false;
+					result = false;
 				} else {
 					logger.log(Level.INFO, "Same as baseline: " + baseline.getAbsolutePath());
 				}
 			} catch (IOException e) {
 				logger.log(Level.SEVERE, "bitmap generation fail: " + img.getAbsolutePath(), e);
-				return false;
+				result = false;
 			}
 		}
-		return true;
+		return result;
 	}
 }

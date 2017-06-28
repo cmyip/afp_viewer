@@ -231,6 +231,8 @@ public class AFPFileReader {
 				obj = new MapPageOverlay(sf);
 			} else if (Tag.IPO == tag) {
 				obj = new IncludePageOverlay(sf);
+			} else if (Tag.MGO == tag) {
+				obj = new MapGraphicsObject(sf);
 			}
 			
 		}

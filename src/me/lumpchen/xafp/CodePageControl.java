@@ -32,6 +32,10 @@ public class CodePageControl extends AFPObject {
 		}
 	}
 	
+	public byte[] getDefaultCharID() {
+		return this.DefCharID;
+	}
+	
 	public int getCPIRGLen() {
 		return CPIRGLen;
 	}

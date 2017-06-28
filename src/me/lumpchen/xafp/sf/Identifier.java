@@ -207,9 +207,11 @@ public class Identifier {
 		instanceMap.put(toInt(SF_MPO), new Identifier(Tag.MPO, SF_MPO));
 		instanceMap.put(toInt(SF_IPO), new Identifier(Tag.IPO, SF_IPO));
 		
-		
 		instanceMap.put(toInt(SF_BSG), new Identifier(Tag.BSG, SF_BSG));
 		instanceMap.put(toInt(SF_ESG), new Identifier(Tag.ESG, SF_ESG));
+		
+		instanceMap.put(toInt(SF_MGO), new Identifier(Tag.MGO, SF_MGO));
+		
 		
 		instanceMap.put(toInt(SF_TLE), new Identifier(Tag.TLE, SF_TLE));
 		instanceMap.put(toInt(SF_NOP), new Identifier(Tag.NOP, SF_NOP));

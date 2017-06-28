@@ -25,7 +25,7 @@ public class ImageEncoding {
 			X'83' JPEG algorithms (See the External Algorithm Specification parameter for detail)
 	 * */
 	public enum CompressionAlgrithm {
-		G4, JPEG
+		G4, JPEG, None
 	};
 	private CompressionAlgrithm compressionAlg;
 	
@@ -88,6 +88,9 @@ public class ImageEncoding {
 			break;
 		case 0x83:
 			this.compressionAlg = CompressionAlgrithm.JPEG;
+			break;
+		case 0x03:
+			this.compressionAlg = CompressionAlgrithm.None;
 			break;
 		default:
 			throw new java.lang.IllegalArgumentException("Unspported compression algoritm: " + AFPConst.bytesToHex((byte) (recid & 0xFF)));

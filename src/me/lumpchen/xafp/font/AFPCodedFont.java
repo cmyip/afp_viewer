@@ -70,11 +70,11 @@ public class AFPCodedFont implements AFPFont {
 
 			@Override
 			public String getCharacterName(int codepoint) {
-				Integer unicode = (Integer) codePage.codePoint2UnicodeMap().get(new Integer(codepoint));
-				if (unicode != null) {
-					return GCGIDDatabase.getGCGID(unicode.intValue());
+				String cid = codePage.getCodePoint2CharIDMap().get(new Integer(codepoint));
+				if (cid == null) {
+					return codePage.getDefaultCID();
 				}
-				return null;
+				return cid;
 			}
 
 			@Override
@@ -88,7 +88,7 @@ public class AFPCodedFont implements AFPFont {
 
 			@Override
 			public boolean isDefinedCodePoint(int codepoint) {
-				return codePage.codePoint2UnicodeMap().containsKey(codepoint);
+				return codePage.getCodePoint2CharIDMap().containsKey(codepoint);
 			}};
 	}
 

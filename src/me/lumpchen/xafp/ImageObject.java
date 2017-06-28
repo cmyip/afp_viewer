@@ -75,12 +75,16 @@ public class ImageObject extends AFPContainer implements Renderable {
 		}
 		
 		BufferedImage img = this.imgSegment.getJavaImage();
-		graphics.drawImage(img, 0, 0, w, h);
-		
+		if (img != null) {
+			graphics.drawImage(img, 0, 0, w, h);
+		}
 		graphics.restore();
 	}
 
 	private void parseData(byte[] data) throws IOException {
+		if (data == null) {
+			return;
+		}
 		AFPInputStream in = new AFPInputStream(data);
 		try {
 			if (in.remain() > 0) {

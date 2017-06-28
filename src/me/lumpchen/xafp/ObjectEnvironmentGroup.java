@@ -39,6 +39,9 @@ public class ObjectEnvironmentGroup extends AFPContainer {
 	}
 	
 	private void parseData(byte[] data) throws IOException {
+		if (data == null) {
+			return;
+		}
 		AFPInputStream in = new AFPInputStream(data);
 		try {
 			if (in.remain() > 0) {
