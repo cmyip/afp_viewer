@@ -7,21 +7,13 @@ import me.lumpchen.xafp.func.Function;
 import me.lumpchen.xafp.render.AFPGraphics;
 import me.lumpchen.xafp.render.Renderable;
 import me.lumpchen.xafp.render.ResourceManager;
-import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.Identifier.Tag;
+import me.lumpchen.xafp.sf.StructureField;
 
 public class Page extends AFPContainer {
 
 	private ActiveEnvironmentGroup aeg;
 	private List<PresentationTextObject> ptxObjList;
-	
-	private double scaleRatio;
-	
-	private double hRes;
-	private double vRes;
-	
-	private double width;
-	private double height;
 	
 	public Page(StructureField structField) {
 		super(structField);
@@ -33,19 +25,19 @@ public class Page extends AFPContainer {
 	}
 	
 	public double getPageWidth() {
-		return this.width;
+		return this.aeg.getWidth();
 	}
 	
 	public double getPageHeight() {
-		return this.height;
+		return this.aeg.getHeight();
 	}
 	
 	public double getHorResolution() {
-		return this.hRes;
+		return this.aeg.gethRes();
 	}
 	
 	public double getVerResolution() {
-		return this.vRes;
+		return this.aeg.getvRes();
 	}
 	
 	@Override
@@ -55,22 +47,10 @@ public class Page extends AFPContainer {
 				this.aeg = (ActiveEnvironmentGroup) child;
 			} else if (child instanceof PresentationTextObject) {
 				this.ptxObjList.add(((PresentationTextObject) child));
+			} else if (child instanceof IncludePageSegment) {
+				
 			}
 		}
-		if (this.aeg != null && this.aeg.getPageDescriptor() != null) {
-			PageDescriptor pgd = this.aeg.getPageDescriptor();
-			
-			this.hRes = ((double) pgd.getXpgUnits()) / pgd.getXpgBase();
-			this.vRes = ((double) pgd.getXpgUnits()) / pgd.getXpgBase();
-			
-			this.scaleRatio = pgd.getXpgBase() / pgd.getXpgUnits();
-			this.width = this.unit2Point(pgd.getXpgSize());
-			this.height = this.unit2Point(pgd.getYpgSize());
-		}
-	}
-	
-	public MapCodedFontFormat2.Attribute getMapCodedFont(int ResLID) {
-		return this.aeg.getMapCodedFontFormat2().getResourceAttributes(ResLID);
 	}
 	
 	public void render(AFPGraphics graphics, ResourceManager resourceManager) {
@@ -79,7 +59,7 @@ public class Page extends AFPContainer {
 			for (PresentationTextData ptx : ptxObj.getPTX()) {
 				List<Function> cs = ptx.getControlSequence();
 				for (Function func : cs) {
-					func.render(this, graphics, resourceManager);
+					func.render(this.aeg, graphics, resourceManager);
 				}
 			}
 //			graphics.endText();
@@ -89,19 +69,9 @@ public class Page extends AFPContainer {
 		for (AFPObject child : children) {
 			if (child instanceof Renderable) {
 				Renderable renderObj = (Renderable) child;
-				renderObj.render(this, graphics, resourceManager);
+				renderObj.render(this.aeg, graphics, resourceManager);
 			}
 		}
-	}
-	
-	public double unit2Inch(int val) {
-		double inch = ((double) val) * this.scaleRatio;
-		return inch;
-	}
-	
-	public double unit2Point(int val) {
-		double pt = ((double) val) * this.scaleRatio * 72;
-		return pt;
 	}
 	
 	@Override

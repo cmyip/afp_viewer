@@ -1,9 +1,9 @@
 package me.lumpchen.xafp.render;
 
-import me.lumpchen.xafp.Page;
+import me.lumpchen.xafp.ActiveEnvironmentGroup;
 
 public interface Renderable {
 	
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager);
+	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager);
 	
 }

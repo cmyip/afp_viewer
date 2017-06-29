@@ -8,15 +8,19 @@ import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.ImageObject;
 import me.lumpchen.xafp.ObjectContainer;
+import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
+import me.lumpchen.xafp.Overlay;
+import me.lumpchen.xafp.PageSegment;
 import me.lumpchen.xafp.Resource;
 import me.lumpchen.xafp.ResourceGroup;
-import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
 
 public class ResourceManager {
 
 	private FontManager fontManager;
 	private Map<String, ObjectContainer> objMap;
 	private Map<String, ImageObject> iocaObjMap;
+	private Map<String, PageSegment> psgMap;
+	private Map<String, Overlay> overlayMap;
 
 	public ResourceManager(ResourceGroup resourceGroup) {
 		this.fontManager = new FontManager();
@@ -47,10 +51,23 @@ public class ResourceManager {
 	}
 	
 	public ImageObject getIOCAObject(String resName) {
-		if (this.iocaObjMap.containsKey(resName)) {
+		if (this.iocaObjMap != null) {
 			return this.iocaObjMap.get(resName);
 		}
-		
+		return null;
+	}
+	
+	public Overlay getOverlay(String resName) {
+		if (this.overlayMap != null) {
+			return this.overlayMap.get(resName);
+		}
+		return null;
+	}
+	
+	public PageSegment getPageSegment(String resName) {
+		if (this.psgMap != null) {
+			return this.psgMap.get(resName);
+		}
 		return null;
 	}
 	
@@ -86,6 +103,28 @@ public class ResourceManager {
 					for (AFPObject child : children) {
 						if (child instanceof ImageObject) {
 							this.iocaObjMap.put(key, (ImageObject) child);
+						}
+					}
+				} else if (Resource.Type.PAGE_SEGMENT == type) {
+					String key = res.getNameStr();
+					if (this.psgMap == null) {
+						this.psgMap = new HashMap<String, PageSegment>();
+					}
+					AFPObject[] children = res.getChildren();
+					for (AFPObject child : children) {
+						if (child instanceof PageSegment) {
+							this.psgMap.put(key, (PageSegment) child);
+						}
+					}
+				} else if (Resource.Type.OVERLAY == type) {
+					String key = res.getNameStr();
+					if (this.overlayMap == null) {
+						this.overlayMap = new HashMap<String, Overlay>();
+					}
+					AFPObject[] children = res.getChildren();
+					for (AFPObject child : children) {
+						if (child instanceof Overlay) {
+							this.overlayMap.put(key, (Overlay) child);
 						}
 					}
 				} else {

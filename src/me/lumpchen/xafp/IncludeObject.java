@@ -2,7 +2,6 @@ package me.lumpchen.xafp;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,9 @@ import me.lumpchen.xafp.render.ResourceManager;
 import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.triplet.Triplet;
 import me.lumpchen.xafp.sf.triplet.X04Triplet;
+import me.lumpchen.xafp.sf.triplet.X04Triplet.MapOption;
 import me.lumpchen.xafp.sf.triplet.X4BTriplet;
 import me.lumpchen.xafp.sf.triplet.X4CTriplet;
-import me.lumpchen.xafp.sf.triplet.X04Triplet.MapOption;
 
 public class IncludeObject extends AFPObject implements Renderable {
 
@@ -180,13 +179,14 @@ public class IncludeObject extends AFPObject implements Renderable {
 	}
 	
 	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		int x = (int) Math.round(page.unit2Point(this.XoaOset));
-		int y = (int) Math.round(page.unit2Point(this.YoaOset));
+	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
+		int x = (int) Math.round(aeg.unit2Point(this.XoaOset));
+		int y = (int) Math.round(aeg.unit2Point(this.YoaOset));
 		int w = (int) Math.round(this.width * 72);
 		int h = (int) Math.round(this.height * 72);
 		
 		graphics.save();
+		graphics.antialiasOff();
 		
 		graphics.translate(x, y);
 		int rotation = this.getRotation();
@@ -219,16 +219,17 @@ public class IncludeObject extends AFPObject implements Renderable {
 			BufferedImage img = ioca.getJavaImage();
 			if (img != null) {
 				
-				try {
-					ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
- 				} catch (IOException e) {
-					e.printStackTrace();
-				}
+//				try {
+//					ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
+// 				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
 				
 				graphics.drawImage(img, 0, 0, w, h);
 			}
 		}
 		
+		graphics.antialiasOn();
 		graphics.restore();
 	}
 }

@@ -3,12 +3,16 @@ package me.lumpchen.xafp.render;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import me.lumpchen.xafp.AFPColor;
 import me.lumpchen.xafp.font.AFPFont;
@@ -188,6 +192,7 @@ public class AFPGraphics2D implements AFPGraphics {
 	@Override
 	public void drawRule(float x1, float y1, float x2, float y2, boolean horizon) {
 		this.save();
+		this.antialiasOff();
 		this.setTextState(this.state.textState);
 		
 		Matrix ctm = this.state.getCTM();
@@ -207,6 +212,7 @@ public class AFPGraphics2D implements AFPGraphics {
 		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		this.g2.draw(s);
 		
+		this.antialiasOn();
 		this.restore();
 	}
 	
@@ -222,6 +228,16 @@ public class AFPGraphics2D implements AFPGraphics {
 		this.g2 = this.savedGraphics;
 		this.savedGraphics = null;
 	}
-
-
+	
+	@Override
+    public void antialiasOn() {
+    	this.g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    	this.g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    }
+    
+	@Override
+    public void antialiasOff() {
+    	this.g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+    	this.g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+    }
 }

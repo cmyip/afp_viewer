@@ -9,6 +9,14 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 	private PageDescriptor pageDesciptor;
 	private PresentationTextDescriptor ptd;
 	
+	private double scaleRatio;
+	
+	private double hRes;
+	private double vRes;
+	
+	private double width;
+	private double height;
+	
 	public ActiveEnvironmentGroup(StructureField structField) {
 		super(structField);
 		this.structField = structField;
@@ -43,6 +51,15 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 				
 			}
 		}
+		
+		if (this.pageDesciptor != null) {
+			this.hRes = ((double) this.pageDesciptor.getXpgUnits()) / this.pageDesciptor.getXpgBase();
+			this.vRes = ((double) this.pageDesciptor.getXpgUnits()) / this.pageDesciptor.getXpgBase();
+			
+			this.scaleRatio = this.pageDesciptor.getXpgBase() / this.pageDesciptor.getXpgUnits();
+			this.width = this.unit2Point(this.pageDesciptor.getXpgSize());
+			this.height = this.unit2Point(this.pageDesciptor.getYpgSize());
+		}
 	}
 	
 	@Override
@@ -54,5 +71,51 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 		}
 		return false;
 	}
+	
+	public double unit2Inch(int val) {
+		double inch = ((double) val) * this.scaleRatio;
+		return inch;
+	}
+	
+	public double unit2Point(int val) {
+		double pt = ((double) val) * this.scaleRatio * 72;
+		return pt;
+	}
 
+	public MapCodedFontFormat2.Attribute getMapCodedFont(int ResLID) {
+		return this.getMapCodedFontFormat2().getResourceAttributes(ResLID);
+	}
+	
+	public MapCodedFontFormat2 getMcf() {
+		return mcf;
+	}
+
+	public PageDescriptor getPageDesciptor() {
+		return pageDesciptor;
+	}
+
+	public PresentationTextDescriptor getPtd() {
+		return ptd;
+	}
+
+	public double getScaleRatio() {
+		return scaleRatio;
+	}
+
+	public double gethRes() {
+		return hRes;
+	}
+
+	public double getvRes() {
+		return vRes;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+	
 }

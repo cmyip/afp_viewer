@@ -60,14 +60,15 @@ public class ImageObject extends AFPContainer implements Renderable {
 	}
 	
 	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
-		float x = (float) page.unit2Point(this.oeg.getObjectAreaPosition().getXoaOset());
-		float y = (float) page.unit2Point(this.oeg.getObjectAreaPosition().getYoaOset());
-		float w = (float) page.unit2Point(this.oeg.getObjectAreaDescriptor().getXoaSize());
-		float h = (float) page.unit2Point(this.oeg.getObjectAreaDescriptor().getYoaSize());
+	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
+		float x = (float) aeg.unit2Point(this.oeg.getObjectAreaPosition().getXoaOset());
+		float y = (float) aeg.unit2Point(this.oeg.getObjectAreaPosition().getYoaOset());
+		float w = (float) aeg.unit2Point(this.oeg.getObjectAreaDescriptor().getXoaSize());
+		float h = (float) aeg.unit2Point(this.oeg.getObjectAreaDescriptor().getYoaSize());
 		
 		graphics.save();
 		
+		graphics.antialiasOff();
 		graphics.translate(x, y);
 		int rotation = this.getRotation();
 		if (rotation != 0) {
@@ -78,6 +79,7 @@ public class ImageObject extends AFPContainer implements Renderable {
 		if (img != null) {
 			graphics.drawImage(img, 0, 0, w, h);
 		}
+		graphics.antialiasOn();
 		graphics.restore();
 	}
 

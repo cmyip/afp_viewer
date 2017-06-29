@@ -28,7 +28,7 @@ public class GraphicsObject extends AFPContainer implements Renderable {
 	}
 	
 	@Override
-	public void render(Page page, AFPGraphics graphics, ResourceManager resourceManager) {
+	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
 		
 	}
 

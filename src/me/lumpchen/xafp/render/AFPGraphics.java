@@ -43,4 +43,7 @@ public interface AFPGraphics {
 	
     public void save();
     public void restore();
+    
+    public void antialiasOn();
+    public void antialiasOff();
 }
