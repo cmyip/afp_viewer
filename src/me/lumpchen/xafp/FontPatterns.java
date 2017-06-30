@@ -3,39 +3,10 @@ package me.lumpchen.xafp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import me.lumpchen.xafp.FontControl.PatTech;
 import me.lumpchen.xafp.sf.StructureField;
 
 public class FontPatterns extends AFPObject {
-	/**
-	 * X'05': Laser Matrix N-bit Wide 
-	 * X'1E': CID Keyed font (Type 0) 
-	 * X'1F': PFB (Type 1)
-	 * */
-	public enum PatTech {
-		Laser_Matrix_N_bit_Wide(0x05), CID_Keyed_font_Type0(0x1E), PFB_Type1(0x1F);
-		
-		private int id;
-		private PatTech(int id) {
-			this.id = id;
-		}
-		
-		public final static PatTech instance(int id) {
-			switch (id) {
-			case 0x05:
-				return Laser_Matrix_N_bit_Wide;
-			case 0x1E:
-				return CID_Keyed_font_Type0;
-			case 0x01F:
-				return PFB_Type1;
-			default:
-				throw new IllegalArgumentException("Invalid font pattern id: " + id);
-			}
-		}
-		
-		public int getID() {
-			return this.id;
-		}
-	};
 	
 	private ByteArrayOutputStream buffer;
 	private byte[] fontData;
@@ -77,14 +48,18 @@ public class FontPatterns extends AFPObject {
 		return patTech;
 	}
 	
+	public int getDataAlignment() {
+		return this.dataAlignment;
+	}
+	
 	public byte[] getFontData() {
 		return this.fontData;
 	}
 	
-	public void parseData(int patternTechnologyIdentifier, int dataAlignment, int rasterDataCount) throws IOException {
+	public void parseData(PatTech patTech, int dataAlignment, int rasterDataCount) throws IOException {
 		byte[] data = this.buffer.toByteArray();
 
-		this.patTech = PatTech.instance(patternTechnologyIdentifier);
+		this.patTech = patTech;
 		this.dataAlignment = dataAlignment;
 		this.rasterDataCount = rasterDataCount;
 		

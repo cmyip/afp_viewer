@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.fontbox.FontBoxFont;
 import org.apache.fontbox.util.BoundingBox;
 
-public class BaseFont implements AFPFont {
+public class BaseFont implements AFPOutlineFont {
 
 	private FontBoxFont fontboxFont;
 	

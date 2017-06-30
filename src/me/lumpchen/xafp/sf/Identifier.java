@@ -148,6 +148,7 @@ public class Identifier {
 		instanceMap.put(toInt(SF_FNC), new Identifier(Tag.FNC, SF_FNC));
 		instanceMap.put(toInt(SF_FNO), new Identifier(Tag.FNO, SF_FNO));
 		instanceMap.put(toInt(SF_FNP), new Identifier(Tag.FNP, SF_FNP));
+		instanceMap.put(toInt(SF_FNM), new Identifier(Tag.FNM, SF_FNM));
 		instanceMap.put(toInt(SF_FNI), new Identifier(Tag.FNI, SF_FNI));
 		instanceMap.put(toInt(SF_FNN), new Identifier(Tag.FNN, SF_FNN));
 		instanceMap.put(toInt(SF_FNG), new Identifier(Tag.FNG, SF_FNG));
@@ -319,6 +320,7 @@ public class Identifier {
 		FNI("Font Index", TagType.obj),
 		FNN("Font Name Map", TagType.obj),
 		FNG("Font Patterns", TagType.obj),
+		FNM("Font Patterns Map", TagType.obj),
 		NOP("No Operation", TagType.obj);
 		
 		private String description;

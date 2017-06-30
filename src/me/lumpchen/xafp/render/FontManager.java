@@ -5,8 +5,10 @@ import java.util.Map;
 
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
-import me.lumpchen.xafp.font.AFPCodedFont;
+import me.lumpchen.xafp.FontControl.PatTech;
+import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
+import me.lumpchen.xafp.font.AFPType1Font;
 
 public class FontManager {
 
@@ -25,8 +27,15 @@ public class FontManager {
 		if (codePage == null || charset == null) {
 			return null;
 		}
+		AFPFont font = null;
+		if (PatTech.Laser_Matrix_N_bit_Wide == charset.getPatTech()) {
+			font = new AFPBitmapFont(codePage, charset);
+		} else if (PatTech.PFB_Type1 == charset.getPatTech()) {
+			font = new AFPType1Font(codePage, charset);
+		} else if (PatTech.CID_Keyed_font_Type0 == charset.getPatTech()) {
+			throw new java.lang.IllegalArgumentException("CID_Keyed_font_Type0 still not implemented.");
+		}
 		
-		AFPFont font = new AFPCodedFont(codePage, charset);
 		return font;
 	}
 	

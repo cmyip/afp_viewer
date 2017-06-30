@@ -3,6 +3,7 @@ package me.lumpchen.xafp;
 import java.io.IOException;
 import java.util.Map;
 
+import me.lumpchen.xafp.FontControl.PatTech;
 import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.Identifier.Tag;
 
@@ -15,6 +16,7 @@ public class Font extends AFPContainer {
 	private FontIndex index;
 	private FontNameMap nameMap;
 	private FontPatterns patterns;
+	private FontPatternsMap patternsMap;
 	
 	public Font(StructureField structField) {
 		super(structField);
@@ -25,7 +27,10 @@ public class Font extends AFPContainer {
 	}
 	
 	public Map<String, String> getNameMap() {
-		return this.nameMap.getNameMap();
+		if (this.nameMap != null) {
+			return this.nameMap.getNameMap();
+		}
+		return null;
 	}
 	
 	public String getTypefaceStr() {
@@ -38,6 +43,18 @@ public class Font extends AFPContainer {
 	
 	public FontPatterns getFontPatterns() {
 		return this.patterns;
+	}
+	
+	public FontPatternsMap getPatternsMap() {
+		return this.patternsMap;
+	}
+	
+	public FontControl getFontControl() {
+		return this.control;
+	}
+	
+	public PatTech getPatTech() {
+		return this.control.getPatTech();
 	}
 	
 	@Override
@@ -84,6 +101,12 @@ public class Font extends AFPContainer {
 					} else {
 						this.patterns.appendData(child.getStructureData());
 					}
+				} else if (child instanceof FontPatternsMap) {
+					if (this.patternsMap == null) {
+						this.patternsMap = (FontPatternsMap) child;
+					} else {
+						this.patternsMap.appendData(child.getStructureData());
+					}
 				}
 			}
 			
@@ -94,7 +117,11 @@ public class Font extends AFPContainer {
 				this.nameMap.parseData(this.control.getFNNMapCnt());
 			}
 			if (this.patterns != null) {
-				this.patterns.parseData(this.control.getPatTech(), this.control.getPatAlign(), this.control.getRPatDCnt());
+				this.patterns.parseData(this.control.getPatTech(), this.control.getPatternDataAlignment(), 
+						this.control.getRasterPatternDataCount());
+			}
+			if (this.patternsMap != null) {
+				this.patternsMap.parseData(this.control.getFNMRGLen());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

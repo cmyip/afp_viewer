@@ -1,6 +1,5 @@
 package me.lumpchen.xafp.font;
 
-import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,14 +23,6 @@ public interface AFPFont {
      * Returns the FontMatrix in PostScript units.
      */
     public List<Number> getFontMatrix() throws IOException;
-
-    /**
-     * Returns the path for the character with the given name.
-     *
-     * @return glyph path
-     * @throws IOException if the path could not be read
-     */
-    public GeneralPath getPath(String name) throws IOException;
 
     /**
      * Returns the advance width for the character with the given name.

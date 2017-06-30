@@ -79,6 +79,8 @@ public abstract class Function implements Renderable {
 			func = new AbsoluteMoveBaseline();
 		} else if (TYPE == PTX_AMI) {
 			func = new AbsoluteMoveInline();
+		} else if (TYPE == PTX_RMI) {
+			func = new RelativeMoveInline();
 		} else if (TYPE == PTX_AMB) {
 			func = new AbsoluteMoveBaseline();
 		} else if (TYPE == PTX_DIR) {

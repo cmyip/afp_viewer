@@ -9,22 +9,72 @@ import me.lumpchen.xafp.sf.triplet.Triplet;
 
 public class FontControl extends AFPObject {
 
-	private int PatTech;
+	/**
+	 * X'05': Laser Matrix N-bit Wide 
+	 * X'1E': CID Keyed font (Type 0) 
+	 * X'1F': PFB (Type 1)
+	 * */
+	public enum PatTech {
+		Laser_Matrix_N_bit_Wide(0x05), CID_Keyed_font_Type0(0x1E), PFB_Type1(0x1F);
+		
+		private int id;
+		private PatTech(int id) {
+			this.id = id;
+		}
+		
+		public static final PatTech instance(int id) {
+			switch (id) {
+			case 0x05:
+				return Laser_Matrix_N_bit_Wide;
+			case 0x1E:
+				return CID_Keyed_font_Type0;
+			case 0x01F:
+				return PFB_Type1;
+			default:
+				throw new IllegalArgumentException("Invalid font pattern id: " + id);
+			}
+		}
+		
+		public int getID() {
+			return this.id;
+		}
+	};
+	private PatTech patTech;
 	
 	private int FntFlags;
 	
-	private int XUnitBase;
-	private int YUnitBase;
+	/**
+	 * X'00' Base is fixed at 10 inches 
+	 * X'02' Base is relative
+	 * */
+	public enum MeasureUnit {
+		Fixed, Relative
+	};
+	private MeasureUnit xUnitBase;
+	private MeasureUnit yUnitBase;
 	
+	/**
+	 * X'0960' 240 pels per inch
+	 * X'0BB8' 300 pels per inch
+	 * X'03E8' 1000 units per em
+	 * */
 	private int XftUnits;
 	private int YftUnits;
+	
 	private int MaxBoxWd;
 	private int MaxBoxHt;
 	private int FNORGLen;
 	private int FNIRGLen;
 	
-	private int PatAlign;
-	private int RPatDCnt;
+	/**
+	 * Pattern Data Alignment Code:
+	 * X'00' 1-Byte Alignment
+	 * X'02' 4-Byte Alignment
+	 * X'03' 8-Byte Alignment
+	 * */
+	private int patternDataAlignment;
+	private int rasterPatternDataCount;
+	
 	private int FNPRGLen;
 	private int FNMRGLen;
 	
@@ -71,30 +121,30 @@ public class FontControl extends AFPObject {
 		return this.FNNMapCnt;
 	}
 	
-	public int getPatAlign() {
-		return PatAlign;
+	public int getPatternDataAlignment() {
+		return this.patternDataAlignment;
 	}
 
-	public int getRPatDCnt() {
-		return RPatDCnt;
+	public int getRasterPatternDataCount() {
+		return this.rasterPatternDataCount;
 	}
 	
-	public int getPatTech() {
-		return PatTech;
+	public PatTech getPatTech() {
+		return this.patTech;
 	}
 
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		try {
 			in.readUBin(1);
-			this.PatTech = in.readCode();
+			this.patTech = PatTech.instance(in.readCode());
 			
 			in.readUBin(1);
 			
 			this.FntFlags = in.readCode();
 			
-			this.XUnitBase = in.readCode();
-			this.YUnitBase = in.readCode();
+			this.xUnitBase = in.readCode() == 0x00 ? MeasureUnit.Fixed : MeasureUnit.Relative;
+			this.yUnitBase = in.readCode() == 0x00 ? MeasureUnit.Fixed : MeasureUnit.Relative;
 			
 			this.XftUnits = in.readUBin(2);
 			this.YftUnits = in.readUBin(2);
@@ -103,8 +153,15 @@ public class FontControl extends AFPObject {
 			this.FNORGLen = in.readUBin(1);
 			this.FNIRGLen = in.readUBin(1);
 			
-			this.PatAlign = in.readCode();
-			this.RPatDCnt = in.readUBin(3);
+			int PatAlign = in.readCode();
+			if (PatAlign == 0) {
+				this.patternDataAlignment = 1;
+			} else if (PatAlign == 1) {
+				this.patternDataAlignment = 4;
+			} else if (PatAlign == 2) {
+				this.patternDataAlignment = 8;
+			}
+			this.rasterPatternDataCount = in.readUBin(3);
 			this.FNPRGLen = in.readUBin(1);
 			this.FNMRGLen = in.readUBin(1);
 			

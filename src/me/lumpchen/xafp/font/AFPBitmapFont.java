@@ -1,57 +1,39 @@
 package me.lumpchen.xafp.font;
 
-import java.awt.geom.GeneralPath;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.fontbox.type1.Type1Font;
 import org.apache.fontbox.util.BoundingBox;
 
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
-import me.lumpchen.xafp.FontPatterns;
-import me.lumpchen.xafp.GCGIDDatabase;
-import me.lumpchen.xafp.FontPatterns.PatTech;
+import me.lumpchen.xafp.FontPatternsMap;
+import me.lumpchen.xafp.FontPatternsMap.Pattern;
 
-public class AFPCodedFont implements AFPFont {
-
-	private String name;
+public class AFPBitmapFont implements AFPFont {
+	
 	private CodePage codePage;
 	private Font charset;
 	
 	private Encoding encoding;
-	private BaseFont baseFont;
+	private FontPatternsMap patternsMap;
+	private ByteBuffer patternData;
 	
-	private Map<String, String> nameMap;
-	
-	public AFPCodedFont(CodePage codePage, Font charset) {
+	public AFPBitmapFont(CodePage codePage, Font charset) {
 		this.codePage = codePage;
 		this.charset = charset;
-		this.initEncoding(codePage);
-		try {
-			this.initBaseFont();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		this.nameMap = this.charset.getNameMap();
+		
+		this.patternsMap = this.charset.getPatternsMap();
+		this.patternData = ByteBuffer.wrap(this.charset.getFontPatterns().getFontData());
+		this.initEncoding(this.codePage, charset);
 	}
 	
-	private void initBaseFont() throws IOException {
-		FontPatterns patterns = this.charset.getFontPatterns();
-		PatTech patTech = patterns.getPatTech();
-		if (patTech == PatTech.PFB_Type1) {
-			byte[] fdata = patterns.getFontData();
-			Type1Font type1 = Type1Font.createWithPFB(fdata);
-			this.baseFont = new BaseFont(type1);
-		}
-	}
-	
-	private void initEncoding(final CodePage codePage) {
+	private void initEncoding(final CodePage codePage, final Font charset) {
 		this.encoding = new Encoding() {
 			@Override
 			public int getMaxCodePoint() {
-				return 255;
+				return charset.getPatternsMap().getPatterCount();
 			}
 
 			@Override
@@ -91,51 +73,51 @@ public class AFPCodedFont implements AFPFont {
 				return codePage.getCodePoint2CharIDMap().containsKey(codepoint);
 			}};
 	}
-
-	@Override
-	public String getName() {
-		return this.charset.getTypefaceStr();
-	}
-
-	@Override
-	public BoundingBox getFontBBox() throws IOException {
-		return this.baseFont.getFontBBox();
-	}
-
-	@Override
-	public List<Number> getFontMatrix() throws IOException {
-		return this.baseFont.getFontMatrix();
-	}
-
-	@Override
-	public GeneralPath getPath(String name) throws IOException {
-		String techSpecName = this.getTechSpecName(name);
-		if (techSpecName == null) {
+	
+	public byte[] getBitmap(int codePoint) throws IOException {
+		Pattern pattern = this.patternsMap.getPattern(codePoint);
+		if (pattern == null) {
 			return null;
 		}
-		return this.baseFont.getPath(techSpecName);
+		return null;
 	}
-
-	@Override
-	public float getWidth(String name) throws IOException {
-		String techSpecName = this.getTechSpecName(name);
-		if (techSpecName == null) {
-			return 0;
-		}
-		return this.baseFont.getWidth(techSpecName);
-	}
-
-	@Override
-	public boolean hasGlyph(String name) throws IOException {
-		return this.baseFont.hasGlyph(name);
-	}
-
+	
 	@Override
 	public Encoding getEncoding() {
 		return this.encoding;
 	}
-	
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BoundingBox getFontBBox() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Number> getFontMatrix() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getWidth(String name) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean hasGlyph(String name) throws IOException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public String getTechSpecName(String gcgid) {
-		return this.nameMap.get(gcgid);
+		return null;
 	}
 }

@@ -193,6 +193,8 @@ public class AFPFileReader {
 				obj = new FontNameMap(sf);
 			} else if (Tag.FNG == tag) {
 				obj = new FontPatterns(sf);
+			} else if (Tag.FNM == tag) {
+				obj = new FontPatternsMap(sf);
 			} else if (Tag.MCF == tag) {
 				obj = new MapCodedFontFormat2(sf);
 			} else if (Tag.OBD == tag) {

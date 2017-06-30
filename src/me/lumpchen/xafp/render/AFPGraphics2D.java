@@ -9,13 +9,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
 import me.lumpchen.xafp.AFPColor;
+import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
+import me.lumpchen.xafp.font.AFPOutlineFont;
 import me.lumpchen.xafp.render.GraphicsState.TextState;
 
 public class AFPGraphics2D implements AFPGraphics {
@@ -155,7 +154,7 @@ public class AFPGraphics2D implements AFPGraphics {
 		
 		float fontSize = this.state.textState.fontSize;
         Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
-        
+
 		for (byte b : text) {
 			int unicode = this.state.textState.font.getEncoding().getUnicode(b & 0xFF);
 			String gcgid = this.state.textState.font.getEncoding().getCharacterName(b & 0xFF);
@@ -168,16 +167,24 @@ public class AFPGraphics2D implements AFPGraphics {
 				Matrix fm = new Matrix(0.001d, 0, 0, 0.001d, 0, 0);
 				at.concatenate(fm.createAffineTransform());
 				
-				GeneralPath glyph = this.state.textState.font.getPath(gcgid);
-				if (glyph == null) {
-					continue;
-				}
-				
-				Matrix gm = new Matrix(1, 0, 0, -1, 0, 0);
-				Shape gp = gm.createAffineTransform().createTransformedShape(glyph);
-				
-				Shape s = at.createTransformedShape(gp);
-				this.g2.fill(s);
+		        if (this.state.textState.font instanceof AFPOutlineFont) {
+		        	AFPOutlineFont font = (AFPOutlineFont) this.state.textState.font;
+					GeneralPath glyph = font.getPath(gcgid);
+					if (glyph == null) {
+						continue;
+					}
+					
+					Matrix gm = new Matrix(1, 0, 0, -1, 0, 0);
+					Shape gp = gm.createAffineTransform().createTransformedShape(glyph);
+					
+					Shape s = at.createTransformedShape(gp);
+					this.g2.fill(s);
+		        } else if (this.state.textState.font instanceof AFPBitmapFont) {
+		        	AFPBitmapFont font = (AFPBitmapFont) this.state.textState.font;
+		        	int codePoint = (int) (b & 0xFF);
+		        	System.out.println(font.getEncoding().getCharacterName(codePoint));
+		        }
+
 				
 				double advance = this.state.textState.font.getWidth(gcgid) / 1000d;
 				this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, 0));
