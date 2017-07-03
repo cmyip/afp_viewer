@@ -1,7 +1,10 @@
 package me.lumpchen.xafp.font;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.fontbox.util.BoundingBox;
@@ -16,17 +19,29 @@ public class AFPBitmapFont implements AFPFont {
 	private CodePage codePage;
 	private Font charset;
 	
+	private float xScaleRatio = 1;
+	private float yScaleRatio = 1;
+	
 	private Encoding encoding;
 	private FontPatternsMap patternsMap;
-	private ByteBuffer patternData;
+	
+	public static class CharData {
+		int w;
+		int h;
+		byte[] data;
+	}
+	private List<CharData> charDataList;
 	
 	public AFPBitmapFont(CodePage codePage, Font charset) {
 		this.codePage = codePage;
 		this.charset = charset;
 		
-		this.patternsMap = this.charset.getPatternsMap();
-		this.patternData = ByteBuffer.wrap(this.charset.getFontPatterns().getFontData());
+		this.xScaleRatio = 1f / this.charset.getFontControl().getXPPI();
+		this.yScaleRatio = 1f / this.charset.getFontControl().getYPPI();
 		this.initEncoding(this.codePage, charset);
+		
+		this.patternsMap = this.charset.getPatternsMap();
+		this.initData(this.charset.getFontPatterns().getFontData());
 	}
 	
 	private void initEncoding(final CodePage codePage, final Font charset) {
@@ -74,12 +89,105 @@ public class AFPBitmapFont implements AFPFont {
 			}};
 	}
 	
-	public byte[] getBitmap(int codePoint) throws IOException {
-		Pattern pattern = this.patternsMap.getPattern(codePoint);
-		if (pattern == null) {
+	private void initData(byte[] patternBytes) {
+		int n = this.patternsMap.getPatterCount();
+		this.charDataList = new ArrayList<CharData>();
+		
+		long end = 0;
+		for (int i = 0; i < n; i++) {
+			CharData charData = new CharData();
+			Pattern pattern = this.patternsMap.getPattern(i);
+			charData.w = pattern.charBoxWd;
+			charData.h = pattern.charBoxHt;
+			
+			if (i == n - 1) {
+				end = patternBytes.length;
+			} else {
+				Pattern next = this.patternsMap.getPattern(i + 1);
+				end = next.patDOset;
+			}
+			
+			charData.data = new byte[(int) (end - pattern.patDOset)];
+			System.arraycopy(patternBytes, (int) pattern.patDOset, charData.data, 0, charData.data.length);
+			
+			this.charDataList.add(charData);
+		}
+	}
+	
+	public BufferedImage getBitmap(int codePoint, Color fillColor) throws IOException {
+		CharData charData = this.getCharData(codePoint);
+		if (charData == null) {
 			return null;
 		}
-		return null;
+		
+		int row = charData.h + 1;
+		int col = charData.w + 1;
+		if (row == 0 || col == 0) {
+			return null;
+		}
+		BufferedImage img = new BufferedImage(col, row, BufferedImage.TYPE_BYTE_BINARY);
+		WritableRaster newRaster = img.getRaster();
+
+		int size = newRaster.getDataBuffer().getSize();
+		for (int i = 0; i < size; i++) {
+			newRaster.getDataBuffer().setElem(i, (~charData.data[i] & 0xFF));
+		}
+		img.setData(newRaster);
+//		ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/notwork/4/" + codePoint + ".jpg"));
+		BufferedImage timg = makeTransprency(img, fillColor);
+		return timg;
+	}
+	
+	private CharData getCharData(int codePoint) {
+		String charName = this.encoding.getCharacterName(codePoint);
+		if (charName == null) {
+			throw new IllegalArgumentException("Invalid code point: " + codePoint);
+		}
+		int fnmIndex = this.charset.getFontIndex().getFNMIndex(charName);
+		return this.charDataList.get(fnmIndex);
+	}
+	
+	public float getWidth(int codePoint) throws IOException {
+		CharData charData = this.getCharData(codePoint);
+		if (charData == null) {
+			return 0;
+		}
+		return this.unit2Point(charData.w + 1, true);
+	}
+	
+	public float getHeight(int codePoint) throws IOException {
+		CharData charData = this.getCharData(codePoint);
+		if (charData == null) {
+			return 0;
+		}
+		return this.unit2Point(charData.h + 1, false);
+	}
+	
+	public float getAscenderHeight(int codePoint) throws IOException {
+		String charName = this.encoding.getCharacterName(codePoint);
+		if (charName == null) {
+			throw new IllegalArgumentException("Invalid code point: " + codePoint);
+		}
+		int ascender = this.charset.getFontIndex().getAscenderHeight(charName);
+		return this.unit2Point(ascender, false);
+	}
+	
+	public float getDescenderDepth(int codePoint) throws IOException {
+		String charName = this.encoding.getCharacterName(codePoint);
+		if (charName == null) {
+			throw new IllegalArgumentException("Invalid code point: " + codePoint);
+		}
+		int descender = this.charset.getFontIndex().getDescenderDepth(charName);
+		return this.unit2Point(descender, false);
+	} 
+	
+	public float getCharacterIncrement(int codePoint) throws IOException {
+		String charName = this.encoding.getCharacterName(codePoint);
+		if (charName == null) {
+			throw new IllegalArgumentException("Invalid code point: " + codePoint);
+		}
+		int inc = this.charset.getFontIndex().getCharacterIncrement(charName);
+		return this.unit2Point(inc, true);
 	}
 	
 	@Override
@@ -89,35 +197,61 @@ public class AFPBitmapFont implements AFPFont {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	@Override 
 	public BoundingBox getFontBBox() throws IOException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<Number> getFontMatrix() throws IOException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public float getWidth(String name) throws IOException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public boolean hasGlyph(String name) throws IOException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public String getTechSpecName(String gcgid) {
 		return null;
+	}
+
+	
+	private BufferedImage makeTransprency(BufferedImage img, Color fillColor) {
+		int w = img.getWidth();
+		int h = img.getHeight();
+		
+		int p = Color.BLACK.getRGB();
+		if (fillColor != null) {
+			p = fillColor.getRGB();
+		}
+		BufferedImage a = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				if (img.getRGB(i, j) != -1) {
+					a.setRGB(i, j, p);
+				}
+			}
+		}
+		return a;
+	}
+
+	public float unit2Point(int unit, boolean hor) {
+		if (hor) {
+			float pt = ((float) unit) * this.xScaleRatio * 72;
+			return pt;
+		} else {
+			float pt = ((float) unit) * this.yScaleRatio * 72;
+			return pt;
+		}
+		
 	}
 }

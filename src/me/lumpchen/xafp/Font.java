@@ -53,6 +53,10 @@ public class Font extends AFPContainer {
 		return this.control;
 	}
 	
+	public FontIndex getFontIndex() {
+		return this.index;
+	}
+	
 	public PatTech getPatTech() {
 		return this.control.getPatTech();
 	}

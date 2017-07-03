@@ -8,6 +8,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -179,15 +180,38 @@ public class AFPGraphics2D implements AFPGraphics {
 					
 					Shape s = at.createTransformedShape(gp);
 					this.g2.fill(s);
+					
+					double advance = this.state.textState.font.getWidth(gcgid) / 1000d;
+					this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, 0));
 		        } else if (this.state.textState.font instanceof AFPBitmapFont) {
 		        	AFPBitmapFont font = (AFPBitmapFont) this.state.textState.font;
 		        	int codePoint = (int) (b & 0xFF);
-		        	System.out.println(font.getEncoding().getCharacterName(codePoint));
+		        	BufferedImage glyphBitmap = font.getBitmap(codePoint, this.state.textState.color);
+		        	if (glyphBitmap != null) {
+		        		Point2D.Float dst = new Point2D.Float();
+		        		at.transform(new Point2D.Float(0, 0), dst);
+		        		font.getWidth(gcgid);
+		        		int dy = Math.round(dst.y);
+		        		float charW = font.getWidth(codePoint);
+		        		int dw = Math.round(charW);
+		        		int dh = Math.round(font.getHeight(codePoint));
+		        		
+		        		dy -= (dh);
+		        		dy += (Math.round(font.getDescenderDepth(codePoint)));
+		        		
+		        		float inc = font.getCharacterIncrement(codePoint);
+		        		int dx = Math.round(dst.x);
+		        		if (inc > charW) {
+		        			dx = Math.round(dst.x + inc - charW); 
+		        		}
+		        		
+		        		this.g2.drawImage(glyphBitmap, dx, dy, dw, dh, null);
+		        		
+		        		double advance = inc;
+						this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance, 0));
+		        	}
 		        }
-
 				
-				double advance = this.state.textState.font.getWidth(gcgid) / 1000d;
-				this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, 0));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

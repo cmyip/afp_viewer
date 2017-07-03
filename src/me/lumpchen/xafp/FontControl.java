@@ -58,8 +58,8 @@ public class FontControl extends AFPObject {
 	 * X'0BB8' 300 pels per inch
 	 * X'03E8' 1000 units per em
 	 * */
-	private int XftUnits;
-	private int YftUnits;
+	private int xPPI;
+	private int yPPI;
 	
 	private int MaxBoxWd;
 	private int MaxBoxHt;
@@ -132,7 +132,15 @@ public class FontControl extends AFPObject {
 	public PatTech getPatTech() {
 		return this.patTech;
 	}
-
+	
+	public int getXPPI() {
+		return this.xPPI;
+	}
+	
+	public int getYPPI() {
+		return this.yPPI;
+	}
+	
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		try {
@@ -145,9 +153,16 @@ public class FontControl extends AFPObject {
 			
 			this.xUnitBase = in.readCode() == 0x00 ? MeasureUnit.Fixed : MeasureUnit.Relative;
 			this.yUnitBase = in.readCode() == 0x00 ? MeasureUnit.Fixed : MeasureUnit.Relative;
+			int XftUnits = in.readUBin(2);
+			int YftUnits = in.readUBin(2);
+			if (this.xUnitBase == MeasureUnit.Fixed) {
+				this.xPPI = XftUnits / 10;
+				this.yPPI = YftUnits / 10;
+			} else {
+				this.xPPI = XftUnits;
+				this.yPPI = YftUnits;
+			}
 			
-			this.XftUnits = in.readUBin(2);
-			this.YftUnits = in.readUBin(2);
 			this.MaxBoxWd = in.readUBin(2);
 			this.MaxBoxHt = in.readUBin(2);
 			this.FNORGLen = in.readUBin(1);

@@ -2,8 +2,8 @@ package me.lumpchen.xafp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.lumpchen.xafp.sf.StructureField;
 
@@ -22,8 +22,8 @@ public class FontIndex extends AFPObject {
 		public int BaseOset;
 	}
 	
+	private Map<String, FNI> indexMap;
 	private ByteArrayOutputStream buffer;
-	private List<FNI> repeatGroup;
 	
 	public FontIndex(StructureField structField) {
 		super(structField);
@@ -43,13 +43,41 @@ public class FontIndex extends AFPObject {
 		}
 	}
 	
+	public int getFNMIndex(String charName) {
+		if (!this.indexMap.containsKey(charName)) {
+			return -1;
+		}
+		return this.indexMap.get(charName).FNMCnt;
+	}
+	
+	public int getAscenderHeight(String charName) {
+		if (!this.indexMap.containsKey(charName)) {
+			return -1;
+		}
+		return this.indexMap.get(charName).AscendHt;
+	}
+	
+	public int getCharacterIncrement(String charName) {
+		if (!this.indexMap.containsKey(charName)) {
+			return -1;
+		}
+		return this.indexMap.get(charName).CharInc;
+	}
+	
+	public int getDescenderDepth(String charName) {
+		if (!this.indexMap.containsKey(charName)) {
+			return -1;
+		}
+		return this.indexMap.get(charName).DescendDp;
+	}
+	
 	public void parseData(int repeatGroupLen) throws IOException {
 		byte[] data = this.buffer.toByteArray();
 		if (data.length % repeatGroupLen > 0) {
 			throw new AFPException("Invalid repeating group length (FNI): " + repeatGroupLen);
 		}
 		int repeat = data.length / repeatGroupLen;
-		this.repeatGroup = new ArrayList<FNI>(repeat);
+		this.indexMap = new HashMap<String, FNI>(repeat);
 		AFPInputStream in = new AFPInputStream(data);
 		try {
 			for (int i = 0; i < repeat; i++) {
@@ -70,7 +98,8 @@ public class FontIndex extends AFPObject {
 				
 				fni.BaseOset = in.readSBin(2);
 				
-				this.repeatGroup.add(fni);
+				String charName = AFPConst.ebcdic2Ascii(fni.GCGID);
+				this.indexMap.put(charName, fni);
 			}
 		} finally {
 			in.close();

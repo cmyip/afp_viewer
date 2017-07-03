@@ -72,13 +72,13 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 		return false;
 	}
 	
-	public double unit2Inch(int val) {
-		double inch = ((double) val) * this.scaleRatio;
+	public double unit2Inch(int unit) {
+		double inch = ((double) unit) * this.scaleRatio;
 		return inch;
 	}
 	
-	public double unit2Point(int val) {
-		double pt = ((double) val) * this.scaleRatio * 72;
+	public double unit2Point(int unit) {
+		double pt = ((double) unit) * this.scaleRatio * 72;
 		return pt;
 	}
 
