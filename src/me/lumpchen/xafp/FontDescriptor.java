@@ -17,7 +17,7 @@ public class FontDescriptor extends AFPObject {
 	 * X'03' Light
 	 * X'04' Semilight
 	 * X'05' MediumX(normal)
-	 * '06' Semibold
+	 * X'06' Semibold
 	 * X'07' Bold
 	 * X'08' Extrabold
 	 * X'09' Ultrabold
@@ -50,6 +50,10 @@ public class FontDescriptor extends AFPObject {
 	
 	public byte[] getTypeFcDesc() {
 		return this.TypeFcDesc;
+	}
+	
+	public float getNormalVerticalSize() {
+		return this.NomPtSize / 10f;
 	}
 
 	private void parseData(byte[] data) throws IOException {

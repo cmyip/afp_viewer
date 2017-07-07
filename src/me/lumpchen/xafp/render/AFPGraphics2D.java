@@ -185,28 +185,22 @@ public class AFPGraphics2D implements AFPGraphics {
 					this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, 0));
 		        } else if (this.state.textState.font instanceof AFPBitmapFont) {
 		        	AFPBitmapFont font = (AFPBitmapFont) this.state.textState.font;
+		        	font.setPointSize(fontSize);
 		        	int codePoint = (int) (b & 0xFF);
 		        	BufferedImage glyphBitmap = font.getBitmap(codePoint, this.state.textState.color);
 		        	if (glyphBitmap != null) {
+		        		float charW = font.getWidth(codePoint);
+		        		float charH = font.getHeight(codePoint);
 		        		Point2D.Float dst = new Point2D.Float();
 		        		at.transform(new Point2D.Float(0, 0), dst);
-		        		font.getWidth(gcgid);
-		        		int dy = Math.round(dst.y);
-		        		float charW = font.getWidth(codePoint);
-		        		int dw = Math.round(charW);
-		        		int dh = Math.round(font.getHeight(codePoint));
-		        		
-		        		dy -= (dh);
-		        		dy += (Math.round(font.getDescenderDepth(codePoint)));
-		        		
-		        		float inc = font.getCharacterIncrement(codePoint);
 		        		int dx = Math.round(dst.x);
-		        		if (inc > charW) {
-		        			dx = Math.round(dst.x + inc - charW); 
-		        		}
+		        		int dy = Math.round(dst.y - font.getAscenderHeight(codePoint));
+		        		int dw = Math.round(charW);
+		        		int dh = Math.round(charH);
 		        		
 		        		this.g2.drawImage(glyphBitmap, dx, dy, dw, dh, null);
 		        		
+		        		float inc = font.getCharacterIncrement(codePoint);
 		        		double advance = inc;
 						this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance, 0));
 		        	}

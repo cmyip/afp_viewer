@@ -12,6 +12,7 @@ import org.apache.fontbox.util.BoundingBox;
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.FontPatternsMap;
+import me.lumpchen.xafp.FontControl.MeasureUnit;
 import me.lumpchen.xafp.FontPatternsMap.Pattern;
 
 public class AFPBitmapFont implements AFPFont {
@@ -19,8 +20,9 @@ public class AFPBitmapFont implements AFPFont {
 	private CodePage codePage;
 	private Font charset;
 	
-	private float xScaleRatio = 1;
-	private float yScaleRatio = 1;
+	private float pointSize;
+	private float xShapeScaleRatio = 1;
+	private float yShapeScaleRatio = 1;
 	
 	private Encoding encoding;
 	private FontPatternsMap patternsMap;
@@ -36,8 +38,8 @@ public class AFPBitmapFont implements AFPFont {
 		this.codePage = codePage;
 		this.charset = charset;
 		
-		this.xScaleRatio = 1f / this.charset.getFontControl().getXPPI();
-		this.yScaleRatio = 1f / this.charset.getFontControl().getYPPI();
+		this.xShapeScaleRatio = 72f / this.charset.getFontControl().getXShapeResolution();
+		this.yShapeScaleRatio = 72f / this.charset.getFontControl().getYShapeResolution();
 		this.initEncoding(this.codePage, charset);
 		
 		this.patternsMap = this.charset.getPatternsMap();
@@ -131,6 +133,7 @@ public class AFPBitmapFont implements AFPFont {
 		int size = newRaster.getDataBuffer().getSize();
 		for (int i = 0; i < size; i++) {
 			newRaster.getDataBuffer().setElem(i, (~charData.data[i] & 0xFF));
+//			newRaster.getDataBuffer().setElem(i, 0x00);
 		}
 		img.setData(newRaster);
 //		ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/notwork/4/" + codePoint + ".jpg"));
@@ -152,7 +155,7 @@ public class AFPBitmapFont implements AFPFont {
 		if (charData == null) {
 			return 0;
 		}
-		return this.unit2Point(charData.w + 1, true);
+		return charData.w * this.xShapeScaleRatio;
 	}
 	
 	public float getHeight(int codePoint) throws IOException {
@@ -160,7 +163,7 @@ public class AFPBitmapFont implements AFPFont {
 		if (charData == null) {
 			return 0;
 		}
-		return this.unit2Point(charData.h + 1, false);
+		return charData.h * this.yShapeScaleRatio;
 	}
 	
 	public float getAscenderHeight(int codePoint) throws IOException {
@@ -243,15 +246,31 @@ public class AFPBitmapFont implements AFPFont {
 		}
 		return a;
 	}
+	
+	public void setPointSize(float pointSize) {
+		this.pointSize = pointSize;
+		if (this.pointSize <= 0) {
+			this.pointSize = this.charset.getPointSize();
+		}
+	}
 
 	public float unit2Point(int unit, boolean hor) {
-		if (hor) {
-			float pt = ((float) unit) * this.xScaleRatio * 72;
-			return pt;
+		if (this.charset.getFontControl().getXMeasureUnit() == MeasureUnit.Fixed) {
+			if (hor) {
+				float pt = (unit * 72f) / this.charset.getFontControl().getXUnitsPerUnitBase();
+				return pt;
+			} else {
+				float pt = (unit * 72f) / this.charset.getFontControl().getYUnitsPerUnitBase();
+				return pt;
+			}
 		} else {
-			float pt = ((float) unit) * this.yScaleRatio * 72;
-			return pt;
+			if (hor) {
+				float pt = (float) unit / this.charset.getFontControl().getXUnitsPerUnitBase() * this.pointSize;
+				return pt;
+			} else {
+				float pt = (float) unit / this.charset.getFontControl().getYUnitsPerUnitBase() * this.pointSize;
+				return pt;
+			}
 		}
-		
 	}
 }

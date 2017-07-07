@@ -45,7 +45,10 @@ public class Test {
 		File afpFile = new File(path);
 		
 		RenderParameter para = new RenderParameter();
+		
 		para.usePageResolution = true;
+//		para.usePageResolution = false;
+//		para.resolution = 96f;
 		
 		try {
 			if (afpFile.isDirectory()) {

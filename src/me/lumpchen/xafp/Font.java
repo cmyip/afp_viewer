@@ -41,6 +41,10 @@ public class Font extends AFPContainer {
 		return face;
 	}
 	
+	public float getPointSize() {
+		return this.desciptor.getNormalVerticalSize();
+	}
+	
 	public FontPatterns getFontPatterns() {
 		return this.patterns;
 	}

@@ -58,8 +58,8 @@ public class FontControl extends AFPObject {
 	 * X'0BB8' 300 pels per inch
 	 * X'03E8' 1000 units per em
 	 * */
-	private int xPPI;
-	private int yPPI;
+	private int xUnitsPerUnitBase;
+	private int yUnitsPerUnitBase;
 	
 	private int MaxBoxWd;
 	private int MaxBoxHt;
@@ -84,9 +84,9 @@ public class FontControl extends AFPObject {
 
 	private int ResYUBase;
 
-	private int XfrUnits;
+	private int xShapeResolution;
 
-	private int YfrUnits;
+	private int yShapeResolution;
 
 	private long OPatDCnt;
 
@@ -133,12 +133,28 @@ public class FontControl extends AFPObject {
 		return this.patTech;
 	}
 	
-	public int getXPPI() {
-		return this.xPPI;
+	public MeasureUnit getXMeasureUnit() {
+		return this.xUnitBase;
 	}
 	
-	public int getYPPI() {
-		return this.yPPI;
+	public MeasureUnit getYMeasureUnit() {
+		return this.yUnitBase;
+	}
+	
+	public int getXUnitsPerUnitBase() {
+		return this.xUnitsPerUnitBase;
+	}
+	
+	public int getYUnitsPerUnitBase() {
+		return this.yUnitsPerUnitBase;
+	}
+	
+	public int getXShapeResolution() {
+		return this.xShapeResolution;
+	}
+	
+	public int getYShapeResolution() {
+		return this.yShapeResolution;
 	}
 	
 	private void parseData(byte[] data) throws IOException {
@@ -156,11 +172,11 @@ public class FontControl extends AFPObject {
 			int XftUnits = in.readUBin(2);
 			int YftUnits = in.readUBin(2);
 			if (this.xUnitBase == MeasureUnit.Fixed) {
-				this.xPPI = XftUnits / 10;
-				this.yPPI = YftUnits / 10;
+				this.xUnitsPerUnitBase = XftUnits / 10;
+				this.yUnitsPerUnitBase = YftUnits / 10;
 			} else {
-				this.xPPI = XftUnits;
-				this.yPPI = YftUnits;
+				this.xUnitsPerUnitBase = XftUnits;
+				this.yUnitsPerUnitBase = YftUnits;
 			}
 			
 			this.MaxBoxWd = in.readUBin(2);
@@ -188,11 +204,13 @@ public class FontControl extends AFPObject {
 			}
 			
 			if (in.remain() > 0) {
-				this.XfrUnits = in.readUBin(2);
+				int XfrUnits = in.readUBin(2);
+				this.xShapeResolution = XfrUnits / 10;
 			}
 			
 			if (in.remain() > 0) {
-				this.YfrUnits = in.readUBin(2);
+				int YfrUnits = in.readUBin(2);
+				this.yShapeResolution = YfrUnits / 10;
 			}
 			
 			if (in.remain() > 0) {
