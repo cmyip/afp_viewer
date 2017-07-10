@@ -181,6 +181,9 @@ public class AFPBitmapFont implements AFPFont {
 			throw new IllegalArgumentException("Invalid code point: " + codePoint);
 		}
 		int descender = this.charset.getFontIndex().getDescenderDepth(charName);
+		if (descender <= 0) {
+			return 0;
+		}
 		return this.unit2Point(descender, false);
 	} 
 	

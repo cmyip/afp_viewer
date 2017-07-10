@@ -193,16 +193,15 @@ public class AFPGraphics2D implements AFPGraphics {
 		        		float charH = font.getHeight(codePoint);
 		        		Point2D.Float dst = new Point2D.Float();
 		        		at.transform(new Point2D.Float(0, 0), dst);
-		        		int dx = Math.round(dst.x);
-		        		int dy = Math.round(dst.y - font.getAscenderHeight(codePoint));
-		        		int dw = Math.round(charW);
-		        		int dh = Math.round(charH);
 		        		
-		        		this.g2.drawImage(glyphBitmap, dx, dy, dw, dh, null);
+		        		Matrix dm = new Matrix(1, 0, 0, 1, 0, 0);
+		        		dm.translate(dst.x, dst.y - font.getAscenderHeight(codePoint));
+		        		dm.scale(charW / glyphBitmap.getWidth(), charH / glyphBitmap.getHeight());
 		        		
-		        		float inc = font.getCharacterIncrement(codePoint);
-		        		double advance = inc;
-						this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance, 0));
+		        		this.g2.drawImage(glyphBitmap, dm.createAffineTransform(), null);
+		        		
+		        		float advance = font.getCharacterIncrement(codePoint);
+		        		this.textLineMatrix.translate(advance, 0);
 		        	}
 		        }
 				
