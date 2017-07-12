@@ -18,24 +18,24 @@ public class AFPType1Font implements AFPOutlineFont {
 	private String name;
 	private CodePage codePage;
 	private Font charset;
-	
+
 	private Encoding encoding;
 	private BaseFont baseFont;
-	
+
 	private Map<String, String> nameMap;
-	
+
 	public AFPType1Font(CodePage codePage, Font charset) {
 		this.codePage = codePage;
 		this.charset = charset;
-		this.initEncoding(codePage);
 		try {
 			this.initBaseFont();
+			this.initEncoding(codePage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.nameMap = this.charset.getNameMap();
 	}
-	
+
 	private void initBaseFont() throws IOException {
 		FontPatterns patterns = this.charset.getFontPatterns();
 		PatTech patTech = patterns.getPatTech();
@@ -45,17 +45,17 @@ public class AFPType1Font implements AFPOutlineFont {
 			this.baseFont = new BaseFont(type1);
 		}
 	}
-	
+
 	private void initEncoding(final CodePage codePage) {
 		this.encoding = new Encoding() {
 			@Override
 			public int getMaxCodePoint() {
-				return 255;
+				return codePage.getMaxCodePoint();
 			}
 
 			@Override
 			public int getMinCodePoint() {
-				return 0;
+				return codePage.getMinCodePoint();
 			}
 
 			@Override
@@ -88,7 +88,8 @@ public class AFPType1Font implements AFPOutlineFont {
 			@Override
 			public boolean isDefinedCodePoint(int codepoint) {
 				return codePage.getCodePoint2CharIDMap().containsKey(codepoint);
-			}};
+			}
+		};
 	}
 
 	@Override
@@ -133,7 +134,7 @@ public class AFPType1Font implements AFPOutlineFont {
 	public Encoding getEncoding() {
 		return this.encoding;
 	}
-	
+
 	public String getTechSpecName(String gcgid) {
 		if (this.nameMap != null) {
 			return this.nameMap.get(gcgid);

@@ -156,8 +156,11 @@ public class AFPGraphics2D implements AFPGraphics {
 		float fontSize = this.state.textState.fontSize;
         Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
 
+        StringBuilder sb = new StringBuilder();
 		for (byte b : text) {
 			int unicode = this.state.textState.font.getEncoding().getUnicode(b & 0xFF);
+			sb.append(Character.toChars(unicode));
+			
 			String gcgid = this.state.textState.font.getEncoding().getCharacterName(b & 0xFF);
 			try {
 				Matrix ctm = this.state.getCTM();
@@ -209,6 +212,7 @@ public class AFPGraphics2D implements AFPGraphics {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(sb.toString());
 		
 		this.restore();
 	}

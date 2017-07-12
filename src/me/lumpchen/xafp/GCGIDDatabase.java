@@ -1194,7 +1194,7 @@ public class GCGIDDatabase {
 		gcgidTable[0x202E] = "SP6100Z0"; //RIGHT-TO-LEFT OVERRIDE
 
 		unicodeMap = new HashMap();
-		for (int i=0; i<gcgidTable.length; ++i) {
+		for (int i = 0; i < gcgidTable.length; ++i) {
 			String gcgid = gcgidTable[i];
 			if (gcgid != null) {
 				unicodeMap.put(gcgid, new Integer(i));

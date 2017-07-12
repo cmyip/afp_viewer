@@ -19,6 +19,9 @@ public class CodePage extends AFPContainer {
 	private Map<Integer, String> codePoint2CharIDMap;
 	private String defaultCharID;
 	
+	private int minCodePoint = 0;
+	private int maxCodePoint = 0;
+	
 	public CodePage(StructureField structField) throws IOException {
 		super(structField);
 		this.structField = structField;
@@ -70,10 +73,17 @@ public class CodePage extends AFPContainer {
 		this.unicode2CodePointMap = new HashMap<Integer, Integer>();
 		this.codePoint2UnicodeMap = new HashMap<Integer, Integer>();
 		this.codePoint2CharIDMap = new HashMap<Integer, String>();
+
 		if (this.index != null) {
 			CodePageIndex.Entry[] entries = this.index.getEntries();
 			for (CodePageIndex.Entry entry : entries) {
 				int codePoint = entry.CodePoint;
+				if (codePoint < minCodePoint) {
+					minCodePoint = codePoint;
+				}
+				if (codePoint > maxCodePoint) {
+					maxCodePoint = codePoint;
+				}
 				String gcgid = entry.getGCGIDStr();
 				this.codePoint2CharIDMap.put(codePoint, gcgid);
 				
@@ -84,6 +94,14 @@ public class CodePage extends AFPContainer {
 				}
 			}
 		}
+	}
+	
+	public int getMinCodePoint() {
+		return this.minCodePoint;
+	}
+	
+	public int getMaxCodePoint() {
+		return this.maxCodePoint;
 	}
 	
 	@Override

@@ -11,6 +11,9 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.spi.ServiceRegistry;
 
 import me.lumpchen.xafp.AFPFileReader;
 import me.lumpchen.xafp.PrintFile;
@@ -21,11 +24,28 @@ public class Test {
 
 	private static Logger logger = Logger.getLogger(Test.class.getName());
 	
+	private static <T> T lookupProviderByName(final ServiceRegistry registry, final String providerClassName) {
+	    try {
+	        return (T) registry.getServiceProviderByClass(Class.forName(providerClassName));
+	    } catch (ClassNotFoundException ignore) {
+	        return null;
+	    }
+	}
+	
 	public static void main(String[] args) {
-/*		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
 		while (readers.hasNext()) {
 		    System.out.println("reader: " + readers.next());
-		}*/
+		}
+		
+		IIORegistry registry = IIORegistry.getDefaultInstance();
+		ImageReaderSpi sunProvider = lookupProviderByName(registry, "com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi");
+		ImageReaderSpi twelvemonkeysProvider = lookupProviderByName(registry, "com.twelvemonkeys.imageio.plugins.jpeg.JPEGImageReaderSpi");
+		
+		registry.setOrdering(ImageReaderSpi.class, twelvemonkeysProvider, sunProvider);
+		
+		readers = ImageIO.getImageReadersByFormatName("JPEG");
+		System.out.println("reader: " + readers.next());
 		
 		if (args.length == 1) {
 			render(args);
@@ -47,8 +67,8 @@ public class Test {
 		RenderParameter para = new RenderParameter();
 		
 		para.usePageResolution = true;
-//		para.usePageResolution = false;
-//		para.resolution = 96f;
+		para.usePageResolution = false;
+		para.resolution = 96f;
 		
 		try {
 			if (afpFile.isDirectory()) {

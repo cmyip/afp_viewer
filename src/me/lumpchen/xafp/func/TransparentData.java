@@ -17,7 +17,6 @@ public class TransparentData extends Function {
 
 	@Override
 	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
-//		graphics.drawString(new String(this.TRNDATA), 0, 0);
 		graphics.drawString(this.TRNDATA, 0, 0);
 	}
 	
