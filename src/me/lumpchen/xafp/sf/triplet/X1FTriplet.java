@@ -55,12 +55,11 @@ public class X1FTriplet extends Triplet {
 	public X1FTriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Font Descriptor Specification";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
-		
 		this.FtWtClass = in.readCode();
 		remain -= 1;
 		

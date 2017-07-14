@@ -81,4 +81,8 @@ public class AFPConst {
 		return s;
 	}
 	
+	public static String toUincode16BEString(byte[] bytes) {
+		return new String(bytes, Charset.forName("UTF-16BE"));
+	}
+	
 }

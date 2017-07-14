@@ -11,11 +11,11 @@ public class X59Triplet extends Triplet {
 	public X59Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Object Structured Field Extent";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

@@ -5,6 +5,7 @@ import me.lumpchen.xafp.sf.Identifier.Tag;
 
 public class ActiveEnvironmentGroup extends AFPContainer {
 
+	private MapDataResource mdr;
 	private MapCodedFontFormat2 mcf;
 	private PageDescriptor pageDesciptor;
 	private PresentationTextDescriptor ptd;
@@ -16,6 +17,10 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 	
 	private double width;
 	private double height;
+	
+	public static final int CHARACTER_ENCODING_SIGNGLE_BYTE = 0;
+	public static final int CHARACTER_ENCODING_UNICODE16BE = 1;
+	private int characterEncoding;
 	
 	public ActiveEnvironmentGroup(StructureField structField) {
 		super(structField);
@@ -47,6 +52,8 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 				this.pageDesciptor = (PageDescriptor) child;
 			} else if (child instanceof PresentationTextDescriptor) {
 				this.ptd = (PresentationTextDescriptor) child;
+			} else if (child instanceof MapDataResource) {
+				this.mdr = (MapDataResource) child;
 			} else {
 				
 			}
@@ -83,7 +90,17 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 	}
 
 	public MapCodedFontFormat2.Attribute getMapCodedFont(int ResLID) {
+		if (this.getMapCodedFontFormat2() == null) {
+			return null;
+		}
 		return this.getMapCodedFontFormat2().getResourceAttributes(ResLID);
+	}
+	
+	public MapDataResource.Attribute getMapDataResource(int resLID) {
+		if (this.mdr == null) {
+			return null;
+		}
+		return this.mdr.getResourceAttributes(resLID);
 	}
 	
 	public MapCodedFontFormat2 getMcf() {
@@ -116,6 +133,14 @@ public class ActiveEnvironmentGroup extends AFPContainer {
 
 	public double getHeight() {
 		return height;
+	}
+
+	public int getCharacterEncoding() {
+		return characterEncoding;
+	}
+
+	public void setCharacterEncoding(int characterEncoding) {
+		this.characterEncoding = characterEncoding;
 	}
 	
 }

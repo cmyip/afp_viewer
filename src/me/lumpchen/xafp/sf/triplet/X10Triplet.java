@@ -55,6 +55,7 @@ public class X10Triplet extends Triplet {
 	public X10Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Object Classification";
 	}
 	
 	@Override
@@ -86,6 +87,7 @@ public class X10Triplet extends Triplet {
 			this.CompName = in.readBytes(95 - 64 + 1);
 			read += (95 - 64 + 1);
 		}
+		this.remain -= (read - 2);
 	}
 
 	public int getObjClass() {

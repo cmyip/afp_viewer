@@ -213,6 +213,7 @@ public class Identifier {
 		
 		instanceMap.put(toInt(SF_MGO), new Identifier(Tag.MGO, SF_MGO));
 		
+		instanceMap.put(toInt(SF_MDR), new Identifier(Tag.MDR, SF_MDR));
 		
 		instanceMap.put(toInt(SF_TLE), new Identifier(Tag.TLE, SF_TLE));
 		instanceMap.put(toInt(SF_NOP), new Identifier(Tag.NOP, SF_NOP));

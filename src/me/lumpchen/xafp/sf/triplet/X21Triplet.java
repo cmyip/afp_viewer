@@ -40,6 +40,7 @@ public class X21Triplet extends Triplet {
 	public X21Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Object Function Set Specification";
 	}
 	
 	@Override
@@ -49,13 +50,19 @@ public class X21Triplet extends Triplet {
 		}
 		
 		this.objType = in.readCode();
+		this.remain -= 1;
 		this.ArchVrsn = in.readCode();
+		this.remain -= 1;
 		this.DCAFnSet = in.readCode(2);
+		this.remain -= 2;
 		this.OCAFnSet = in.readCode(2);
+		this.remain -= 2;
 		
-		while (in.remain() > 0) {
-			in.readBytes(in.remain());
+		if (this.remain > 0) {
+			in.readBytes(this.remain);	
 		}
+		
+		this.remain = 0;
 	}
 	
 	

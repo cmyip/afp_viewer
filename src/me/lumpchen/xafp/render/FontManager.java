@@ -1,5 +1,6 @@
 package me.lumpchen.xafp.render;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.FontControl.PatTech;
 import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
+import me.lumpchen.xafp.font.AFPTruetypeFont;
 import me.lumpchen.xafp.font.AFPType1Font;
 
 public class FontManager {
@@ -15,12 +17,22 @@ public class FontManager {
 	private Map<String, CodePage> codePageMap;
 	private Map<String, Font> charsetMap;
 	
+	private Map<String, AFPFont> fontCache;
+	
 	public FontManager() {
 		this.codePageMap = new HashMap<String, CodePage>();
 		this.charsetMap = new HashMap<String, Font>();
+		
+		this.fontCache = new HashMap<String, AFPFont>();
 	}
 	
 	public AFPFont getFont(String codePageName, String characterSetName) {
+		
+		String key = codePageName + ":" + characterSetName;
+		if (this.fontCache.containsKey(key)) {
+			return this.fontCache.get(key);
+		}
+		
 		CodePage codePage = this.codePageMap.get(codePageName);
 		Font charset = this.charsetMap.get(characterSetName);
 		
@@ -36,7 +48,18 @@ public class FontManager {
 			throw new java.lang.IllegalArgumentException("CID_Keyed_font_Type0 still not implemented.");
 		}
 		
+		this.fontCache.put(key, font);
 		return font;
+	}
+	
+	public AFPFont getFont(String familyName) {
+		String key = familyName;
+		if (this.fontCache.containsKey(key)) {
+			return this.fontCache.get(key);
+		}
+		// TODO: somewhere to lookup font
+		
+		return null;
 	}
 	
 	public void addCodePage(String resName, CodePage codePage) {
@@ -47,4 +70,12 @@ public class FontManager {
 		this.charsetMap.put(resName, charset);
 	}
 	
+	public void addTrueTypeFont(byte[] data) {
+		try {
+			AFPTruetypeFont ttf = new AFPTruetypeFont(data);
+			this.fontCache.put(ttf.getName(), ttf);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

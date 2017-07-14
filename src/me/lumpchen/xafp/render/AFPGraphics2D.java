@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import me.lumpchen.xafp.AFPColor;
+import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
 import me.lumpchen.xafp.font.AFPOutlineFont;
@@ -68,11 +69,6 @@ public class AFPGraphics2D implements AFPGraphics {
 	}
 
 	@Override
-	public void rotate(double theta, double x, double y) {
-		this.g2.rotate(theta, x, y);
-	}
-
-	@Override
 	public void setColor(AFPColor c) {
 	}
 	
@@ -86,18 +82,6 @@ public class AFPGraphics2D implements AFPGraphics {
 		this.state.textState.ruleWidth = w;
 	}
 
-	@Override
-	public void beginText() {
-		this.save();
-		this.textMatrix = new Matrix();
-		this.textLineMatrix = new Matrix();
-	}
-
-	@Override
-	public void endText() {
-		this.restore();
-	}
-	
 	@Override
 	public void setAFPFont(AFPFont afpFont, float fontSize) {
 		this.state.textState.font = afpFont;
@@ -149,7 +133,7 @@ public class AFPGraphics2D implements AFPGraphics {
 	}
 	
 	@Override
-	public void drawString(byte[] text, float x, float y) {
+	public void drawString(char[] text, float x, float y) {
 		this.save();
 		this.setTextState(this.state.textState);
 		
@@ -157,7 +141,7 @@ public class AFPGraphics2D implements AFPGraphics {
         Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
 
         StringBuilder sb = new StringBuilder();
-		for (byte b : text) {
+		for (char b : text) {
 			int unicode = this.state.textState.font.getEncoding().getUnicode(b & 0xFF);
 			sb.append(Character.toChars(unicode));
 			

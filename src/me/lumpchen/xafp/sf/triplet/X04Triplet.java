@@ -35,11 +35,13 @@ public class X04Triplet extends Triplet {
 	public X04Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Mapping Option Triplet";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
 		this.MapValue = in.readCode();
+		this.remain -= 1;
 	}
 	
 	public MapOption getMapValue() {

@@ -11,11 +11,11 @@ public class X25Triplet extends Triplet {
 	public X25Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Resource Section Number";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

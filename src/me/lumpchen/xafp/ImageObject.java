@@ -10,8 +10,9 @@ import me.lumpchen.xafp.ioca.ImageSegment;
 import me.lumpchen.xafp.render.AFPGraphics;
 import me.lumpchen.xafp.render.Renderable;
 import me.lumpchen.xafp.render.ResourceManager;
-import me.lumpchen.xafp.sf.StructureField;
+import me.lumpchen.xafp.render.StructuredAFPGraphics;
 import me.lumpchen.xafp.sf.Identifier.Tag;
+import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.triplet.Triplet;
 
 public class ImageObject extends AFPContainer implements Renderable {
@@ -66,6 +67,9 @@ public class ImageObject extends AFPContainer implements Renderable {
 		float w = (float) aeg.unit2Point(this.oeg.getObjectAreaDescriptor().getXoaSize());
 		float h = (float) aeg.unit2Point(this.oeg.getObjectAreaDescriptor().getYoaSize());
 		
+		if (graphics instanceof StructuredAFPGraphics) {
+			((StructuredAFPGraphics) graphics).beginImage();
+		}
 		graphics.save();
 		
 		graphics.antialiasOff();
@@ -81,6 +85,10 @@ public class ImageObject extends AFPContainer implements Renderable {
 		}
 		graphics.antialiasOn();
 		graphics.restore();
+		
+		if (graphics instanceof StructuredAFPGraphics) {
+			((StructuredAFPGraphics) graphics).endImage();
+		}
 	}
 
 	private void parseData(byte[] data) throws IOException {

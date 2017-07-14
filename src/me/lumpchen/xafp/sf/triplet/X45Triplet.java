@@ -11,11 +11,11 @@ public class X45Triplet extends Triplet {
 	public X45Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Media Eject Control";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

@@ -14,6 +14,7 @@ public class X43Triplet extends Triplet {
 	public X43Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Descriptor Position";
 	}
 	
 	public int getDesPosID() {
@@ -22,14 +23,9 @@ public class X43Triplet extends Triplet {
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		if (remain > 0) {
 			this.DesPosID = (in.readCode() & 0x7F);
 			remain -= 1;
-		}
-		
-		if (remain != 0) {
-			throw new IOException("Triplet reading error." + remain);
 		}
 	}
 

@@ -11,11 +11,11 @@ public class X86Triplet extends Triplet {
 	public X86Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Text Fidelity";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

@@ -227,6 +227,8 @@ public class AFPFileReader {
 				obj = new GraphicsData(sf);
 			} else if (Tag.MPS == tag) {
 				obj = new MapPageSegment(sf);
+			} else if (Tag.MDR == tag) {
+				obj = new MapDataResource(sf);
 			} else if (Tag.IPS == tag) {
 				obj = new IncludePageSegment(sf);
 			} else if (Tag.MPO == tag) {

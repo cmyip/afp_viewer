@@ -11,11 +11,11 @@ public class X5DTriplet extends Triplet {
 	public X5DTriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Font Horizontal Scale Factor";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

@@ -99,12 +99,12 @@ public class MapCodedFontFormat2 extends AFPObject {
 					this.localID = ((X24Triplet) triplet).getResLID();
 				} else if (triplet instanceof X02Triplet) {
 					X02Triplet x02 = (X02Triplet) triplet;
-					int gidType = x02.getFQNType();
-					switch ((byte) gidType) {
-					case (byte) 0x85:
+					int FQNType = x02.getFQNType();
+					switch ((byte) FQNType) {
+					case (byte) X02Triplet.CodePageNameReference:
 						this.codePageName = AFPConst.ebcdic2Ascii(x02.getFQName());
 						break;
-					case (byte) 0x86:
+					case (byte) X02Triplet.FontCharacterSetNameReference:
 						this.characterSetName = AFPConst.ebcdic2Ascii(x02.getFQName());
 						break;
 					}

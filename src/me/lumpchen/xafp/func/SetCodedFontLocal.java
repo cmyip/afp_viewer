@@ -5,9 +5,11 @@ import java.io.IOException;
 import me.lumpchen.xafp.AFPInputStream;
 import me.lumpchen.xafp.ActiveEnvironmentGroup;
 import me.lumpchen.xafp.MapCodedFontFormat2;
+import me.lumpchen.xafp.MapDataResource;
 import me.lumpchen.xafp.font.AFPFont;
 import me.lumpchen.xafp.render.AFPGraphics;
 import me.lumpchen.xafp.render.ResourceManager;
+import me.lumpchen.xafp.sf.triplet.X01Triplet;
 
 public class SetCodedFontLocal extends Function {
 
@@ -39,6 +41,15 @@ public class SetCodedFontLocal extends Function {
 		if (mcf != null) {
 			AFPFont font = resourceManager.getFontManager().getFont(mcf.codePageName, mcf.characterSetName);
 			graphics.setAFPFont(font, mcf.fontSize);
+		} else {
+			MapDataResource.Attribute mdr = aeg.getMapDataResource(this.LID);
+			if (mdr != null) {
+				AFPFont font = resourceManager.getFontManager().getFont(mdr.extResRef);
+				graphics.setAFPFont(font, (float) aeg.unit2Point(mdr.fontSize));
+				if (mdr.ccsid == X01Triplet.CCSID_UTF16) {
+					aeg.setCharacterEncoding(ActiveEnvironmentGroup.CHARACTER_ENCODING_UNICODE16BE);
+				}
+			}
 		}
 	}
 }

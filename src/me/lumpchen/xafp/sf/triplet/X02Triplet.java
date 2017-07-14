@@ -36,6 +36,11 @@ public class X02Triplet extends Triplet {
 			X'CE' Other Object Data Reference 
 			X'DE' Data Object External Resource Reference
 	 * */
+	public static final int CodePageNameReference = 0x85;
+	public static final int FontCharacterSetNameReference = 0x86;
+	public static final int DataObjectInternalResourceReference = 0xBE;
+	public static final int DataObjectExternalResourceReference = 0xDE;
+	
 	private int FQNType;
 	
 	/**
@@ -61,16 +66,17 @@ public class X02Triplet extends Triplet {
 	public X02Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Fully Qualified Name";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		this.FQNType = in.readCode();
 		remain -= 1;
 		this.FQNFmt = in.readCode();
 		remain -= 1;
 		this.FQName = in.readBytes(remain);
+		remain = 0;
 	}
 
 	public int getFQNType() {

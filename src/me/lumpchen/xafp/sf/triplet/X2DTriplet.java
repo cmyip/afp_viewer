@@ -11,11 +11,11 @@ public class X2DTriplet extends Triplet {
 	public X2DTriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Object Byte Offset";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

@@ -11,11 +11,11 @@ public class X6CTriplet extends Triplet {
 	public X6CTriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Resource Object Include";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

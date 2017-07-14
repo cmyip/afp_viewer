@@ -11,11 +11,11 @@ public class X71Triplet extends Triplet {
 	public X71Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Presentation Space Mixing Rules";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

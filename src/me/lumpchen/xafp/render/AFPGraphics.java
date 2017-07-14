@@ -5,13 +5,12 @@ import java.awt.image.BufferedImage;
 
 import me.lumpchen.xafp.AFPColor;
 import me.lumpchen.xafp.font.AFPFont;
-import me.lumpchen.xafp.render.GraphicsState.TextState;
 
 public interface AFPGraphics {
 	
 	public void drawString(String str, float x, float y);
 	
-	public void drawString(byte[] text, float x, float y);
+	public void drawString(char[] text, float x, float y);
 	
 	public void scale(double sx, double sy);
 	
@@ -23,8 +22,6 @@ public interface AFPGraphics {
 	
 	public void rotate(double theta);
 	
-	public void rotate(double theta, double x, double y);
-	
 	public void setColor(AFPColor c);
 	
     public void drawImage(BufferedImage img, float x, float y, float w, float h);
@@ -33,8 +30,6 @@ public interface AFPGraphics {
     
     public void drawRule(float x1, float y1, float x2, float y2, boolean horizon);
     
-	public void beginText();
-	public void endText();
 	public void setAFPFont(AFPFont afpFont, float fontSize);
 	public void setTextPosX(float tx);
 	public void setTextPosY(float tx);

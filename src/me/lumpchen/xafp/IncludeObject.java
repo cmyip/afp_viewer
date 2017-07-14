@@ -12,6 +12,7 @@ import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
 import me.lumpchen.xafp.render.AFPGraphics;
 import me.lumpchen.xafp.render.Renderable;
 import me.lumpchen.xafp.render.ResourceManager;
+import me.lumpchen.xafp.render.StructuredAFPGraphics;
 import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.triplet.Triplet;
 import me.lumpchen.xafp.sf.triplet.X04Triplet;
@@ -206,9 +207,18 @@ public class IncludeObject extends AFPObject implements Renderable {
 				byte[] imageData = resourceManager.getObjectData(resName);
 				try {
 					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
+
+					if (graphics instanceof StructuredAFPGraphics) {
+						((StructuredAFPGraphics) graphics).beginImage();
+					}
+
 					graphics.drawImage(bimg, 0, 0, w, h);
+					
+					if (graphics instanceof StructuredAFPGraphics) {
+						((StructuredAFPGraphics) graphics).endImage();
+					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					throw new AFPException("can't read image data: " + resName);
 				}
 			}
 		} else if (this.objType == ObjectType.IOCA) {
@@ -218,15 +228,20 @@ public class IncludeObject extends AFPObject implements Renderable {
 			}
 			BufferedImage img = ioca.getJavaImage();
 			if (img != null) {
-				
-//				try {
-//					ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
-// 				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
+				if (graphics instanceof StructuredAFPGraphics) {
+					((StructuredAFPGraphics) graphics).beginImage();
+				}
 				
 				graphics.drawImage(img, 0, 0, w, h);
+				
+				if (graphics instanceof StructuredAFPGraphics) {
+					((StructuredAFPGraphics) graphics).endImage();
+				}
+			} else {
+				throw new AFPException("can't read image data: " + resName);
 			}
+		} else {
+			throw new AFPException("object type not implemented yet: " + this.objType);
 		}
 		
 		graphics.antialiasOn();

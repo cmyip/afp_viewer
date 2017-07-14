@@ -94,7 +94,13 @@ public class ResourceManager {
 					AFPObject[] children = res.getChildren();
 					for (AFPObject child : children) {
 						if (child instanceof ObjectContainer) {
-							this.objMap.put(key, (ObjectContainer) child);
+							ObjectContainer objc = (ObjectContainer) child;
+							ObjectTypeIdentifier.Component component = objc.getObjectTypeIdentifier().getComponent();
+							if (component == ObjectTypeIdentifier.Component.TRUETYPE_FONT) {
+								this.fontManager.addTrueTypeFont(objc.getObjectData());
+							} else {
+								this.objMap.put(key, objc);	
+							}
 						}
 					}
 				} else if (Resource.Type.IOCA == type) {

@@ -11,11 +11,11 @@ public class X8ETriplet extends Triplet {
 	public X8ETriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "UP3i Finishing Operation";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.Identifier.Tag;
+import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.triplet.Triplet;
 import me.lumpchen.xafp.sf.triplet.X10Triplet;
 
@@ -24,8 +24,10 @@ public class ObjectContainer extends AFPContainer {
 			TRUETYPE_FONT, TRUETYPE_FONT_COLLECTION, RESOURCE_ACCESS_TABLE
 		}
 		/**
-		 * Component ID			Object Type			Encoded Object-type OID
-		 * 23						JFIF				X'06072B120004010117'
+		 * Component ID			Object Type					Encoded Object-type OID
+		 * 23						JFIF					X'06072B120004010117'
+		 * 51				TrueType/OpenType Font			X'06072B120004010133'
+		 * 53			TrueType/OpenType Font Collection   X'06072B120004010135'
 		 * */
 		
 		private Component component;
@@ -51,6 +53,11 @@ public class ObjectContainer extends AFPContainer {
 			case 0x17:
 				this.component = Component.JFIF;
 				break;
+			case 51:
+				this.component = Component.TRUETYPE_FONT;
+				break;
+			default:
+				throw new AFPException("Object Type not implemented yet: " + componentID);
 			}
 		}
 	}

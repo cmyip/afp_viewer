@@ -11,11 +11,11 @@ public class X22Triplet extends Triplet {
 	public X22Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Extended Resource Local Identifier";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

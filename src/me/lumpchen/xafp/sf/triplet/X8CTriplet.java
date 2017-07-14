@@ -11,11 +11,11 @@ public class X8CTriplet extends Triplet {
 	public X8CTriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Locale Selector";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

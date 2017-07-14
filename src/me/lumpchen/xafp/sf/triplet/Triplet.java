@@ -7,14 +7,18 @@ import me.lumpchen.xafp.AFPInputStream;
 
 public abstract class Triplet {
 	
-	int length;
+	protected int length;
 	
 	/**
 	 * Identifies the triplet: 
 	 * X'01' Coded Graphic Character Set Global Identifier
 	 * 
 	 * */
-	int identifier;
+	protected int identifier;
+	
+	protected String name;
+	
+	protected int remain;
 	
 	Triplet() {
 	}
@@ -27,7 +31,19 @@ public abstract class Triplet {
 		return this.identifier;
 	}
 	
+	public String toString() {
+		return this.name + ": " + Integer.toHexString(this.identifier);
+	}
+	
 	abstract protected void readContents(AFPInputStream in) throws IOException;
+	
+	protected void read(AFPInputStream in) throws IOException {
+		this.remain = this.length - 2;
+		this.readContents(in);
+		if (this.remain != 0) {
+			throw new IOException("Triplet reading error: " + this.toString());
+		}
+	}
 	
 	public static Triplet readTriple(AFPInputStream in) throws IOException {
 		int length = in.readUBin(1);
@@ -75,12 +91,15 @@ public abstract class Triplet {
 		case X43Triplet.ID:
 			triplet = new X43Triplet();
 			break;
+		case X8BTriplet.ID:
+			triplet = new X8BTriplet();
+			break;
 		default:
 			throw new IllegalArgumentException("unknown id: " + AFPConst.bytesToHex((byte) identifier));
 		}
 		
 		triplet.setLength(length);
-		triplet.readContents(in);
+		triplet.read(in);
 		
 		return triplet;
 	}

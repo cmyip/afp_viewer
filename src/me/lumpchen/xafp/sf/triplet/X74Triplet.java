@@ -11,11 +11,11 @@ public class X74Triplet extends Triplet {
 	public X74Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Toner Saver";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

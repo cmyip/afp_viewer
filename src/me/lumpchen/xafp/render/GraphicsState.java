@@ -40,6 +40,12 @@ public final class GraphicsState implements Cloneable {
 	}
 
 	public GraphicsState clone() {
-		return this.clone();
+		GraphicsState clone = null;
+		try {
+			clone = (GraphicsState) super.clone();
+			clone.currentTransformationMatrix = this.currentTransformationMatrix.clone();
+		} catch (CloneNotSupportedException e) {
+		}
+		return clone;
 	}
 }

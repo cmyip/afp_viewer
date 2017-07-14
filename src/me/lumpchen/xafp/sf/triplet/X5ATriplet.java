@@ -11,11 +11,11 @@ public class X5ATriplet extends Triplet {
 	public X5ATriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Object Offset";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

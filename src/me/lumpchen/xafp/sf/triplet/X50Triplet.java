@@ -11,11 +11,11 @@ public class X50Triplet extends Triplet {
 	public X50Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Encoding Scheme ID";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

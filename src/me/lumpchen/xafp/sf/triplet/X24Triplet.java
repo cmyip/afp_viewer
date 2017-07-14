@@ -23,12 +23,11 @@ public class X24Triplet extends Triplet {
 	public X24Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Resource Local Identifier";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
-		
 		this.ResType = in.readCode();
 		remain -= 1;
 		

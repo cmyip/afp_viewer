@@ -12,5 +12,5 @@ public interface AFPOutlineFont extends AFPFont {
      * @throws IOException if the path could not be read
      */
     public GeneralPath getPath(String name) throws IOException;
-
+    
 }

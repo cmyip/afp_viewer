@@ -11,11 +11,11 @@ public class X56Triplet extends Triplet {
 	public X56Triplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Medium Map Page Number";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		while (remain > 0) {
 			in.readBytes(remain);
 			remain = 0;

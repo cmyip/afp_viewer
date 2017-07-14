@@ -16,11 +16,11 @@ public class X4BTriplet extends Triplet {
 	public X4BTriplet() {
 		super();
 		this.identifier = ID;
+		this.name = "Measurement Units";
 	}
 	
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
-		int remain = this.length - 2;
 		this.XoaBase = in.readCode();
 		remain -= 1;
 		this.YoaBase = in.readCode();
@@ -29,10 +29,6 @@ public class X4BTriplet extends Triplet {
 		remain -= 2;
 		this.YoaUnits = in.readUBin(2);
 		remain -= 2;
-		
-		if (remain != 0) {
-			throw new IOException("Triplet reading error." + remain);
-		}
 	}
 
 	public static int getId() {
