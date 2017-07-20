@@ -42,7 +42,7 @@ public class Test {
 		ImageReaderSpi sunProvider = lookupProviderByName(registry, "com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi");
 		ImageReaderSpi twelvemonkeysProvider = lookupProviderByName(registry, "com.twelvemonkeys.imageio.plugins.jpeg.JPEGImageReaderSpi");
 		
-		registry.setOrdering(ImageReaderSpi.class, twelvemonkeysProvider, sunProvider);
+		registry.setOrdering(ImageReaderSpi.class, sunProvider, twelvemonkeysProvider);
 		
 		readers = ImageIO.getImageReadersByFormatName("JPEG");
 		System.out.println("reader: " + readers.next());
@@ -67,8 +67,8 @@ public class Test {
 		RenderParameter para = new RenderParameter();
 		
 		para.usePageResolution = true;
-		para.usePageResolution = false;
-		para.resolution = 96f;
+//		para.usePageResolution = false;
+//		para.resolution = 96f;
 		
 		try {
 			if (afpFile.isDirectory()) {

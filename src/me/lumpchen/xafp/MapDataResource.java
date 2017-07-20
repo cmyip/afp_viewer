@@ -70,6 +70,8 @@ public class MapDataResource extends AFPObject {
 		
 		public String fontTech;
 		public int fontSize;
+		public String encEnv;
+		public String encID;
 		
 		public Attribute(Triplet[] group) {
 			for (Triplet triplet : group) {
@@ -99,6 +101,8 @@ public class MapDataResource extends AFPObject {
 					X8BTriplet x8b = (X8BTriplet) triplet;
 					this.fontTech = x8b.getFontTech();
 					this.fontSize = x8b.getVerticalFontSize();
+					this.encEnv = x8b.getEncEnv();
+					this.encID = x8b.getEncID();
 				}
 			}
 		}

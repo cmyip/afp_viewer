@@ -1,16 +1,26 @@
 package me.lumpchen.xafp.render;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.fontbox.ttf.TTFParser;
+import org.apache.fontbox.ttf.TrueTypeCollection;
+import org.apache.fontbox.ttf.TrueTypeCollection.TrueTypeFontProcessor;
+import org.apache.fontbox.ttf.TrueTypeFont;
+
+import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.FontControl.PatTech;
+import me.lumpchen.xafp.MapDataResource;
 import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
 import me.lumpchen.xafp.font.AFPTruetypeFont;
 import me.lumpchen.xafp.font.AFPType1Font;
+import me.lumpchen.xafp.sf.triplet.X8BTriplet;
 
 public class FontManager {
 
@@ -18,12 +28,14 @@ public class FontManager {
 	private Map<String, Font> charsetMap;
 	
 	private Map<String, AFPFont> fontCache;
+	private Map<String, TrueTypeFont> ttfCache;
 	
 	public FontManager() {
 		this.codePageMap = new HashMap<String, CodePage>();
 		this.charsetMap = new HashMap<String, Font>();
 		
 		this.fontCache = new HashMap<String, AFPFont>();
+		this.ttfCache = new HashMap<String, TrueTypeFont>();
 	}
 	
 	public AFPFont getFont(String codePageName, String characterSetName) {
@@ -52,13 +64,24 @@ public class FontManager {
 		return font;
 	}
 	
-	public AFPFont getFont(String familyName) {
-		String key = familyName;
-		if (this.fontCache.containsKey(key)) {
-			return this.fontCache.get(key);
-		}
-		// TODO: somewhere to lookup font
+	public AFPFont getFont(MapDataResource.Attribute mdr) {
+		String familyName = mdr.extResRef;
 		
+		if (!mdr.fontTech.equals(X8BTriplet.TrueType_OpenType)) {
+			throw new AFPException("Not a TrueType/ OpenType font.");
+		}
+		
+		TrueTypeFont ttf = this.ttfCache.get(familyName);
+		if (ttf == null) {
+			return null;
+		}
+		
+		try {
+			AFPTruetypeFont afpTTF = new AFPTruetypeFont(ttf, mdr.encEnv, mdr.encID);
+			return afpTTF;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -71,9 +94,26 @@ public class FontManager {
 	}
 	
 	public void addTrueTypeFont(byte[] data) {
+		this.addTrueTypeFont(data, false);
+	}
+	
+	public void addTrueTypeFont(byte[] data, boolean isTTC) {
 		try {
-			AFPTruetypeFont ttf = new AFPTruetypeFont(data);
-			this.fontCache.put(ttf.getName(), ttf);
+			if (isTTC) {
+				TrueTypeCollection ttc = new TrueTypeCollection(new ByteArrayInputStream(data));
+				TrueTypeFontProcessor ttcProcessor = new TrueTypeFontProcessor() {
+					@Override
+					public void process(TrueTypeFont ttf) throws IOException {
+						ttfCache.put(ttf.getNaming().getFontFamily(), ttf);
+					}
+				};
+				ttc.processAllFonts(ttcProcessor);
+				ttc.close();
+			} else {
+				TTFParser parser = new TTFParser();
+				TrueTypeFont ttf = parser.parse(new ByteArrayInputStream(data));
+				this.ttfCache.put(ttf.getNaming().getFontFamily(), ttf);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

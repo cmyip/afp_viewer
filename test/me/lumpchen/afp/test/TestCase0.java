@@ -18,7 +18,15 @@ public class TestCase0 extends TestCase {
 
 	private static Logger logger = Logger.getLogger(TestCase0.class.getName());
 	
-	File root = new File("C:/temp/afp/xpression/all");
+	File root = new File("C:/dev/xdiff/testcases/xafp");
+	
+	public void test_img() {
+		assertTrue(compare("img.afp"));
+	}
+	
+	public void test_X2() {
+		assertTrue(compare("x2.afp"));
+	}
 	
 	public void test_X80_2C() {
 		assertTrue(compare("X80_2C.afp"));
@@ -30,6 +38,18 @@ public class TestCase0 extends TestCase {
 	
 	public void test_provini() {
 		assertTrue(compare("_provini.afp"));
+	}
+	
+	public void test_ttf() {
+		assertTrue(compare("\\font\\ttf.afp"));
+	}
+	
+	public void test_ttc() {
+		assertTrue(compare("\\font\\ttc.afp"));
+	}
+	
+	public void test_ttf_courier() {
+		assertTrue(compare("\\font\\ttf_courier.afp"));
 	}
 	
 	private boolean compare(String afpName) {
@@ -90,7 +110,7 @@ public class TestCase0 extends TestCase {
 			File baseline = new File(baseFolder, name);
 			if (!baseline.exists()) {
 				logger.severe("Not find baseline image: " + baseline.getAbsolutePath());
-				continue;
+				return false;
 			}
 			
 			BufferedImage bimg1;

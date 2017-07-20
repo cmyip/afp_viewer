@@ -142,4 +142,14 @@ public class AFPType1Font implements AFPOutlineFont {
 		return null;
 	}
 
+	@Override
+	public float getXUnitPerEm() {
+		return this.charset.getFontControl().getXUnitsPerUnitBase();
+	}
+
+	@Override
+	public float getYUnitPerEm() {
+		return this.charset.getFontControl().getYUnitsPerUnitBase();
+	}
+
 }

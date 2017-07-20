@@ -50,11 +50,14 @@ public class ObjectContainer extends AFPContainer {
 			byte componentID = data[8];
 			
 			switch (componentID) {
-			case 0x17:
+			case X10Triplet.CID_JFIF:
 				this.component = Component.JFIF;
 				break;
-			case 51:
+			case X10Triplet.CID_TRUETYPE_FONT:
 				this.component = Component.TRUETYPE_FONT;
+				break;
+			case X10Triplet.CID_TRUETYPE_FONT_COLLECTION:
+				this.component = Component.TRUETYPE_FONT_COLLECTION;
 				break;
 			default:
 				throw new AFPException("Object Type not implemented yet: " + componentID);

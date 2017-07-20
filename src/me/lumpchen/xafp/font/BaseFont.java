@@ -55,4 +55,14 @@ public class BaseFont implements AFPOutlineFont {
 		return null;
 	}
 
+	@Override
+	public float getXUnitPerEm() {
+		return 0;
+	}
+
+	@Override
+	public float getYUnitPerEm() {
+		return 0;
+	}
+
 }

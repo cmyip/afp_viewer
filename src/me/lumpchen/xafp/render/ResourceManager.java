@@ -98,6 +98,8 @@ public class ResourceManager {
 							ObjectTypeIdentifier.Component component = objc.getObjectTypeIdentifier().getComponent();
 							if (component == ObjectTypeIdentifier.Component.TRUETYPE_FONT) {
 								this.fontManager.addTrueTypeFont(objc.getObjectData());
+							} else if (component == ObjectTypeIdentifier.Component.TRUETYPE_FONT_COLLECTION) {
+								this.fontManager.addTrueTypeFont(objc.getObjectData(), true);
 							} else {
 								this.objMap.put(key, objc);	
 							}

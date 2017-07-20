@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import me.lumpchen.xafp.AFPColor;
-import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
 import me.lumpchen.xafp.font.AFPOutlineFont;
@@ -139,20 +138,22 @@ public class AFPGraphics2D implements AFPGraphics {
 		
 		float fontSize = this.state.textState.fontSize;
         Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
-
+        float xUnitScale = 1 / this.state.textState.font.getXUnitPerEm();
+        float yUnitScale = 1 / this.state.textState.font.getYUnitPerEm();
+        
         StringBuilder sb = new StringBuilder();
 		for (char b : text) {
-			int unicode = this.state.textState.font.getEncoding().getUnicode(b & 0xFF);
-			sb.append(Character.toChars(unicode));
-			
-			String gcgid = this.state.textState.font.getEncoding().getCharacterName(b & 0xFF);
+			int unicode = this.state.textState.font.getEncoding().getUnicode(b & 0xFFFF);
+			String gcgid = this.state.textState.font.getEncoding().getCharacterName(b & 0xFFFF);
+			sb.append(Character.toChars(unicode)[0]);
+			sb.append(gcgid);
 			try {
 				Matrix ctm = this.state.getCTM();
 				Matrix textRenderingMatrix = parameters.multiply(this.textLineMatrix).multiply(this.textMatrix).multiply(ctm);
 				
 				AffineTransform at = textRenderingMatrix.createAffineTransform();
 
-				Matrix fm = new Matrix(0.001d, 0, 0, 0.001d, 0, 0);
+				Matrix fm = new Matrix(xUnitScale, 0, 0, yUnitScale, 0, 0);
 				at.concatenate(fm.createAffineTransform());
 				
 		        if (this.state.textState.font instanceof AFPOutlineFont) {
@@ -168,7 +169,7 @@ public class AFPGraphics2D implements AFPGraphics {
 					Shape s = at.createTransformedShape(gp);
 					this.g2.fill(s);
 					
-					double advance = this.state.textState.font.getWidth(gcgid) / 1000d;
+					double advance = this.state.textState.font.getWidth(gcgid) * xUnitScale;
 					this.textLineMatrix.concatenate(Matrix.getTranslateInstance(advance * fontSize, 0));
 		        } else if (this.state.textState.font instanceof AFPBitmapFont) {
 		        	AFPBitmapFont font = (AFPBitmapFont) this.state.textState.font;

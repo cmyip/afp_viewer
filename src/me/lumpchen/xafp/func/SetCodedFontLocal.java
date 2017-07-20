@@ -44,7 +44,7 @@ public class SetCodedFontLocal extends Function {
 		} else {
 			MapDataResource.Attribute mdr = aeg.getMapDataResource(this.LID);
 			if (mdr != null) {
-				AFPFont font = resourceManager.getFontManager().getFont(mdr.extResRef);
+				AFPFont font = resourceManager.getFontManager().getFont(mdr);
 				graphics.setAFPFont(font, (float) aeg.unit2Point(mdr.fontSize));
 				if (mdr.ccsid == X01Triplet.CCSID_UTF16) {
 					aeg.setCharacterEncoding(ActiveEnvironmentGroup.CHARACTER_ENCODING_UNICODE16BE);
@@ -53,10 +53,6 @@ public class SetCodedFontLocal extends Function {
 		}
 	}
 }
-
-
-
-
 
 
 

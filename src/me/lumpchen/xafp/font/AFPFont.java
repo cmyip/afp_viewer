@@ -38,4 +38,9 @@ public interface AFPFont {
      * @param name PostScript glyph name
      */
     public boolean hasGlyph(String name) throws IOException;
+    
+    public float getXUnitPerEm();
+    
+    public float getYUnitPerEm();
+    
 }

@@ -19,6 +19,7 @@ public class X8BTriplet extends Triplet {
 	
 	// X'20' TrueType/ OpenType
 	private String fontTech;
+	public static final String TrueType_OpenType = "TrueType/ OpenType";
 	
 	private int verticalFontSize;
 	private int horizontalScaleFactor;
@@ -31,7 +32,11 @@ public class X8BTriplet extends Triplet {
 	 * X'8700' 270 degrees
 	 * */
 	private int rotationDegree;
+	
+	public static final String EncodingEnvironmentMicrosoft = "Microsoft";
 	private String encEnv;
+	
+	public static final String EncodingUnicode = "Unicode";
 	private String encID;
 	
 	public X8BTriplet() {
@@ -46,7 +51,7 @@ public class X8BTriplet extends Triplet {
 		remain -= 1;
 		int FontTech = in.readCode();
 		if (FontTech == 0x20) {
-			this.fontTech = "TrueType/ OpenType";
+			this.fontTech = TrueType_OpenType;
 		}
 		remain -= 1;
 		this.verticalFontSize = in.readUBin(2);
@@ -66,12 +71,12 @@ public class X8BTriplet extends Triplet {
 		remain -= 2;
 		int EncEnv = in.readCode(2);
 		if (EncEnv == 0x03) {
-			this.encEnv = "Microsoft";
+			this.encEnv = EncodingEnvironmentMicrosoft;
 		}
 		remain -= 2;
 		int EncID = in.readCode(2);
 		if (EncID == 0x01) {
-			this.encID = "Unicode";
+			this.encID = EncodingUnicode;
 		}
 		remain -= 2;
 		in.readBytes(2);
