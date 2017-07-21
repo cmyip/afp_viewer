@@ -83,7 +83,7 @@ public class Test {
 				});
 				for (File f : files) {
 					logger.info("Start rendering " + f.getAbsolutePath());
-					String s = f.getParentFile().getAbsolutePath() + "\\" + f.getName().substring(0, f.getName().length() - 4);
+					String s = f.getParentFile().getAbsolutePath() + "/" + f.getName().substring(0, f.getName().length() - 4);
 					File outputFolder = new File(s);
 					outputFolder.mkdirs();
 					
@@ -91,9 +91,9 @@ public class Test {
 						AFPTool.render(f, outputFolder, para, "jpg");
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, f.getAbsolutePath(), e);
-						String error = f.getParentFile().getAbsolutePath() + "\\fail";
+						String error = f.getParentFile().getAbsolutePath() + "/fail";
 						File errorFolder = new File(error);
-						boolean res = f.renameTo(new File(errorFolder.getAbsolutePath() + "\\" + f.getName()));
+						boolean res = f.renameTo(new File(errorFolder.getAbsolutePath() + "/" + f.getName()));
 						if (res) {
 							f.delete();
 						}

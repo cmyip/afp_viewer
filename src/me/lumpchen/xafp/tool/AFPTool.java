@@ -52,7 +52,7 @@ public class AFPTool {
 		buf.append("-" + docIndex + "-" + pageIndex);
 		buf.append(".").append(suffix);
 		
-		File f = new File(outputFolder.getAbsolutePath() + "\\" + buf.toString());
+		File f = new File(outputFolder.getAbsolutePath() + "/" + buf.toString());
 		if (f.exists()) {
 			return f;
 		} else {
