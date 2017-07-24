@@ -41,19 +41,31 @@ public class TestCase0 extends TestCase {
 	}
 	
 	public void test_ttf() {
-		assertTrue(compare("\\font\\ttf.afp"));
+		assertTrue(compare("/font/ttf.afp"));
 	}
 	
 	public void test_ttc() {
-		assertTrue(compare("\\font\\ttc.afp"));
+		assertTrue(compare("/font/ttc.afp"));
 	}
 	
 	public void test_ttf_courier() {
-		assertTrue(compare("\\font\\ttf_courier.afp"));
+		assertTrue(compare("/font/ttf_courier.afp"));
+	}
+	
+	public void test_97376() {
+		assertTrue(compare("97376.afp"));
+	}
+	
+	public void test_Letter_Ref() {
+		assertTrue(compare("/oc_samples/Letter_Ref.afp"));
+	}
+	
+	public void test_Bank_Statement_REF() {
+		assertTrue(compare("/oc_samples/Bank_Statement_REF.afp"));
 	}
 	
 	private boolean compare(String afpName) {
-		String s = this.root.getAbsolutePath() + "\\" + afpName.substring(0, afpName.length() - 4);
+		String s = this.root.getAbsolutePath() + "/" + afpName.substring(0, afpName.length() - 4);
 		File outputFolder = new File(s);
 		
 		RenderParameter para = new RenderParameter();

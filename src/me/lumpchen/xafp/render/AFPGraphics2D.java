@@ -174,7 +174,7 @@ public class AFPGraphics2D implements AFPGraphics {
 		        } else if (this.state.textState.font instanceof AFPBitmapFont) {
 		        	AFPBitmapFont font = (AFPBitmapFont) this.state.textState.font;
 		        	font.setPointSize(fontSize);
-		        	int codePoint = (int) (b & 0xFF);
+		        	int codePoint = (int) (b & 0xFFFF);
 		        	BufferedImage glyphBitmap = font.getBitmap(codePoint, this.state.textState.color);
 		        	if (glyphBitmap != null) {
 		        		float charW = font.getWidth(codePoint);

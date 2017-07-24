@@ -2,7 +2,6 @@ package me.lumpchen.xafp.sf.triplet;
 
 import java.io.IOException;
 
-import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPInputStream;
 
 public class X21Triplet extends Triplet {
@@ -46,7 +45,7 @@ public class X21Triplet extends Triplet {
 	@Override
 	protected void readContents(AFPInputStream in) throws IOException {
 		if (length < 8 || length > 254) {
-			throw new IOException("Invalid X21 Triplet length (8�C254): " + length);
+			throw new IOException("Invalid X21 Triplet length (8-254): " + length);
 		}
 		
 		this.objType = in.readCode();
