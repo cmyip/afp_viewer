@@ -197,7 +197,7 @@ public class AFPGraphics2D implements AFPGraphics {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(sb.toString());
+//		System.out.println(sb.toString());
 		
 		this.restore();
 	}
