@@ -41,6 +41,64 @@ public class PrintFile extends AFPContainer {
 		return documents;
 	}
 	
+	public List<NoOperation> getAllNOPs() {
+		List<NoOperation> nopList = new ArrayList<NoOperation>();
+		for (AFPObject obj : this.children) {
+			if (obj instanceof ResourceGroup || obj instanceof Resource) {
+				continue;
+			}
+			if (obj instanceof NoOperation) {
+				NoOperation nop = (NoOperation) obj;
+				nopList.add(nop);
+			} else {
+				findNOP(obj, nopList);
+			}
+		}
+		return nopList;
+	}
+	
+	private void findNOP(AFPObject obj, List<NoOperation> nopList) {
+		if (obj instanceof NoOperation) {
+			NoOperation nop = (NoOperation) obj;
+			nopList.add(nop);
+			return;
+		}
+		if (obj instanceof AFPContainer) {
+			for (AFPObject child : ((AFPContainer) obj).getChildren()) {
+				findNOP(child, nopList);
+			}
+		}
+	}
+	
+	public List<TagLogicalElement> getAllTLEs() {
+		List<TagLogicalElement> tleList = new ArrayList<TagLogicalElement>();
+		for (AFPObject obj : this.children) {
+			if (obj instanceof ResourceGroup || obj instanceof Resource) {
+				continue;
+			}
+			if (obj instanceof TagLogicalElement) {
+				TagLogicalElement tle = (TagLogicalElement) obj;
+				tleList.add(tle);
+			} else {
+				findTLE(obj, tleList);
+			}
+		}
+		return tleList;
+	}
+	
+	private void findTLE(AFPObject obj, List<TagLogicalElement> tleList) {
+		if (obj instanceof TagLogicalElement) {
+			TagLogicalElement tle = (TagLogicalElement) obj;
+			tleList.add(tle);
+			return;
+		}
+		if (obj instanceof AFPContainer) {
+			for (AFPObject child : ((AFPContainer) obj).getChildren()) {
+				findTLE(child, tleList);
+			}
+		}
+	}
+	
 	@Override
 	public boolean addChild(AFPObject child) {
 		boolean ret = super.addChild(child);

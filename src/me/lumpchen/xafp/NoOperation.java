@@ -16,4 +16,14 @@ public class NoOperation extends AFPObject {
 	public byte[] getData() {
 		return this.UndfData;
 	}
+	
+	public String getString() {
+		if (this.UndfData == null || this.UndfData.length <= 0) {
+			return "";
+		}
+		
+		// how to determine unicode or EBCDIC ? 
+		String s = AFPConst.ebcdic2Ascii(this.UndfData);
+		return s;
+	}
 }

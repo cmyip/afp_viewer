@@ -2,7 +2,6 @@ package me.lumpchen.xafp.tool.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,6 +18,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
 import me.lumpchen.xafp.AFPFileReader;
@@ -31,7 +32,7 @@ public class XAFPViewer {
 	
 	private JToolBar toolBar = new JToolBar();
 	
-	public static int[] ZOOM_RATIO = {50, 100, 150, 200};
+	public static int[] ZOOM_RATIO = {25, 50, 100, 150, 200, 300};
 	private int zoomIndex = 1;
 	private int zoom;
 	private ViewerParameter paras = new ViewerParameter();
@@ -61,8 +62,8 @@ public class XAFPViewer {
 	    
 		JScrollPane pageCanvasScrollPane = new JScrollPane();
 		pageCanvasScrollPane.setViewportView(this.pagePanel);
-	    
-	    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 	    splitPane.setDividerSize(3);
 	    splitPane.setDividerLocation(300);
 	    
@@ -203,6 +204,12 @@ public class XAFPViewer {
 	}
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 		XAFPViewer viewer = new XAFPViewer();
 	}
 }

@@ -14,15 +14,18 @@ import javax.imageio.ImageReader;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.spi.ServiceRegistry;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import me.lumpchen.xafp.AFPFileReader;
 import me.lumpchen.xafp.PrintFile;
 import me.lumpchen.xafp.render.AFPRenderer;
 import me.lumpchen.xafp.render.RenderParameter;
+import me.lumpchen.xafp.tool.ui.XAFPViewer;
 
-public class Test {
+public class Main {
 
-	private static Logger logger = Logger.getLogger(Test.class.getName());
+	private static Logger logger = Logger.getLogger(Main.class.getName());
 	
 	private static <T> T lookupProviderByName(final ServiceRegistry registry, final String providerClassName) {
 	    try {
@@ -33,7 +36,7 @@ public class Test {
 	}
 	
 	public static void main(String[] args) {
-		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+/*		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
 		while (readers.hasNext()) {
 		    System.out.println("reader: " + readers.next());
 		}
@@ -45,7 +48,12 @@ public class Test {
 		registry.setOrdering(ImageReaderSpi.class, sunProvider, twelvemonkeysProvider);
 		
 		readers = ImageIO.getImageReadersByFormatName("JPEG");
-		System.out.println("reader: " + readers.next());
+		System.out.println("reader: " + readers.next());*/
+		
+		if (args.length == 0) {
+			showViewer();
+			return;
+		}
 		
 		if (args.length == 1) {
 			render(args);
@@ -56,8 +64,76 @@ public class Test {
 			renderPage(args);
 			return;
 		}
+		
+		if (args.length == 3 && args[0].equalsIgnoreCase("-dumpNop")) {
+			String afpFile = args[1];
+			String dumpFile = args[2];
+			dumpNop(afpFile, dumpFile);
+			return;
+		}
+		
+		if (args.length == 3 && args[0].equalsIgnoreCase("-dumpTLE")) {
+			String afpFile = args[1];
+			String dumpFile = args[2];
+			dumpTLE(afpFile, dumpFile);
+			return;
+		}
 
 		System.err.println("Invalid parameters!");
+	}
+	
+	static void dumpNop(String afpPath, String dumpPath) {
+		File afpFile = new File(afpPath);
+		if (!afpFile.exists()) {
+			System.err.println("Invalid AFP file path: " + afpPath);
+			return;
+		}
+		File dumpFile = new File(dumpPath);
+		if (!dumpFile.exists()) {
+			try {
+				dumpFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (!dumpFile.exists()) {
+			System.err.println("Can't write dump file path: " + dumpPath);
+			return;
+		}
+		try {
+			AFPTool.dumpNoOperation(afpFile, dumpFile);
+			System.out.println("All NoOperation texts are dump into " + dumpPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
+	
+	static void dumpTLE(String afpPath, String dumpPath) {
+		File afpFile = new File(afpPath);
+		if (!afpFile.exists()) {
+			System.err.println("Invalid AFP file path: " + afpPath);
+			return;
+		}
+		File dumpFile = new File(dumpPath);
+		if (!dumpFile.exists()) {
+			try {
+				dumpFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (!dumpFile.exists()) {
+			System.err.println("Can't write dump file path: " + dumpPath);
+			return;
+		}
+		try {
+			AFPTool.dumpTLE(afpFile, dumpFile);
+			System.out.println("All TLEs are dump into " + dumpPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
 	}
 	
 	static void render(String[] args) {
@@ -134,5 +210,15 @@ public class Test {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	static void showViewer() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		XAFPViewer viewer = new XAFPViewer();
 	}
 }

@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import me.lumpchen.xafp.Page;
 import me.lumpchen.xafp.PrintFile;
@@ -28,7 +30,6 @@ public class AFPPagePanel extends JPanel implements PageCanvas {
 	
 	public AFPPagePanel() {
 		super(true);
-//		this.setPreferredSize(new Dimension(600, 480));
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -51,15 +52,20 @@ public class AFPPagePanel extends JPanel implements PageCanvas {
 		// process rotation
         int widthPx = (int) Math.round(pw * hScale);
         int heightPx = (int) Math.round(ph * vScale);
+
+       	Rectangle rect = ((JScrollPane) this.getParent().getParent()).getVisibleRect();
+   		this.setPreferredSize(new Dimension(widthPx > rect.width ? widthPx : rect.width, 
+    			heightPx > rect.height ? heightPx : rect.height));
+       	
         if (widthPx < this.getWidth()) {
         	g2.translate((this.getWidth() - widthPx) / 2, 0);
         }
-//        if (heightPx > this.getHeight()) {
-//        	this.setPreferredSize(new Dimension(widthPx > this.getWidth() ? widthPx : this.getWidth(), 
-//        			heightPx > this.getHeight() ? heightPx : this.getHeight()));
-//        }
-        this.setPreferredSize(new Dimension(widthPx, heightPx));
+        if (heightPx < this.getHeight()) {
+        	g2.translate(0, (this.getHeight() - heightPx) / 2);
+        }
         
+   		this.getParent().revalidate();
+   		
         int rotationAngle = 0;
         
         g2.setColor(Color.WHITE);
@@ -104,7 +110,7 @@ public class AFPPagePanel extends JPanel implements PageCanvas {
 		}
 		this.zoom = zoom;
 		this.repaint();
-		this.getParent().revalidate();
+//		this.getParent().revalidate();
 	}
 	
 	public void setRotation(int degree) {
@@ -113,7 +119,7 @@ public class AFPPagePanel extends JPanel implements PageCanvas {
 		}
 		this.degree = degree;
 		this.repaint();
-		this.getParent().revalidate();
+//		this.getParent().revalidate();
 	}
 	
 	@Override

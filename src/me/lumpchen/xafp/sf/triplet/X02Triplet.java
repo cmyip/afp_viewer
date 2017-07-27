@@ -36,7 +36,12 @@ public class X02Triplet extends Triplet {
 			X'CE' Other Object Data Reference 
 			X'DE' Data Object External Resource Reference
 	 * */
+	
+	public static final int AttributeGID = 0x0B;
+	public static final int BeginPageGroupReference = 0x0D;
+	public static final int BeginPageReference = 0x87;
 	public static final int CodePageNameReference = 0x85;
+	public static final int ProcessElementGID = 0x0C;
 	public static final int FontCharacterSetNameReference = 0x86;
 	public static final int DataObjectInternalResourceReference = 0xBE;
 	public static final int DataObjectExternalResourceReference = 0xDE;
