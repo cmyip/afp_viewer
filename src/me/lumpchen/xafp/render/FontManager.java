@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.fontbox.ttf.NameRecord;
 import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeCollection;
 import org.apache.fontbox.ttf.TrueTypeCollection.TrueTypeFontProcessor;
@@ -104,7 +105,7 @@ public class FontManager {
 				TrueTypeFontProcessor ttcProcessor = new TrueTypeFontProcessor() {
 					@Override
 					public void process(TrueTypeFont ttf) throws IOException {
-						ttfCache.put(ttf.getNaming().getFontFamily(), ttf);
+						ttfCache.put(getTTFFullName(ttf), ttf);
 					}
 				};
 				ttc.processAllFonts(ttcProcessor);
@@ -112,10 +113,47 @@ public class FontManager {
 			} else {
 				TTFParser parser = new TTFParser();
 				TrueTypeFont ttf = parser.parse(new ByteArrayInputStream(data));
-				this.ttfCache.put(ttf.getNaming().getFontFamily(), ttf);
+//				this.ttfCache.put(ttf.getNaming().getFontFamily(), ttf);
+				this.ttfCache.put(getTTFFullName(ttf), ttf);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static String getTTFFullName(TrueTypeFont ttf) throws IOException {
+		if (ttf == null) {
+			return "";
+		}
+        // Unicode, Full, BMP, 1.1, 1.0
+        for (int i = 4; i >= 0; i--) {
+            String nameUni = ttf.getNaming().getName(NameRecord.NAME_FULL_FONT_NAME,
+                            NameRecord.PLATFORM_UNICODE,
+                            i,
+                            NameRecord.LANGUGAE_UNICODE);
+            if (nameUni != null) {
+                return nameUni;
+            }
+        }
+        
+        // Windows, Unicode BMP, EN-US
+        String nameWin = ttf.getNaming().getName(NameRecord.NAME_FULL_FONT_NAME,
+                        NameRecord.PLATFORM_WINDOWS,
+                        NameRecord.ENCODING_WINDOWS_UNICODE_BMP,
+                        NameRecord.LANGUGAE_WINDOWS_EN_US);
+        if (nameWin != null) {
+            return nameWin;
+        }
+
+        // Macintosh, Roman, English
+        String nameMac = ttf.getNaming().getName(NameRecord.NAME_FULL_FONT_NAME,
+                        NameRecord.PLATFORM_MACINTOSH,
+                        NameRecord.ENCODING_MACINTOSH_ROMAN,
+                        NameRecord.LANGUGAE_MACINTOSH_ENGLISH);
+        if (nameMac != null) {
+            return nameMac;
+        }
+        
+        return ttf.getNaming().getFontFamily();
 	}
 }

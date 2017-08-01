@@ -11,6 +11,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import me.lumpchen.xafp.AFPColor;
 import me.lumpchen.xafp.font.AFPBitmapFont;
@@ -19,6 +20,8 @@ import me.lumpchen.xafp.font.AFPOutlineFont;
 import me.lumpchen.xafp.render.GraphicsState.TextState;
 
 public class AFPGraphics2D implements AFPGraphics {
+	
+	private static Logger logger = Logger.getLogger(AFPGraphics2D.class.getName());
 	
 	private Graphics2D g2;
 	private float width;
@@ -135,6 +138,11 @@ public class AFPGraphics2D implements AFPGraphics {
 	public void drawString(char[] text, float x, float y) {
 		this.save();
 		this.setTextState(this.state.textState);
+		
+		if (this.state.textState.font == null) {
+			logger.severe("Can't render text {" + new String(text) + "} without font!");
+			return;
+		}
 		
 		float fontSize = this.state.textState.fontSize;
         Matrix parameters = new Matrix(fontSize, 0, 0, fontSize, 0, 0);
