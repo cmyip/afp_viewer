@@ -73,6 +73,13 @@ public class TestCase0 extends TestCase {
 		
 		if (!outputFolder.exists()) {
 			outputFolder.mkdirs();
+		} else {
+			File[] files = outputFolder.listFiles();
+			for (File f : files) {
+				if (f.isFile()) {
+					f.delete();
+				}
+			}
 		}
 		
 		File afpFile = new File(this.root, afpName);
