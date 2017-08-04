@@ -14,16 +14,8 @@ public final class GraphicsState implements Cloneable {
 	public AFPColor afpColor;
 	public Color color;
 	
-	public static class TextState {
-		public float posX;
-		public float posY;
-		public AFPFont font;
-		public float fontSize;
-		public AFPColor afpColor;
-		public Color color;
-		public float rotation;
-		public float ruleWidth;
-	}
+	public boolean stroke = false;
+	public boolean fill = false;
 	
 	public TextState textState;
 
@@ -47,5 +39,16 @@ public final class GraphicsState implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 		}
 		return clone;
+	}
+	
+	public static class TextState {
+		public float posX;
+		public float posY;
+		public AFPFont font;
+		public float fontSize;
+		public AFPColor afpColor;
+		public Color color;
+		public float rotation;
+		public float ruleWidth;
 	}
 }

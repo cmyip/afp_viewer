@@ -6,17 +6,18 @@ import me.lumpchen.xafp.sf.StructureField;
 
 public class GraphicsData extends AFPObject {
 	
+	private byte[] GOCAdat;
+	
 	public GraphicsData(StructureField structField) throws IOException {
 		super(structField);
 		this.parseData(this.structField.getData());
 	}
 	
 	private void parseData(byte[] data) throws IOException {
-		AFPInputStream in = new AFPInputStream(data);
-		try {
-			
-		} finally {
-			in.close();
-		}
+		this.GOCAdat = data;
+	}
+
+	public byte[] getData() {
+		return this.GOCAdat;
 	}
 }

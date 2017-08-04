@@ -7,29 +7,29 @@ import me.lumpchen.xafp.AFPConst.ColorSpace;
 public class AFPColor {
 
 	private ColorSpace cs;
-	private int[] value;
+	private int[] compenents;
 	
-	public AFPColor(ColorSpace cs, int[] value) {
-		if (cs.getComponentLength() != value.length) {
+	public AFPColor(ColorSpace cs, int[] compenents) {
+		if (cs.getComponentLength() != compenents.length) {
 			throw new java.lang.IllegalArgumentException("Color component length not match value length.");
 		}
 		this.cs = cs;
-		this.value = value;
+		this.compenents = compenents;
 	}
 	
 	public Color toJavaColor() {
 		if (this.cs == ColorSpace.RGB) {
-			int r = value[0] & 0xFF;
-			int g = value[1] & 0xFF;
-			int b = value[2] & 0xFF;
+			int r = compenents[0] & 0xFF;
+			int g = compenents[1] & 0xFF;
+			int b = compenents[2] & 0xFF;
 			Color c = new Color(r, g, b);
 			return c;
 		} else if (this.cs == ColorSpace.CMYK) {
 			float[] components = new float[4];
-			components[0] = (value[0] & 0xFF) / 255f;
-			components[1] = (value[1] & 0xFF) / 255f;
-			components[2] = (value[2] & 0xFF) / 255f;
-			components[3] = (value[3] & 0xFF) / 255f;
+			components[0] = (compenents[0] & 0xFF) / 255f;
+			components[1] = (compenents[1] & 0xFF) / 255f;
+			components[2] = (compenents[2] & 0xFF) / 255f;
+			components[3] = (compenents[3] & 0xFF) / 255f;
 			
 			float[] rgb = CMYKColorSpace.getInstance().toRGB(components);
 			Color c = new Color(rgb[0], rgb[1], rgb[2]);

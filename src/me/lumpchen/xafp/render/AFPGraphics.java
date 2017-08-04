@@ -1,6 +1,8 @@
 package me.lumpchen.xafp.render;
 
 import java.awt.Color;
+import java.awt.Shape;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
 import me.lumpchen.xafp.AFPColor;
@@ -30,6 +32,12 @@ public interface AFPGraphics {
     
     public void drawRule(float x1, float y1, float x2, float y2, boolean horizon);
     
+    public void beginPath(boolean stroke, boolean fill);
+    public GeneralPath getCurrentPath();
+    public void draw(Shape s);
+    public void fill(Shape s);
+    public void endPath();
+    
 	public void setAFPFont(AFPFont afpFont, float fontSize);
 	public void setTextPosX(float tx);
 	public void setTextPosY(float tx);
@@ -41,4 +49,5 @@ public interface AFPGraphics {
     
     public void antialiasOn();
     public void antialiasOff();
+    
 }

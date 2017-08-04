@@ -274,6 +274,45 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	}
 	
 	@Override
+	public void draw(Shape s) {
+		this.g2.setColor(this.state.color);
+//		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth));
+		if (this.state.stroke) {
+			this.g2.draw(s);	
+		}
+		if (this.state.fill) {
+			this.g2.fill(s);
+		}
+	}
+	
+	private GeneralPath currPath;
+	@Override
+	public void beginPath(boolean stroke, boolean fill) {
+		this.currPath = new GeneralPath();
+		this.state.stroke = stroke;
+		this.state.fill = fill;
+	}
+
+	@Override
+	public GeneralPath getCurrentPath() {
+		return this.currPath;
+	}
+
+	@Override
+	public void fill(Shape s) {
+		this.g2.fill(s);
+	}
+
+	@Override
+	public void endPath() {
+		if (this.currPath != null) {
+			this.currPath.closePath();
+		}
+	}
+	
+	//TODO: Need use Stack to do save/restore
+	
+	@Override
 	public void save() {
 		this.savedGraphics = this.g2;
 		this.g2 = (Graphics2D) this.g2.create();

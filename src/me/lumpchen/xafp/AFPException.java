@@ -12,7 +12,12 @@ public class AFPException extends RuntimeException {
 		super(msg);
 	}
 	
+	public AFPException(Throwable t) {
+		super(t);
+	}
+	
 	public AFPException(String msg, Throwable t) {
 		super(msg, t);
 	}
+	
 }

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.Identifier.Tag;
+import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.triplet.Triplet;
 
 public class ObjectEnvironmentGroup extends AFPContainer {
@@ -17,6 +17,9 @@ public class ObjectEnvironmentGroup extends AFPContainer {
 	private ObjectAreaPosition objectAreaPosition;
 	private MapImageObject mapImageObject;
 	private ImageDataDescriptor imageDataDescriptor;
+	
+	private MapGraphicsObject mapGraphicsObject;
+	private GraphicsDataDescriptor graphicsDataDescriptor;
 	
 	public ObjectEnvironmentGroup(StructureField structField) throws IOException {
 		super(structField);
@@ -34,6 +37,10 @@ public class ObjectEnvironmentGroup extends AFPContainer {
 				this.mapImageObject = (MapImageObject) child;
 			} else if (child instanceof ImageDataDescriptor) {
 				this.imageDataDescriptor = (ImageDataDescriptor) child;
+			} else if (child instanceof MapGraphicsObject) {
+				this.mapGraphicsObject = (MapGraphicsObject) child;
+			} else if (child instanceof GraphicsDataDescriptor) {
+				this.graphicsDataDescriptor = (GraphicsDataDescriptor) child;
 			}
 		}
 	}
@@ -93,6 +100,14 @@ public class ObjectEnvironmentGroup extends AFPContainer {
 
 	public ImageDataDescriptor getImageDataDescriptor() {
 		return imageDataDescriptor;
+	}
+	
+	public MapGraphicsObject getMapGraphicsObject() {
+		return mapGraphicsObject;
+	}
+
+	public GraphicsDataDescriptor getGraphicsDataDescriptor() {
+		return graphicsDataDescriptor;
 	}
 
 }
