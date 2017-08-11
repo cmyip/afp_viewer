@@ -4,19 +4,21 @@ import java.io.IOException;
 
 import me.lumpchen.xafp.AFPInputStream;
 
-public class ImageSubsampling {
-
-	public static final int ID = 0xFECE;
+public class LUTID {
+	public static final int ID = 0x97;
 	
-	public ImageSubsampling() {
-		
+	private int LUTID;
+	
+	public LUTID() {
+	}
+	
+	public int getLUTID() {
+		return this.LUTID;
 	}
 	
 	public void read(AFPInputStream in) throws IOException {
 		int length = in.readUBin(2);
 		
-		if (length > 0) {
-			in.readBytes(length);
-		}
+		this.LUTID = in.readCode();
 	}
 }

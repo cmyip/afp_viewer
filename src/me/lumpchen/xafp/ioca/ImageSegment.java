@@ -26,8 +26,20 @@ public class ImageSegment {
 		this.imageContent = imageContent;
 	}
 	
-	public BufferedImage getJavaImage() {
-		return this.imageContent.getJavaImage();
+	public BufferedImage getBufferedImage() {
+		return this.imageContent.getBufferedImage();
+	}
+	
+	public boolean isTile() {
+		return this.imageContent.isTile();
+	}
+	
+	public Tile getTile(int tileIndex) {
+		return this.imageContent.getTile(tileIndex);
+	}
+	
+	public BufferedImage getBufferedImage(Tile tile) {
+		return this.imageContent.getBufferedImage(tile);
 	}
 	
 	public void read(AFPInputStream in) throws IOException {

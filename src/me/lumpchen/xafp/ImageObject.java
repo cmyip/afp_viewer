@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.lumpchen.xafp.ioca.ImageSegment;
+import me.lumpchen.xafp.ioca.Tile;
 import me.lumpchen.xafp.render.AFPGraphics;
 import me.lumpchen.xafp.render.Renderable;
 import me.lumpchen.xafp.render.ResourceManager;
@@ -79,7 +80,15 @@ public class ImageObject extends AFPContainer implements Renderable {
 			graphics.rotate(Math.toRadians(rotation));
 		}
 		
-		BufferedImage img = this.imgSegment.getJavaImage();
+		BufferedImage img = null;
+		if (this.imgSegment.isTile()) {
+			Tile tile = this.imgSegment.getTile(0);
+			w = (float) aeg.unit2Point(tile.getCol());
+			h = (float) aeg.unit2Point(tile.getRow());
+			img = this.imgSegment.getBufferedImage(tile);
+		} else {
+			img = this.imgSegment.getBufferedImage();
+		}
 		if (img != null) {
 			graphics.drawImage(img, 0, 0, w, h);
 		}
@@ -116,7 +125,7 @@ public class ImageObject extends AFPContainer implements Renderable {
 	
 	public BufferedImage getJavaImage() {
 		if (this.imgSegment != null) {
-			return this.imgSegment.getJavaImage();
+			return this.imgSegment.getBufferedImage();
 		}
 		return null;
 	}

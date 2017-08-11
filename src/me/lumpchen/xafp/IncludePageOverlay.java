@@ -107,6 +107,7 @@ public class IncludePageOverlay extends AFPObject implements Renderable {
 				}
 			}
 		}
+		
 		return a;
 	}
 	

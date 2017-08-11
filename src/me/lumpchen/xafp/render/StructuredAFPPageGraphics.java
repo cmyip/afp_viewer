@@ -1,5 +1,6 @@
 package me.lumpchen.xafp.render;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,6 +14,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import me.lumpchen.xafp.AFPColor;
@@ -35,8 +37,10 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	protected Matrix textMatrix;
 	protected Matrix textLineMatrix;
 	
-	protected Graphics2D savedGraphics;
-	protected GraphicsState savedState;
+	protected GeneralPath currPath;
+	
+	protected Stack<Graphics2D> g2Stack = new Stack<Graphics2D>();
+	protected Stack<GraphicsState> gsStack = new Stack<GraphicsState>();
 	
 	public StructuredAFPPageGraphics(Graphics2D g2, float width, float height) {
 		this.g2 = g2;
@@ -275,17 +279,22 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	
 	@Override
 	public void draw(Shape s) {
+//		g2.setColor(Color.black);
+//		g2.drawString("ABCD", 500, 200);
+		
 		this.g2.setColor(this.state.color);
-//		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth));
+		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth));
+
 		if (this.state.stroke) {
-			this.g2.draw(s);	
+			this.g2.draw(s);
 		}
 		if (this.state.fill) {
+//			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            
 			this.g2.fill(s);
 		}
 	}
 	
-	private GeneralPath currPath;
 	@Override
 	public void beginPath(boolean stroke, boolean fill) {
 		this.currPath = new GeneralPath();
@@ -310,25 +319,22 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		}
 	}
 	
-	//TODO: Need use Stack to do save/restore
-	
 	@Override
 	public void save() {
-		this.savedGraphics = this.g2;
-		this.g2 = (Graphics2D) this.g2.create();
+		Graphics2D savedGraphics = this.g2;
+		GraphicsState savedState = this.state;
+		this.g2Stack.push(savedGraphics);
+		this.gsStack.push(savedState);
 		
-		this.savedState = this.state;
+		this.g2 = (Graphics2D) this.g2.create();
 		this.state = this.state.clone();
 	}
 
 	@Override
 	public void restore() {
 		this.g2.dispose();
-		this.g2 = this.savedGraphics;
-		this.savedGraphics = null;
-		
-		this.state = this.savedState;
-		this.savedState = null;
+		this.g2 = this.g2Stack.pop();
+		this.state = this.gsStack.pop();
 	}
 	
 	@Override

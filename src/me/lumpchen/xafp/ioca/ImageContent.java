@@ -4,11 +4,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 import me.lumpchen.xafp.ioca.ImageEncoding.BitOrder;
 import me.lumpchen.xafp.ioca.ImageEncoding.CompressionAlgrithm;
@@ -24,14 +28,25 @@ public class ImageContent {
 	
 	private ImageSize size;
 	private ImageEncoding encoding;
-	private int IDESize;
-	private int lutID;
+	private BandImage bandImage;
+	private LUTID LUTID;
+	private IDESize IDESize;
 	private int[] bands;
 	private IDEStructure ideStructure;
 	private ExternalAlgorithmSpecification alg;
 	private byte[] imageData;
 	
+	private List<Tile> tileImageList;
+
+	
 	public ImageContent() {
+	}
+	
+	public boolean isTile() {
+		if (this.tileImageList == null || this.tileImageList.isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 	
 	public void setImageSize(ImageSize size) {
@@ -40,14 +55,6 @@ public class ImageContent {
 	
 	public void setImageEncoding(ImageEncoding encoding) {
 		this.encoding = encoding;
-	}
-	
-	public void setIDESize(int size) {
-		this.IDESize = size;
-	}
-	
-	public void setLUTID(int lutID) {
-		this.lutID = lutID;
 	}
 	
 	public void setImageBands(int[] bands) {
@@ -66,9 +73,9 @@ public class ImageContent {
 		return this.imageData;
 	}
 	
-	public byte[] decodeData() {
-		CompressionAlgrithm compressionAlg = this.encoding.getAlgorhtim();
-		BitOrder bitOrder = this.encoding.getBitOrder();
+	private static byte[] decodeData(ImageEncoding encoding, int col, int row, byte[] imageData) {
+		CompressionAlgrithm compressionAlg = encoding.getAlgorhtim();
+		BitOrder bitOrder = encoding.getBitOrder();
 		
 		int compression = TIFFExtension.COMPRESSION_CCITT_T6;
 		if (compressionAlg == CompressionAlgrithm.G4) {
@@ -80,9 +87,7 @@ public class ImageContent {
 				order = TIFFExtension.FILL_RIGHT_TO_LEFT;
 			}
 			try {
-				InputStream src = new ByteArrayInputStream(this.imageData);
-				int col = this.size.getCol();
-				int row = this.size.getRow();
+				InputStream src = new ByteArrayInputStream(imageData);
 				byte[] dest = CCITTFaxxFilter.decode(src, col, row, compression, order, false, false);
 				return dest;
 			} catch (IOException e) {
@@ -90,17 +95,18 @@ public class ImageContent {
 			}
 			
 		} else if (compressionAlg == CompressionAlgrithm.JPEG) {
-			return this.imageData;
+			return imageData;
 		} else if (compressionAlg == CompressionAlgrithm.None) {
-			return this.imageData;
+			return imageData;
 		}
 		
 		throw new java.lang.IllegalArgumentException("Unspported compression algoritm: " + compressionAlg);
 	}
 	
-	private BufferedImage getBufferedImage() throws IOException {
-		CompressionAlgrithm alg = this.encoding.getAlgorhtim();
-		byte[] decoded = this.decodeData();
+	private static BufferedImage getBufferedImage(ImageEncoding encoding, IDEStructure ideStructure,
+			int col, int row, byte[] imageData) throws IOException {
+		CompressionAlgrithm alg = encoding.getAlgorhtim();
+		byte[] decoded = decodeData(encoding, col, row, imageData);
 		
 		if (alg == CompressionAlgrithm.G4) {
 //			int row = this.size.getRow();
@@ -121,8 +127,7 @@ public class ImageContent {
 //			img.setData(newRaster);
 //			return img;
 			
-			int row = this.size.getRow();
-			BufferedImage img = new BufferedImage(this.size.getCol(), row, BufferedImage.TYPE_BYTE_BINARY);
+			BufferedImage img = new BufferedImage(col, row, BufferedImage.TYPE_BYTE_BINARY);
 			WritableRaster newRaster = img.getRaster();
 
 			int size = newRaster.getDataBuffer().getSize();
@@ -135,12 +140,27 @@ public class ImageContent {
 			BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(decoded));
 			return bimg;
 		} else if (alg == CompressionAlgrithm.None) {
-			return null;
+			BufferedImage img = new BufferedImage(col, row, BufferedImage.TYPE_BYTE_BINARY);
+			WritableRaster newRaster = img.getRaster();
+
+			int size = newRaster.getDataBuffer().getSize();
+			if (ideStructure != null && ideStructure.isAdditive()) {
+				for (int i = 0; i < size; i++) {
+					newRaster.getDataBuffer().setElem(i, (decoded[i] & 0xFF));
+				}
+			} else {
+				for (int i = 0; i < size; i++) {
+					newRaster.getDataBuffer().setElem(i, ((~decoded[i]) & 0xFF));
+				}
+			}
+
+			img.setData(newRaster);
+			return makeTransprency(img);
 		}
 		throw new java.lang.IllegalArgumentException("Unspported compression algoritm: " + alg);
 	}
 	
-	private BufferedImage makeTransprency(BufferedImage img) {
+	private static BufferedImage makeTransprency(BufferedImage img) {
 		int w = img.getWidth();
 		int h = img.getHeight();
 		
@@ -156,10 +176,46 @@ public class ImageContent {
 		return a;
 	}
 
-	public BufferedImage getJavaImage() {
+	public BufferedImage getBufferedImage() {
 		try {
-			BufferedImage img = this.getBufferedImage();
-//			ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
+			if (!this.isTile()) {
+				BufferedImage img = getBufferedImage(this.encoding, this.ideStructure,
+						this.size.getCol(), this.size.getRow(), this.imageData);
+//				ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
+				return img;
+			} else {
+				if (!this.tileImageList.isEmpty()) {
+					for (Tile tile : this.tileImageList) {
+						BufferedImage img = getBufferedImage(tile.getImageEncoding(), this.ideStructure,
+								tile.getCol(), tile.getRow(), tile.getData());
+						
+						ImageIO.write(img, "jpg", new File("C:/temp/afp/xpression/teset.jpg"));
+						return img;
+					}
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Tile getTile(int tileIndex) {
+		if (!this.isTile()) {
+			throw new AFPException("Not a tile image.");
+		}
+		if (tileIndex < 0 || tileIndex >= this.tileImageList.size()) {
+			throw new AFPException("Tile index out of boundary.");
+		}
+		return this.tileImageList.get(tileIndex);
+	}
+	
+	public BufferedImage getBufferedImage(Tile tile) {
+		BufferedImage img;
+		try {
+			img = getBufferedImage(tile.getImageEncoding(), this.ideStructure,
+					tile.getCol(), tile.getRow(), tile.getData());
 			return img;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -190,21 +246,15 @@ public class ImageContent {
 				ImageEncoding encoding = new ImageEncoding();
 				encoding.read(in);
 				this.setImageEncoding(encoding);
-			} else if (id == ImageSegment.IDE_Size_ID) {
-				length = in.readUBin(1);
-				int IDESZ = in.readUBin(1);
-				this.setIDESize(IDESZ);
-			} else if (id == ImageSegment.IDE_LUT_ID) {
-				length = in.readUBin(1);
-				int LUTID = in.readCode(1);
-				this.setLUTID(LUTID);
-			} else if (id == ImageSegment.Band_Image_ID) {
-				length = in.readUBin(1);
-				int BCOUNT = in.readUBin(1);
-				int[] BITCN = new int[BCOUNT];
-				for (int i = 0; i < BCOUNT; i++) {
-					BITCN[i] = in.readUBin(1);
-				}
+			} else if (id == IDESize.ID) {
+				this.IDESize = new IDESize();
+				this.IDESize.read(in);
+			} else if (id == LUTID.ID) {
+				this.LUTID = new LUTID();
+				this.LUTID.read(in);
+			} else if (id == BandImage.ID) {
+				this.bandImage = new BandImage();
+				this.bandImage.read(in);
 			} else if (id == IDEStructure.ID) {
 				IDEStructure ide = new IDEStructure();
 				ide.read(in);
@@ -219,6 +269,17 @@ public class ImageContent {
 					ImageData ipd = new ImageData();
 					ipd.read(in);
 					imageDataStream.write(ipd.getData());
+				} else if (id_1 == TileTOC.ID_TILE_TOC) {
+					TileTOC toc = new TileTOC();
+					toc.read(in);
+				}
+			} else if (id == Tile.Begin_ID) {
+				Tile tile = new Tile();
+				tile.read(in);
+				
+				if (this.tileImageList == null) {
+					this.tileImageList = new ArrayList<Tile>();
+					this.tileImageList.add(tile);
 				}
 			} else if (id == ImageContent.End) {
 				this.imageData = imageDataStream.toByteArray();

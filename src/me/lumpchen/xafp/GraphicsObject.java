@@ -28,6 +28,13 @@ public class GraphicsObject extends AFPContainer implements Renderable {
 		this.parseData(this.structField.getData());
 	}
 	
+	public String getName() {
+		if (this.GdoName != null) {
+			return AFPConst.ebcdic2Ascii(this.GdoName);
+		}
+		return "";
+ 	}
+	
 	private void parseData(byte[] data) throws IOException {
 		if (data == null) {
 			return;
@@ -73,10 +80,6 @@ public class GraphicsObject extends AFPContainer implements Renderable {
 		if (this.segment != null) {
 			this.segment.render(aeg, graphics, resourceManager);
 		}
-//		BufferedImage img = this.imgSegment.getJavaImage();
-//		if (img != null) {
-//			graphics.drawImage(img, 0, 0, w, h);
-//		}
 		graphics.antialiasOn();
 		graphics.restore();
 		

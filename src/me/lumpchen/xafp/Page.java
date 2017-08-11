@@ -54,22 +54,20 @@ public class Page extends AFPContainer {
 	}
 	
 	public void render(AFPGraphics graphics, ResourceManager resourceManager) {
-		for (PresentationTextObject ptxObj : this.ptxObjList) {
-//			graphics.beginText();
-			for (PresentationTextData ptx : ptxObj.getPTX()) {
-				List<Function> cs = ptx.getControlSequence();
-				for (Function func : cs) {
-					func.render(this.aeg, graphics, resourceManager);
-				}
-			}
-//			graphics.endText();
-		}
-		
 		AFPObject[] children = this.getChildren();
 		for (AFPObject child : children) {
 			if (child instanceof Renderable) {
 				Renderable renderObj = (Renderable) child;
 				renderObj.render(this.aeg, graphics, resourceManager);
+			}
+		}
+		
+		for (PresentationTextObject ptxObj : this.ptxObjList) {
+			for (PresentationTextData ptx : ptxObj.getPTX()) {
+				List<Function> cs = ptx.getControlSequence();
+				for (Function func : cs) {
+					func.render(this.aeg, graphics, resourceManager);
+				}
 			}
 		}
 	}
