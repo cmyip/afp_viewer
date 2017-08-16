@@ -36,7 +36,7 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-/*		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
 		while (readers.hasNext()) {
 		    System.out.println("reader: " + readers.next());
 		}
@@ -48,7 +48,7 @@ public class Main {
 		registry.setOrdering(ImageReaderSpi.class, sunProvider, twelvemonkeysProvider);
 		
 		readers = ImageIO.getImageReadersByFormatName("JPEG");
-		System.out.println("reader: " + readers.next());*/
+		System.out.println("reader: " + readers.next());
 		
 		if (args.length == 0) {
 			showViewer();

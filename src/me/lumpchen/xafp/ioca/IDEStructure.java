@@ -33,11 +33,18 @@ public class IDEStructure {
 	 * 	X'04' CMYK
 	 * 	X'12' YCbCr
 	 * */
+	public static final int RGB = 0x01;
+	public static final int YCrCb = 0x02;
+	public static final int CMYK = 0x04;
+	public static final int YCbCr = 0x12;
 	private int FORMAT;
 	private int SIZE1, SIZE2, SIZE3, SIZE4;
 	
 	public IDEStructure() {
-		
+	}
+	
+	public int getFormat() {
+		return this.FORMAT;
 	}
 	
 	public boolean isAdditive() {

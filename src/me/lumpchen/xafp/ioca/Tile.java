@@ -1,10 +1,17 @@
 package me.lumpchen.xafp.ioca;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 
 public class Tile {
@@ -20,10 +27,10 @@ public class Tile {
 	private TilePosition tilePosition;
 	private TileSize tileSize;
 	private ImageEncoding encoding;
-	private IDESize IDESize;
-	private LUTID LUTID;
+	private IDESize ideSize;
+	private LUTID lutID;
 	private BandImage bandImage;
-	private IDEStructure IDEStructure;
+	private IDEStructure ideStructure;
 	private TileSetColor tileSetColor;
 	private IncludeTile includeTile;
 	
@@ -32,6 +39,14 @@ public class Tile {
 	private BandImageData[] bandImageDataArray;
 	
 	public Tile() {
+	}
+	
+	public int getPosX() {
+		return (int) this.tilePosition.XOFFSET;
+	}
+	
+	public int getPosY() {
+		return (int) this.tilePosition.YOFFSET;
 	}
 	
 	public int getCol() {
@@ -44,6 +59,25 @@ public class Tile {
 	
 	public ImageEncoding getImageEncoding() {
 		return this.encoding;
+	}
+	
+	public boolean isBandImage() {
+		return this.bandImage != null && this.bandImageDataArray != null;
+	}
+	
+	public BufferedImage getBufferedImage() {
+		BufferedImage img = null;
+		try {
+			if (!this.isBandImage()) {
+				img = IOCAUtil.getBufferedImage(this.encoding, this.ideStructure,
+							this.getCol(), this.getRow(), this.getData());	
+			} else {
+				img = IOCAUtil.getBandImage(bandImageDataArray, encoding, ideStructure, this.getCol(), this.getRow());
+			}
+		} catch (IOException e) {
+			throw new AFPException("Image processing error: ", e);
+		}
+		return img;
 	}
 	
 	public byte[] getData() {
@@ -64,12 +98,27 @@ public class Tile {
 				ByteArrayOutputStream imageDataStream = new ByteArrayOutputStream();
 				for (BandImageData data : this.bandImageDataArray) {
 					imageDataStream.write(data.getData());
+					
+					FileOutputStream os = new FileOutputStream("c:/im" + data.getData().length + ".jpg");
+					os.write(data.getData());
+					os.close();
+					
+					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(data.getData()));
+					Raster raster = bimg.getData();
+					
+					System.out.println(bimg.getWidth());
 				}
 				
 				imageDataStream.flush();
 				imageDataStream.close();
 				
 				this.data = imageDataStream.toByteArray();
+				
+				int[] idata = new int[this.data.length];
+				for (int i = 0; i < this.data.length; i++) {
+					idata[i] = this.data[i] & 0xFF;
+				}
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -93,17 +142,17 @@ public class Tile {
 				this.encoding = new ImageEncoding();
 				this.encoding.read(in);
 			} else if (id == IDESize.ID) {
-				this.IDESize = new IDESize();
-				this.IDESize.read(in);
+				this.ideSize = new IDESize();
+				this.ideSize.read(in);
 			} else if (id == LUTID.ID) {
-				this.LUTID = new LUTID();
-				this.LUTID.read(in);
+				this.lutID = new LUTID();
+				this.lutID.read(in);
 			} else if (id == BandImage.ID) {
 				this.bandImage = new BandImage();
 				this.bandImage.read(in);
 			} else if (id == IDEStructure.ID) {
-				this.IDEStructure = new IDEStructure();
-				this.IDEStructure.read(in);
+				this.ideStructure = new IDEStructure();
+				this.ideStructure.read(in);
 			} else if (id == TileSetColor.ID) {
 				this.tileSetColor = new TileSetColor();
 				this.tileSetColor.read(in);

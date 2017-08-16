@@ -3,6 +3,7 @@ package me.lumpchen.xafp.ioca;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPInputStream;
 
 public class ImageSegment {
@@ -22,6 +23,10 @@ public class ImageSegment {
 	public ImageSegment() {
 	}
 	
+	public String getName() {
+		return AFPConst.ebcdic2Ascii(this.name);
+	}
+	
 	public void setImageContent(ImageContent imageContent) {
 		this.imageContent = imageContent;
 	}
@@ -39,7 +44,7 @@ public class ImageSegment {
 	}
 	
 	public BufferedImage getBufferedImage(Tile tile) {
-		return this.imageContent.getBufferedImage(tile);
+		return tile.getBufferedImage();
 	}
 	
 	public void read(AFPInputStream in) throws IOException {

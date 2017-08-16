@@ -81,8 +81,11 @@ public class ImageObject extends AFPContainer implements Renderable {
 		}
 		
 		BufferedImage img = null;
+		float dx = 0, dy = 0;
 		if (this.imgSegment.isTile()) {
 			Tile tile = this.imgSegment.getTile(0);
+			dx = (float) aeg.unit2Point(tile.getPosX());
+			dy = (float) aeg.unit2Point(tile.getPosY());
 			w = (float) aeg.unit2Point(tile.getCol());
 			h = (float) aeg.unit2Point(tile.getRow());
 			img = this.imgSegment.getBufferedImage(tile);
@@ -90,7 +93,7 @@ public class ImageObject extends AFPContainer implements Renderable {
 			img = this.imgSegment.getBufferedImage();
 		}
 		if (img != null) {
-			graphics.drawImage(img, 0, 0, w, h);
+			graphics.drawImage(img, dx, dy, w, h);
 		}
 		graphics.antialiasOn();
 		graphics.restore();
