@@ -142,9 +142,9 @@ public class Main {
 		
 		RenderParameter para = new RenderParameter();
 		
-		para.usePageResolution = true;
-//		para.usePageResolution = false;
-//		para.resolution = 96f;
+//		para.usePageResolution = true;
+		para.usePageResolution = false;
+		para.resolution = 600f;
 		
 		try {
 			if (afpFile.isDirectory()) {

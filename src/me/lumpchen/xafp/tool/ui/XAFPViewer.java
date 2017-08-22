@@ -32,7 +32,7 @@ public class XAFPViewer {
 	
 	private JToolBar toolBar = new JToolBar();
 	
-	public static int[] ZOOM_RATIO = {25, 50, 100, 150, 200, 300};
+	public static int[] ZOOM_RATIO = {25, 50, 75, 100, 150, 200, 300, 600, 1200};
 	private int zoomIndex = 1;
 	private int zoom;
 	private ViewerParameter paras = new ViewerParameter();

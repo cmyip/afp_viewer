@@ -1,6 +1,5 @@
 package me.lumpchen.xafp.render;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -140,6 +139,8 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		
 		if (tstate.rotation == 0) {
 			this.g2.translate(0, 0);
+		}  else if (tstate.rotation == 90) {
+			this.g2.translate(this.width, 0);	
 		}  else if (tstate.rotation == 180) {
 			this.g2.translate(this.width, this.height);	
 		} else if (tstate.rotation == 270) {
@@ -184,7 +185,7 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
     		}
     		
 			sb.append(Character.toChars(unicode)[0]);
-			sb.append(gcgid);
+//			sb.append(gcgid);
 			try {
 				Matrix ctm = this.state.getCTM();
 				Matrix textRenderingMatrix = parameters.multiply(this.textLineMatrix).multiply(this.textMatrix).multiply(ctm);
