@@ -21,7 +21,13 @@ public class SetLineWidthOrder extends DrawingOrder {
 	
 	@Override
 	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
-		
+		float lineWidth;
+		if (this.MH == 0x01 || this.MH == 0x01) {
+			lineWidth = 1;
+		} else {
+			lineWidth = (float) ((this.MH) * 0.01 * 72);
+		}
+		graphics.setLineWidth(lineWidth);
 	}
 
 	@Override

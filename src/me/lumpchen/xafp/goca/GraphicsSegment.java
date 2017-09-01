@@ -98,7 +98,26 @@ public class GraphicsSegment implements Renderable {
 		if (this.orderList == null) {
 			return;
 		}
-		for (DrawingOrder order : this.orderList) {
+
+		boolean areaBegin = false;
+		for (int i = 0; i < this.orderList.size(); i++) {
+			DrawingOrder order = this.orderList.get(i);
+			if (order instanceof BeginAreaOrder) {
+				areaBegin = true;
+			} else if (order instanceof EndAreaOrder) {
+				areaBegin = false;
+			} else if (order instanceof LineOrder) {
+				if (!areaBegin) {
+					graphics.beginPath(true, false);
+					order.render(aeg, graphics, resourceManager);
+					while ((i + 1) < (this.orderList.size() - 1) && this.orderList.get(i + 1) instanceof LineOrder) {
+						this.orderList.get(++i).render(aeg, graphics, resourceManager);
+					}
+					graphics.endPath();
+					continue;
+				}
+			}
+			
 			order.render(aeg, graphics, resourceManager);
 		}
 	}

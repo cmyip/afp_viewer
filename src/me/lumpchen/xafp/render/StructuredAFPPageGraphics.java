@@ -280,9 +280,6 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	
 	@Override
 	public void draw(Shape s) {
-//		g2.setColor(Color.black);
-//		g2.drawString("ABCD", 500, 200);
-		
 		this.g2.setColor(this.state.color);
 		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth));
 
@@ -290,8 +287,6 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 			this.g2.draw(s);
 		}
 		if (this.state.fill) {
-//			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-            
 			this.g2.fill(s);
 		}
 	}
@@ -301,8 +296,10 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		this.currPath = new GeneralPath();
 		this.state.stroke = stroke;
 		this.state.fill = fill;
+		
+		this.beginGraphics(stroke, fill);
 	}
-
+	
 	@Override
 	public GeneralPath getCurrentPath() {
 		return this.currPath;
@@ -317,6 +314,12 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	public void endPath() {
 		if (this.currPath != null) {
 			this.currPath.closePath();
+			this.draw(this.currPath);
+			
+			this.markPath(this.currPath);
+			this.currPath = null;
+			this.markCurrentGraphicsState(this.state);
+			this.endGraphics();
 		}
 	}
 	
@@ -359,6 +362,6 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	abstract protected void markCurrentGraphicsState(GraphicsState state);
 	abstract protected void appendChar(String unicode, Integer cid, Point2D origin, AffineTransform at, Shape glyph);
 	abstract protected void markOutline(Shape outline);
-	
+	abstract protected void markPath(Shape path);
 }
 

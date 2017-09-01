@@ -16,6 +16,7 @@ public final class GraphicsState implements Cloneable {
 	
 	public boolean stroke = false;
 	public boolean fill = false;
+	public boolean isAreaBegin = false;
 	
 	public TextState textState;
 

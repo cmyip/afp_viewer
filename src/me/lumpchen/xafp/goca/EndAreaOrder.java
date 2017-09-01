@@ -20,10 +20,11 @@ public class EndAreaOrder extends DrawingOrder {
 	
 	@Override
 	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
+//		graphics.endPath();
+//		if (graphics.getCurrentPath() != null) {
+//			graphics.draw(graphics.getCurrentPath());			
+//		}
 		graphics.endPath();
-		if (graphics.getCurrentPath() != null) {
-			graphics.draw(graphics.getCurrentPath());			
-		}
 	}
 
 	@Override

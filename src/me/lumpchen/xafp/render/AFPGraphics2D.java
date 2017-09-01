@@ -21,7 +21,7 @@ public class AFPGraphics2D extends StructuredAFPPageGraphics {
 	}
 
 	@Override
-	public void beginGraphics() {
+	public void beginGraphics(boolean stroke, boolean fill) {
 	}
 
 	@Override
@@ -50,6 +50,11 @@ public class AFPGraphics2D extends StructuredAFPPageGraphics {
 
 	@Override
 	protected void markOutline(Shape outline) {
+	}
+
+	@Override
+	protected void markPath(Shape path) {
+		
 	}
 
 }

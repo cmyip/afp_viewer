@@ -20,7 +20,7 @@ public class DrawBaxisRule extends Function {
 	@Override
 	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
 		if (graphics instanceof StructuredAFPGraphics) {
-			((StructuredAFPGraphics) graphics).beginGraphics();
+			((StructuredAFPGraphics) graphics).beginGraphics(true, true);
 		}
 		
 		float len = (float) aeg.unit2Point(this.RLENGTH);

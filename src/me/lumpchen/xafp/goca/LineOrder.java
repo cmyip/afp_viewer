@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 import me.lumpchen.xafp.ActiveEnvironmentGroup;
 import me.lumpchen.xafp.render.AFPGraphics;
@@ -34,16 +35,14 @@ public class LineOrder extends DrawingOrder {
 		if (this.points == null || this.points.size() <= 0) {
 			return;
 		}
-		GeneralPath path = null;
-		if (graphics.getCurrentPath() != null) {
-			path = graphics.getCurrentPath();
-		} else {
-			path = new GeneralPath();
+		GeneralPath path =  graphics.getCurrentPath();
+		if (path == null) {
+			throw new AFPException("GeneralPath not construct yet.");
 		}
 		
 		int[] p = this.points.get(0);
 		double x = aeg.unit2Point(p[0]);
-		double y = aeg.unit2Point(-p[1]);
+		double y = aeg.unit2Point(p[1]);
 		if (position == Position.Given) {
 			path.moveTo(x, y);
 		} else {
@@ -52,10 +51,9 @@ public class LineOrder extends DrawingOrder {
 		for (int i = 1; i < this.points.size(); i++) {
 			p = this.points.get(i);
 			x = aeg.unit2Point(p[0]);
-			y = aeg.unit2Point(-p[1]);
+			y = aeg.unit2Point(p[1]);
 			path.lineTo(x, y);
 		}
-
 	}
 
 	@Override
@@ -69,8 +67,8 @@ public class LineOrder extends DrawingOrder {
 				break;
 			}
 			int[] point = new int[2];
-			point[0] = in.readSBin(2);
-			point[1] = in.readSBin(2);
+			point[0] = Math.abs(in.readSBin(2));
+			point[1] = Math.abs(in.readSBin(2));
 			this.points.add(point);
 			read += 4;
 		}

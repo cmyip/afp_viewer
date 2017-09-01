@@ -5,6 +5,18 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +30,8 @@ public class TestCase0 extends TestCase {
 
 	private static Logger logger = Logger.getLogger(TestCase0.class.getName());
 	
+	private static final int TIMEOUT = 10000;
+	private static final int CPU_CORE_NUM = Runtime.getRuntime().availableProcessors();
 	File root = new File("C:/dev/xdiff/testcases/xafp");
 	
 	public void test_img() {
@@ -99,19 +113,20 @@ public class TestCase0 extends TestCase {
 			logger.info("Complete comparing bitmaps: " + outputFolder.getAbsolutePath());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Bitmap compare fail: " + afpFile.getAbsolutePath(), e);
+			result = false;
 		}
 		assertTrue(result);
 		return result;
 	}
 	
-	private boolean compare(File outputFolder, final String imageFomat) {
-		File baseFolder = new File(outputFolder, "baseline");
+	private boolean compare(File outputFolder, final String imageFomat) throws InterruptedException, ExecutionException {
+		final File baseFolder = new File(outputFolder, "baseline");
 		if (!baseFolder.exists()) {
 			logger.severe("Not find baseline folder: " + baseFolder.getAbsolutePath());
 			return false;
 		}
 		
-		File[] images = outputFolder.listFiles(new FileFilter() {
+		final File[] images = outputFolder.listFiles(new FileFilter() {
 
 			@Override
 			public boolean accept(File pathname) {
@@ -123,13 +138,63 @@ public class TestCase0 extends TestCase {
 			
 		});
 		
+		final List<Callable<Map<String, Boolean>>> partitions = new ArrayList<Callable<Map<String, Boolean>>>();
+		int total = images.length;
+    	int partition = CPU_CORE_NUM * 2;
+    	int pagesPerPartition = total / partition;
+    	if (total <= partition) {
+    		pagesPerPartition = 1;
+    		partition = total;
+    	} else {
+    		pagesPerPartition = total / partition + 1;
+    	}
+    	for (int i = 0; i < partition; i++) {
+    		final int begin = i * pagesPerPartition;
+    		if (begin >= total) {
+    			break;
+    		}
+    		int nend = begin + pagesPerPartition - 1;
+    		final int end = nend > (total - 1) ? (total - 1) : nend;
+    		
+    		partitions.add(new Callable<Map<String, Boolean>>() {
+				@Override
+				public Map<String, Boolean> call() throws Exception {
+					Map<String, Boolean> ret = compare(begin, end, images, baseFolder);
+					return ret;
+				}
+    		});
+    	}
+		
+    	final ExecutorService executorPool = Executors.newFixedThreadPool(CPU_CORE_NUM);
+		final List<Future<Map<String, Boolean>>> resultFromParts = executorPool.invokeAll(partitions, TIMEOUT, TimeUnit.SECONDS);
+		executorPool.shutdown();
+		
 		boolean result = true;
-		for (File img : images) {
+		for (final Future<Map<String, Boolean>> ret : resultFromParts) {
+			Map<String, Boolean> map = ret.get();
+			Iterator<Entry<String, Boolean>> it = map.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<String, Boolean> entry = it.next();
+				String name = entry.getKey();
+				boolean value = entry.getValue();
+				result &= value;
+				System.out.println(name + " : " + (value ? "identity" : "different"));
+			}
+		}
+		
+		return result;
+	}
+	
+	private Map<String, Boolean> compare(int begin, int end, File[] images, File baseFolder) {
+		Map<String, Boolean> resultMap = new HashMap<String, Boolean>(end - begin + 1);
+		for (int i = begin; i <= end; i++) {
+			File img = images[i];
 			String name = img.getName();
 			File baseline = new File(baseFolder, name);
 			if (!baseline.exists()) {
 				logger.severe("Not find baseline image: " + baseline.getAbsolutePath());
-				return false;
+				resultMap.put(name, false);
+				continue;
 			}
 			
 			BufferedImage bimg1;
@@ -143,15 +208,23 @@ public class TestCase0 extends TestCase {
 					logger.log(Level.WARNING, "Different with baseline: " + baseline.getAbsolutePath());
 					
 					ImageIO.write(diff, "jpg", new File(img.getParentFile(), img.getName() + ".diff.jpg"));
-					result = false;
+					resultMap.put(name, false);
 				} else {
+					resultMap.put(name, true);
 					logger.log(Level.INFO, "Same as baseline: " + baseline.getAbsolutePath());
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.log(Level.SEVERE, "bitmap generation fail: " + img.getAbsolutePath(), e);
-				result = false;
+				resultMap.put(name, false);
 			}
 		}
-		return result;
+		return resultMap;
 	}
+	
+	final static class CompareResult {
+		public String baseImageName;
+		public String testImageName;
+		public boolean isSame;
+	}
+	
 }

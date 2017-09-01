@@ -7,7 +7,7 @@ public interface StructuredAFPGraphics extends AFPGraphics {
 	public void beginText();
 	public void endText();
 	
-	public void beginGraphics();
+	public void beginGraphics(boolean stroke, boolean fill);
 	public void endGraphics();
 	
 	public void beginImage();
