@@ -32,7 +32,9 @@ public class TestCase0 extends TestCase {
 	
 	private static final int TIMEOUT = 10000;
 	private static final int CPU_CORE_NUM = Runtime.getRuntime().availableProcessors();
-	File root = new File("C:/dev/xdiff/testcases/xafp");
+//	File root = new File("C:/dev/xdiff/testcases/xafp");
+	
+	private static final File root = new File("src/test/resources/testcases/xafp");
 	
 	public void test_img() {
 		RenderParameter para = new RenderParameter();
@@ -116,7 +118,7 @@ public class TestCase0 extends TestCase {
 	}
 	
 	private boolean compare(String afpName, RenderParameter para) {
-		String s = this.root.getAbsolutePath() + "/" + afpName.substring(0, afpName.length() - 4);
+		String s = root.getAbsolutePath() + "/" + afpName.substring(0, afpName.length() - 4);
 		File outputFolder = new File(s);
 		
 		if (!outputFolder.exists()) {
@@ -130,7 +132,7 @@ public class TestCase0 extends TestCase {
 			}
 		}
 		
-		File afpFile = new File(this.root, afpName);
+		File afpFile = new File(root, afpName);
 		try {
 			logger.info("Start rendering " + afpFile.getAbsolutePath());
 			AFPTool.render(afpFile, outputFolder, para, "jpg");
