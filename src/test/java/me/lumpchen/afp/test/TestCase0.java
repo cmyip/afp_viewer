@@ -21,6 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.spi.ServiceRegistry;
 
 import junit.framework.TestCase;
 import me.lumpchen.xafp.render.RenderParameter;
@@ -36,40 +40,65 @@ public class TestCase0 extends TestCase {
 	
 	private static final File root = new File("src/test/resources/testcases/xafp");
 	
+	private static <T> T lookupProviderByName(final ServiceRegistry registry, final String providerClassName) {
+	    try {
+	        return (T) registry.getServiceProviderByClass(Class.forName(providerClassName));
+	    } catch (ClassNotFoundException ignore) {
+	        return null;
+	    }
+	}
+	
+	protected void setUp() throws Exception {
+		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+		while (readers.hasNext()) {
+		    System.out.println("reader: " + readers.next());
+		}
+		
+		IIORegistry registry = IIORegistry.getDefaultInstance();
+		ImageReaderSpi sunProvider = lookupProviderByName(registry, "com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi");
+		ImageReaderSpi twelvemonkeysProvider = lookupProviderByName(registry, "com.twelvemonkeys.imageio.plugins.jpeg.JPEGImageReaderSpi");
+		
+		registry.setOrdering(ImageReaderSpi.class, twelvemonkeysProvider, sunProvider);
+		
+		readers = ImageIO.getImageReadersByFormatName("JPEG");
+		System.out.println("reader: " + readers.next());
+	}
+	
 	public void test_img() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = false;
 		para.resolution = 96f;
 		
-		assertTrue(compare("img.afp", para));
+		compare("img.afp", para);
 	}
 	
 	public void test_X2() {
 		RenderParameter para = new RenderParameter();
-		para.usePageResolution = true;
+		para.usePageResolution = false;
+		para.resolution = 96f;
 		
-		assertTrue(compare("x2.afp", para));
+		compare("x2.afp", para);
 	}
 	
 	public void test_X80_2C() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		assertTrue(compare("X80_2C.afp", para));
+		compare("X80_2C.afp", para);
 	}
 	
 	public void test__provini_1() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		assertTrue(compare("_provini (1).afp", para));
+		compare("_provini (1).afp", para);
 	}
 	
 	public void test_provini() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		assertTrue(compare("_provini.afp", para));
+		compare("_provini.afp", para);
 	}
 	
 	public void test_ttf() {
@@ -77,7 +106,7 @@ public class TestCase0 extends TestCase {
 		para.usePageResolution = false;
 		para.resolution = 96f;
 		
-		assertTrue(compare("/font/ttf.afp", para));
+		compare("/font/ttf.afp", para);
 	}
 	
 	public void test_ttc() {
@@ -85,7 +114,7 @@ public class TestCase0 extends TestCase {
 		para.usePageResolution = false;
 		para.resolution = 96f;
 		
-		assertTrue(compare("/font/ttc.afp", para));
+		compare("/font/ttc.afp", para);
 	}
 	
 	public void test_ttf_courier() {
@@ -93,28 +122,28 @@ public class TestCase0 extends TestCase {
 		para.usePageResolution = false;
 		para.resolution = 96f;
 		
-		assertTrue(compare("/font/ttf_courier.afp", para));
+		compare("/font/ttf_courier.afp", para);
 	}
 	
 	public void test_97376() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		assertTrue(compare("97376.afp", para));
+		compare("97376.afp", para);
 	}
 	
 	public void test_Letter_Ref() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		assertTrue(compare("/oc_samples/Letter_Ref.afp", para));
+		compare("/oc_samples/Letter_Ref.afp", para);
 	}
 	
 	public void test_Bank_Statement_REF() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		assertTrue(compare("/oc_samples/Bank_Statement_REF.afp", para));
+		compare("/oc_samples/Bank_Statement_REF.afp", para);
 	}
 	
 	private boolean compare(String afpName, RenderParameter para) {
@@ -139,6 +168,7 @@ public class TestCase0 extends TestCase {
 			logger.info("Complete rendering: " + afpFile.getAbsolutePath());
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Render fail: " + afpFile.getAbsolutePath(), e);
+			fail("Render fail: " + afpFile.getAbsolutePath());
 			return false;
 		}
 		
@@ -149,9 +179,11 @@ public class TestCase0 extends TestCase {
 			logger.info("Complete comparing bitmaps: " + outputFolder.getAbsolutePath());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Bitmap compare fail: " + afpFile.getAbsolutePath(), e);
+			fail("Bitmap compare fail: " + afpFile.getAbsolutePath());
 			result = false;
 		}
-		assertTrue(result);
+		
+		assertTrue(afpFile.getAbsolutePath(), result);
 		return result;
 	}
 	
@@ -255,12 +287,6 @@ public class TestCase0 extends TestCase {
 			}
 		}
 		return resultMap;
-	}
-	
-	final static class CompareResult {
-		public String baseImageName;
-		public String testImageName;
-		public boolean isSame;
 	}
 	
 }
