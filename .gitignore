@@ -47,7 +47,7 @@ Temporary Items
 .apdisk
 
 target/
-testcases/
+_test/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

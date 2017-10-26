@@ -148,12 +148,13 @@ public class TestCase0 extends TestCase {
 	
 	private boolean compare(String afpName, RenderParameter para) {
 		String s = root.getAbsolutePath() + "/" + afpName.substring(0, afpName.length() - 4);
-		File outputFolder = new File(s);
+		File caseFolder = new File(s);
+		File testFolder = new File(caseFolder, "_test");
 		
-		if (!outputFolder.exists()) {
-			outputFolder.mkdirs();
+		if (!testFolder.exists()) {
+			testFolder.mkdirs();
 		} else {
-			File[] files = outputFolder.listFiles();
+			File[] files = testFolder.listFiles();
 			for (File f : files) {
 				if (f.isFile()) {
 					f.delete();
@@ -164,7 +165,7 @@ public class TestCase0 extends TestCase {
 		File afpFile = new File(root, afpName);
 		try {
 			logger.info("Start rendering " + afpFile.getAbsolutePath());
-			AFPTool.render(afpFile, outputFolder, para, "jpg");
+			AFPTool.render(afpFile, testFolder, para, "jpg");
 			logger.info("Complete rendering: " + afpFile.getAbsolutePath());
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Render fail: " + afpFile.getAbsolutePath(), e);
@@ -174,9 +175,9 @@ public class TestCase0 extends TestCase {
 		
 		boolean result = true;
 		try {
-			logger.info("Start comparing bitmaps: " + outputFolder.getAbsolutePath());
-			result &= compare(outputFolder, "jpg");
-			logger.info("Complete comparing bitmaps: " + outputFolder.getAbsolutePath());
+			logger.info("Start comparing bitmaps: " + caseFolder.getAbsolutePath());
+			result &= compare(caseFolder, "jpg");
+			logger.info("Complete comparing bitmaps: " + caseFolder.getAbsolutePath());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Bitmap compare fail: " + afpFile.getAbsolutePath(), e);
 			fail("Bitmap compare fail: " + afpFile.getAbsolutePath());
@@ -187,14 +188,15 @@ public class TestCase0 extends TestCase {
 		return result;
 	}
 	
-	private boolean compare(File outputFolder, final String imageFomat) throws InterruptedException, ExecutionException {
-		final File baseFolder = new File(outputFolder, "baseline");
+	private boolean compare(final File caseFolder, final String imageFomat) throws InterruptedException, ExecutionException {
+		final File baseFolder = new File(caseFolder, "baseline");
 		if (!baseFolder.exists()) {
 			logger.severe("Not find baseline folder: " + baseFolder.getAbsolutePath());
 			return false;
 		}
 		
-		final File[] images = outputFolder.listFiles(new FileFilter() {
+		File testFolder = new File(caseFolder, "_test");
+		final File[] images = testFolder.listFiles(new FileFilter() {
 
 			@Override
 			public boolean accept(File pathname) {
@@ -227,7 +229,7 @@ public class TestCase0 extends TestCase {
     		partitions.add(new Callable<Map<String, Boolean>>() {
 				@Override
 				public Map<String, Boolean> call() throws Exception {
-					Map<String, Boolean> ret = compare(begin, end, images, baseFolder);
+					Map<String, Boolean> ret = compare(begin, end, images, caseFolder);
 					return ret;
 				}
     		});
@@ -253,11 +255,13 @@ public class TestCase0 extends TestCase {
 		return result;
 	}
 	
-	private Map<String, Boolean> compare(int begin, int end, File[] images, File baseFolder) {
+	private Map<String, Boolean> compare(int begin, int end, File[] images, File caseFolder) {
 		Map<String, Boolean> resultMap = new HashMap<String, Boolean>(end - begin + 1);
 		for (int i = begin; i <= end; i++) {
 			File img = images[i];
 			String name = img.getName();
+			
+			File baseFolder = new File(caseFolder, "baseline");
 			File baseline = new File(baseFolder, name);
 			if (!baseline.exists()) {
 				logger.severe("Not find baseline image: " + baseline.getAbsolutePath());
@@ -265,6 +269,7 @@ public class TestCase0 extends TestCase {
 				continue;
 			}
 			
+			File testFolder = new File(caseFolder, "_test");
 			BufferedImage bimg1;
 			BufferedImage bimg2;
 			BufferedImage diff;
@@ -275,7 +280,7 @@ public class TestCase0 extends TestCase {
 				if (diff != null) {
 					logger.log(Level.WARNING, "Different with baseline: " + baseline.getAbsolutePath());
 					
-					ImageIO.write(diff, "jpg", new File(img.getParentFile(), img.getName() + ".diff.jpg"));
+					ImageIO.write(diff, "jpg", new File(testFolder, img.getName() + ".diff.jpg"));
 					resultMap.put(name, false);
 				} else {
 					resultMap.put(name, true);
