@@ -3,16 +3,15 @@ An AFP print file renderer
 
 # maven dependency
 ------------------
-# Snapshot
+## Release
       <dependency>
-        <groupId>com.github.lumpchen</groupId>
-        <artifactId>xafp</artifactId>
-        <version>1.0.0</version>
+            <groupId>com.github.lumpchen</groupId>
+            <artifactId>xafp</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
       </dependency>
-    
-# Release
-    <dependency>
-      <groupId>com.github.lumpchen</groupId>
-      <artifactId>xafp</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
+## Snapshot
+      <dependency>
+            <groupId>com.github.lumpchen</groupId>
+            <artifactId>xafp</artifactId>
+            <version>1.0.0</version>
+      </dependency>
