@@ -25,7 +25,6 @@ import me.lumpchen.xafp.font.AFPFont;
 import me.lumpchen.xafp.font.AFPTruetypeFont;
 import me.lumpchen.xafp.font.AFPType1Font;
 import me.lumpchen.xafp.sf.triplet.X8BTriplet;
-import me.lumpchen.xafp.tool.AFPTool;
 
 public class FontManager {
 	
@@ -44,8 +43,7 @@ public class FontManager {
 		this.ttfCache = new HashMap<String, TrueTypeFont>();
 	}
 	
-	public AFPFont getFont(String codePageName, String characterSetName) {
-		
+	public synchronized AFPFont getFont(String codePageName, String characterSetName) {
 		String key = codePageName + ":" + characterSetName;
 		if (this.fontCache.containsKey(key)) {
 			return this.fontCache.get(key);
@@ -70,7 +68,7 @@ public class FontManager {
 		return font;
 	}
 	
-	public AFPFont getFont(MapDataResource.Attribute mdr) {
+	public synchronized AFPFont getFont(MapDataResource.Attribute mdr) {
 		String familyName = mdr.extResRef;
 		
 		if (!mdr.fontTech.equals(X8BTriplet.TrueType_OpenType)) {
@@ -92,19 +90,19 @@ public class FontManager {
 		return null;
 	}
 	
-	public void addCodePage(String resName, CodePage codePage) {
+	public synchronized void addCodePage(String resName, CodePage codePage) {
 		this.codePageMap.put(resName, codePage);
 	}
 	
-	public void addCharset(String resName, Font charset) {
+	public synchronized void addCharset(String resName, Font charset) {
 		this.charsetMap.put(resName, charset);
 	}
 	
-	public void addTrueTypeFont(byte[] data) {
+	public synchronized void addTrueTypeFont(byte[] data) {
 		this.addTrueTypeFont(data, false);
 	}
 	
-	public void addTrueTypeFont(byte[] data, boolean isTTC) {
+	public synchronized void addTrueTypeFont(byte[] data, boolean isTTC) {
 		try {
 			if (isTTC) {
 				TrueTypeCollection ttc = new TrueTypeCollection(new ByteArrayInputStream(data));
