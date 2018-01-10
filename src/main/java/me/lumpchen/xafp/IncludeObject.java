@@ -203,7 +203,7 @@ public class IncludeObject extends AFPObject implements Renderable {
 			}
 			
 			ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
-			if (ObjectTypeIdentifier.Component.JFIF == component) {
+			if (ObjectTypeIdentifier.Component.JFIF == component || ObjectTypeIdentifier.Component.TIFF == component) {
 				byte[] imageData = resourceManager.getObjectData(resName);
 				try {
 					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));

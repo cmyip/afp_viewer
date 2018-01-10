@@ -25,6 +25,7 @@ public class ObjectContainer extends AFPContainer {
 		}
 		/**
 		 * Component ID			Object Type					Encoded Object-type OID
+		 * 14						TIFF					X'06072B12000401010E'
 		 * 23						JFIF					X'06072B120004010117'
 		 * 51				TrueType/OpenType Font			X'06072B120004010133'
 		 * 53			TrueType/OpenType Font Collection   X'06072B120004010135'
@@ -50,6 +51,9 @@ public class ObjectContainer extends AFPContainer {
 			byte componentID = data[8];
 			
 			switch (componentID) {
+			case X10Triplet.CID_TIFF:
+				this.component = Component.TIFF;
+				break;
 			case X10Triplet.CID_JFIF:
 				this.component = Component.JFIF;
 				break;
