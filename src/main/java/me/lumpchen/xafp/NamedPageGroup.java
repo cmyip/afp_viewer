@@ -39,6 +39,8 @@ public class NamedPageGroup extends AFPContainer {
 		for (AFPObject child : this.children) {
 			if (child instanceof Page) {
 				this.pages.add((Page) child);
+			} else if (child instanceof NamedPageGroup) {
+				this.pages.addAll(((NamedPageGroup) child).getPageList());
 			}
 		}
 	}
