@@ -4,9 +4,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.IIORegistry;
+
+import com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi;
 
 import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
 import me.lumpchen.xafp.render.AFPGraphics;
@@ -22,6 +28,8 @@ import me.lumpchen.xafp.sf.triplet.X4CTriplet;
 
 public class IncludeObject extends AFPObject implements Renderable {
 
+	private static final Logger logger = Logger.getLogger(IncludeObject.class.getName());
+	
 	public enum ObjectType {
 		PageSegment, ObjectData, GOCA, BCOCA, IOCA;
 		
@@ -205,9 +213,17 @@ public class IncludeObject extends AFPObject implements Renderable {
 			ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
 			if (ObjectTypeIdentifier.Component.JFIF == component || ObjectTypeIdentifier.Component.TIFF == component) {
 				byte[] imageData = resourceManager.getObjectData(resName);
+				if (imageData == null) {
+					logger.warning("can't get image data: " + resName);
+					return;
+				}
 				try {
 					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
-
+					if (bimg == null) {
+						logger.warning("can't read image: " + resName);
+						return;
+					}
+					
 					if (graphics instanceof StructuredAFPGraphics) {
 						((StructuredAFPGraphics) graphics).beginImage();
 					}
@@ -219,7 +235,7 @@ public class IncludeObject extends AFPObject implements Renderable {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-					throw new AFPException("can't read image data: " + resName);
+					throw new AFPException("can't read image: " + resName);
 				}
 			}
 		} else if (this.objType == ObjectType.IOCA) {

@@ -17,6 +17,8 @@ import javax.imageio.spi.ServiceRegistry;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi;
+
 import me.lumpchen.xafp.AFPFileReader;
 import me.lumpchen.xafp.PrintFile;
 import me.lumpchen.xafp.render.AFPRenderer;
@@ -27,28 +29,29 @@ public class Main {
 
 	private static Logger logger = Logger.getLogger(Main.class.getName());
 	
+	static {
+		IIORegistry registry = IIORegistry.getDefaultInstance();
+		ImageReaderSpi twelvemonkeysJPEGProvider = new com.twelvemonkeys.imageio.plugins.jpeg.JPEGImageReaderSpi();
+		
+		TIFFImageReaderSpi twelvemonkeysTIFFProvider = new com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi();
+		twelvemonkeysTIFFProvider.onRegistration(registry, ImageReaderSpi.class);
+		
+		registry.registerServiceProvider(twelvemonkeysTIFFProvider);
+		registry.registerServiceProvider(twelvemonkeysJPEGProvider);
+		
+		ImageReaderSpi sunProvider = lookupProviderByName(registry, "com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi");
+		
+		if (sunProvider != null) {
+			registry.setOrdering(ImageReaderSpi.class, twelvemonkeysJPEGProvider, sunProvider);
+		}
+	}
+	
 	private static <T> T lookupProviderByName(final ServiceRegistry registry, final String providerClassName) {
 	    try {
 	        return (T) registry.getServiceProviderByClass(Class.forName(providerClassName));
 	    } catch (ClassNotFoundException ignore) {
 	        return null;
 	    }
-	}
-	
-	private static void setImageReader() {
-		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
-		while (readers.hasNext()) {
-		    System.out.println("reader: " + readers.next());
-		}
-		
-		IIORegistry registry = IIORegistry.getDefaultInstance();
-		ImageReaderSpi sunProvider = lookupProviderByName(registry, "com.sun.imageio.plugins.jpeg.JPEGImageReaderSpi");
-		ImageReaderSpi twelvemonkeysProvider = lookupProviderByName(registry, "com.twelvemonkeys.imageio.plugins.jpeg.JPEGImageReaderSpi");
-		
-		registry.setOrdering(ImageReaderSpi.class, twelvemonkeysProvider, sunProvider);
-		
-		readers = ImageIO.getImageReadersByFormatName("JPEG");
-		System.out.println("reader: " + readers.next());
 	}
 	
 	private static void showUsage() {

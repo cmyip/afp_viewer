@@ -141,6 +141,7 @@
 						<phase>test</phase>
 						<configuration>
 							<tasks>
+								<mkdir dir="target/surefire-reports"/>
 								<junitreport todir="target/surefire-reports">
 									<fileset dir="target/surefire-reports">
 										<include name="**/*.xml" />
