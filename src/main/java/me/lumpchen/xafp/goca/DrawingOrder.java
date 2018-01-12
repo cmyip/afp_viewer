@@ -33,12 +33,14 @@ public abstract class DrawingOrder implements Renderable {
 	public static final int LineOrder_GP = 0xC1;
 	public static final int LineOrder_CP = 0x81;
 	
+	public static final int FilletOrder_GP = 0xC5;
+	public static final int FilletOrder_CP = 0x85;
+	
 	public static final int SetLineWidth = 0x19;
 	public static final int SetLineType = 0x18;
 	public static final int SetCurrentPosition = 0x21;
 	
 	public static final int SetFractionalLineWidthOrder = 0x11;
-	
 	
 	public static final DrawingOrder readOrder(AFPInputStream in) throws IOException {
 		int code = in.readCode();
@@ -80,6 +82,12 @@ public abstract class DrawingOrder implements Renderable {
 			break;
 		case LineOrder_CP:
 			order = new LineOrder(Position.Current);
+			break;
+		case FilletOrder_GP:
+			order = new FilletOrder(Position.Given);
+			break;
+		case FilletOrder_CP:
+			order = new FilletOrder(Position.Current);
 			break;
 		case SetFractionalLineWidthOrder:
 			order = new SetFractionalLineWidthOrder();

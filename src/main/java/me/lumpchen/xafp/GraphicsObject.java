@@ -59,6 +59,7 @@ public class GraphicsObject extends AFPContainer implements Renderable {
 	
 	@Override
 	public void render(ActiveEnvironmentGroup aeg, AFPGraphics graphics, ResourceManager resourceManager) {
+		// TODO should use ObjectEnvironmentGroup for calculation?
 		float x = (float) aeg.unit2Point(this.oeg.getObjectAreaPosition().getXoaOset());
 		float y = (float) aeg.unit2Point(this.oeg.getObjectAreaPosition().getYoaOset());
 		float w = (float) aeg.unit2Point(this.oeg.getObjectAreaDescriptor().getXoaSize());

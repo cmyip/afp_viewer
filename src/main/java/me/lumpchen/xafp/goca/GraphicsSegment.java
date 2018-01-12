@@ -106,11 +106,12 @@ public class GraphicsSegment implements Renderable {
 				areaBegin = true;
 			} else if (order instanceof EndAreaOrder) {
 				areaBegin = false;
-			} else if (order instanceof LineOrder) {
+			} else if (order instanceof LineOrder || order instanceof FilletOrder) {
 				if (!areaBegin) {
 					graphics.beginPath(true, false);
 					order.render(aeg, graphics, resourceManager);
-					while ((i + 1) < (this.orderList.size() - 1) && this.orderList.get(i + 1) instanceof LineOrder) {
+					while ((i + 1) < (this.orderList.size() - 1) 
+							&& this.orderList.get(i + 1).getClass() == order.getClass()) {
 						this.orderList.get(++i).render(aeg, graphics, resourceManager);
 					}
 					graphics.endPath();

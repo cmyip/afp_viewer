@@ -289,6 +289,24 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		if (this.state.fill) {
 			this.g2.fill(s);
 		}
+		
+		/*this.g2.setColor(this.state.color);
+		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth));
+		
+		Matrix ctm = new Matrix();
+		Rectangle r = s.getBounds();
+        ctm.translate(0, (r.height));
+		ctm.scale(1, -1);
+		
+		AffineTransform at = ctm.createAffineTransform();
+		s = at.createTransformedShape(s);
+		
+		if (this.state.stroke) {
+			this.g2.draw(s);
+		}
+		if (this.state.fill) {
+			this.g2.fill(s);
+		}*/
 	}
 	
 	@Override
