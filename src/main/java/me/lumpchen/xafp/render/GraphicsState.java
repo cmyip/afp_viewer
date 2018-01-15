@@ -8,6 +8,7 @@ import me.lumpchen.xafp.font.AFPFont;
 public final class GraphicsState implements Cloneable {
 
 	private Matrix currentTransformationMatrix = new Matrix();
+	private Matrix graphicsSegCTM = new Matrix();
 
 	public AFPColor afpBackgroundColor;
 	public Color backgroundColor;
@@ -31,12 +32,21 @@ public final class GraphicsState implements Cloneable {
 	public void setCTM(Matrix m) {
 		this.currentTransformationMatrix = m;
 	}
+	
+	public void setSegmentCTM(Matrix m) {
+		this.graphicsSegCTM = m;
+	}
+	
+	public Matrix getSegmentCTM() {
+		return this.graphicsSegCTM;
+	}
 
 	public GraphicsState clone() {
 		GraphicsState clone = null;
 		try {
 			clone = (GraphicsState) super.clone();
 			clone.currentTransformationMatrix = this.currentTransformationMatrix.clone();
+			clone.graphicsSegCTM = this.graphicsSegCTM.clone();
 		} catch (CloneNotSupportedException e) {
 		}
 		return clone;

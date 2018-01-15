@@ -47,19 +47,11 @@ public class PageDescriptor extends AFPObject {
 	}
 	
 	public double getXpgBase() {
-		if (this.XpgBase == AFPConst.TenInch) {
-			return 10;
-		} else {
-			return AFPConst.cm2Inch((double) this.XpgBase);
-		}
+		return AFPConst.toBaseScale(this.XpgBase);
 	}
 
 	public double getYpgBase() {
-		if (this.YpgBase == AFPConst.TenInch) {
-			return 10;
-		} else {
-			return AFPConst.cm2Inch((double) this.YpgBase);
-		}
+		return AFPConst.toBaseScale(this.YpgBase);
 	}
 
 	public int getXpgUnits() {

@@ -32,6 +32,8 @@ public interface AFPGraphics {
     
     public void drawRule(float x1, float y1, float x2, float y2, boolean horizon);
     
+    public abstract void clip(Shape s);
+    
     public void beginPath(boolean stroke, boolean fill);
     public GeneralPath getCurrentPath();
     public void draw(Shape s);
@@ -46,6 +48,8 @@ public interface AFPGraphics {
 	
     public void save();
     public void restore();
+    public GraphicsState getGraphicsState();
+    public void setGraphicsState(GraphicsState gstate);
     
     public void antialiasOn();
     public void antialiasOff();

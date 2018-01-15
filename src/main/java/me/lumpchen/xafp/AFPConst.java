@@ -1,6 +1,7 @@
 package me.lumpchen.xafp;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.nio.charset.Charset;
 
 public class AFPConst {
@@ -20,6 +21,14 @@ public class AFPConst {
 
 	public static final float unit2Point(float units) {
 		return (units / unitPerInch) * 72;
+	}
+	
+	public static double toBaseScale(int base) {
+		if (base == AFPConst.TenInch) {
+			return 10;
+		} else {
+			return AFPConst.cm2Inch((double) base);
+		}
 	}
 	
 	public enum ColorSpace {
@@ -131,5 +140,22 @@ public class AFPConst {
 		default:
 			return Color.BLACK;
 		}
+	}
+	
+	public static BufferedImage makeTransprency(BufferedImage img) {
+		int w = img.getWidth();
+		int h = img.getHeight();
+		
+		BufferedImage a = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				int p = img.getRGB(i, j);
+				if (p != -1) {
+					a.setRGB(i, j, p);
+				}
+			}
+		}
+		
+		return a;
 	}
 }

@@ -80,7 +80,10 @@ public class ObjectAreaDescriptor extends AFPObject {
 			}
 		}
 		
-		this.width = (float) this.XoaSize / this.XoaUnits;
-		this.height = (float) this.YoaSize / this.YoaUnits;
+		float xScaleRatio = (float) AFPConst.toBaseScale(this.XoaBase) / this.XoaUnits;
+		float yScaleRatio = (float) AFPConst.toBaseScale(this.YoaBase) / this.YoaUnits;
+		
+		this.width = this.XoaSize * xScaleRatio * 72;
+		this.height = this.YoaSize * yScaleRatio * 72;
 	}
 }

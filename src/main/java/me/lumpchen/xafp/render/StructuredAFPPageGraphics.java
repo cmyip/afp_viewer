@@ -52,6 +52,11 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	}
 	
 	@Override
+	public void clip(Shape s) {
+		this.g2.clip(s);
+	}
+	
+	@Override
 	public void scale(double sx, double sy) {
 		this.state.getCTM().scale(sx, sy);
 	}
@@ -289,24 +294,6 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		if (this.state.fill) {
 			this.g2.fill(s);
 		}
-		
-		/*this.g2.setColor(this.state.color);
-		this.g2.setStroke(new BasicStroke(this.state.textState.ruleWidth));
-		
-		Matrix ctm = new Matrix();
-		Rectangle r = s.getBounds();
-        ctm.translate(0, (r.height));
-		ctm.scale(1, -1);
-		
-		AffineTransform at = ctm.createAffineTransform();
-		s = at.createTransformedShape(s);
-		
-		if (this.state.stroke) {
-			this.g2.draw(s);
-		}
-		if (this.state.fill) {
-			this.g2.fill(s);
-		}*/
 	}
 	
 	@Override
@@ -332,9 +319,12 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 	public void endPath() {
 		if (this.currPath != null) {
 			this.currPath.closePath();
-			this.draw(this.currPath);
 			
-			this.markPath(this.currPath);
+			AffineTransform at = this.getGraphicsState().getSegmentCTM().createAffineTransform();
+			Shape ts = at.createTransformedShape(this.currPath);
+			this.draw(ts);
+			
+			this.markPath(ts);
 			this.currPath = null;
 			this.markCurrentGraphicsState(this.state);
 			this.endGraphics();
@@ -375,6 +365,14 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		rect.y = (int) (this.height - rect.y - rect.height);
 		return rect;
 	}
+	
+    public GraphicsState getGraphicsState() {
+    	return this.state;
+    }
+    
+    public void setGraphicsState(GraphicsState gstate) {
+    	this.state = gstate;
+    }
 	
 	abstract protected void markImage(BufferedImage img, float x, float y, float w, float h);
 	abstract protected void markCurrentGraphicsState(GraphicsState state);

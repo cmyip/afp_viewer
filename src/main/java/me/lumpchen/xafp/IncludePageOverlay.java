@@ -90,25 +90,8 @@ public class IncludePageOverlay extends AFPObject implements Renderable {
         AFPGraphics olyGraphics = new AFPGraphics2D(g, (float) overlay.getWidth(), (float) overlay.getHeight());
 		overlay.render(aeg, olyGraphics, resourceManager);
 		
-		graphics.drawImage(makeTransprency(image), 0, 0, (float) overlay.getWidth(), (float) overlay.getHeight());
+		graphics.drawImage(AFPConst.makeTransprency(image), 0, 0, (float) overlay.getWidth(), (float) overlay.getHeight());
 		graphics.restore();
-	}
-	
-	private BufferedImage makeTransprency(BufferedImage img) {
-		int w = img.getWidth();
-		int h = img.getHeight();
-		
-		BufferedImage a = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		for (int i = 0; i < w; i++) {
-			for (int j = 0; j < h; j++) {
-				int p = img.getRGB(i, j);
-				if (p != -1) {
-					a.setRGB(i, j, p);
-				}
-			}
-		}
-		
-		return a;
 	}
 	
 	private int getRotation() {

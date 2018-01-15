@@ -274,7 +274,7 @@ public class AFPFileReader {
 				obj = new InvokeMediumMap(sf);	
 			} else if (Tag.TLE == tag) {
 				obj = new TagLogicalElement(sf);
-			} else if (Tag.TLE == tag) {
+			} else if (Tag.GDD == tag) {
 				obj = new GraphicsDataDescriptor(sf);
 			} else if (Tag.GAD == tag) {
 				obj = new GraphicsData(sf);
