@@ -72,6 +72,14 @@ public class TestCase0 extends TestCase {
 		compare("img.afp", para);
 	}
 	
+	public void test_fillet() {
+		RenderParameter para = new RenderParameter();
+		para.usePageResolution = false;
+		para.resolution = 96f;
+		
+		compare("fillet.afp", para);
+	}
+	
 	public void test_X2() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = false;
