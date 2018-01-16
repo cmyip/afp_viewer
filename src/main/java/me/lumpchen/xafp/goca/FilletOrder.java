@@ -82,8 +82,8 @@ public class FilletOrder extends DrawingOrder {
 				break;
 			}
 			int[] point = new int[2];
-			point[0] = Math.abs(in.readSBin(2));
-			point[1] = Math.abs(in.readSBin(2));
+			point[0] = in.readSBin(2);
+			point[1] = in.readSBin(2);
 			this.points.add(point);
 			read += 4;
 		}

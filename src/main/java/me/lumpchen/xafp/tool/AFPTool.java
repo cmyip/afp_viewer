@@ -165,7 +165,8 @@ public class AFPTool {
 					logger.info("Rendering page " + pageNo);
 					
 					BufferedImage image = AFPRenderer.renderPage(nextPage, para, resourceManager);
-					File f = createImageFile(outputFolder, afpFile, 0, pageNo, imageFomat);
+					
+					File f = createImageFile(outputFolder, afpFile, -1, pageNo, imageFomat);
 					ImageIO.write(image, imageFomat, f);
 				}
 				pageNo++;
@@ -181,7 +182,12 @@ public class AFPTool {
 		StringBuilder buf = new StringBuilder();
 		String afpName = afpFile.getName();
 		buf.append(afpName.substring(0, afpName.length() - 4));
-		buf.append("-" + docIndex + "-" + pageIndex);
+		if (docIndex < 0) {
+			buf.append("-" + pageIndex);
+		} else {
+			buf.append("-" + docIndex + "-" + pageIndex);	
+		}
+		
 		buf.append(".").append(suffix);
 		
 		File f = new File(outputFolder.getAbsolutePath() + "/" + buf.toString());

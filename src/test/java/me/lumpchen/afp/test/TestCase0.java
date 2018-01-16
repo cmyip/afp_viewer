@@ -84,21 +84,21 @@ public class TestCase0 extends TestCase {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		compare("X80_2C.afp", para);
+		compare("X80_2C.afp", para, 1, 10);
 	}
 	
 	public void test__provini_1() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		compare("_provini (1).afp", para);
+		compare("_provini (1).afp", para, 1, 15);
 	}
 	
 	public void test_provini() {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		compare("_provini.afp", para);
+		compare("_provini.afp", para, 1, 15);
 	}
 	
 	public void test_ttf() {
@@ -143,10 +143,14 @@ public class TestCase0 extends TestCase {
 		RenderParameter para = new RenderParameter();
 		para.usePageResolution = true;
 		
-		compare("/oc_samples/Bank_Statement_REF.afp", para);
+		compare("/oc_samples/Bank_Statement_REF.afp", para, 1, 10);
 	}
 	
 	private boolean compare(String afpName, RenderParameter para) {
+		return this.compare(afpName, para, -1, -1);
+	}
+	
+	private boolean compare(String afpName, RenderParameter para, int from, int to) {
 		String s = root.getAbsolutePath() + "/" + afpName.substring(0, afpName.length() - 4);
 		File caseFolder = new File(s);
 		File testFolder = new File(caseFolder, "_test");
@@ -165,7 +169,7 @@ public class TestCase0 extends TestCase {
 		File afpFile = new File(root, afpName);
 		try {
 			logger.info("Start rendering " + afpFile.getAbsolutePath());
-			AFPTool.render(afpFile, testFolder, para, "jpg");
+			AFPTool.renderQuick(afpFile, testFolder, para, "jpg", from, to);
 			logger.info("Complete rendering: " + afpFile.getAbsolutePath());
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Render fail: " + afpFile.getAbsolutePath(), e);
