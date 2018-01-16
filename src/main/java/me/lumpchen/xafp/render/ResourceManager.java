@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPObject;
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.ImageObject;
 import me.lumpchen.xafp.ObjectContainer;
 import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
-import me.lumpchen.xafp.tool.AFPTool;
 import me.lumpchen.xafp.Overlay;
 import me.lumpchen.xafp.PageSegment;
 import me.lumpchen.xafp.Resource;
@@ -77,6 +75,9 @@ public class ResourceManager {
 	}
 	
 	private void collect(ResourceGroup resourceGroup) {
+		if (resourceGroup == null) {
+			return;
+		}
 		for (Resource res : resourceGroup.getAllResource()) {
 			Resource.Type type = res.getType();
 			if (type != null) {

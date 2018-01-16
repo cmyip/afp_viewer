@@ -67,6 +67,9 @@ public abstract class Triplet {
 		case X10Triplet.ID:
 			triplet = new X10Triplet();
 			break;
+		case X1DTriplet.ID:
+			triplet = new X1DTriplet();
+			break;
 		case X1FTriplet.ID:
 			triplet = new X1FTriplet();
 			break;
@@ -75,6 +78,12 @@ public abstract class Triplet {
 			break;
 		case X24Triplet.ID:
 			triplet = new X24Triplet();
+			break;
+		case X25Triplet.ID:
+			triplet = new X25Triplet();
+			break;
+		case X26Triplet.ID:
+			triplet = new X26Triplet();
 			break;
 		case X36Triplet.ID:
 			triplet = new X36Triplet();

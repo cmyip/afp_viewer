@@ -154,18 +154,26 @@ public class Identifier {
 		instanceMap.put(toInt(SF_FNG), new Identifier(Tag.FNG, SF_FNG));
 		instanceMap.put(toInt(SF_EFN), new Identifier(Tag.EFN, SF_EFN));
 		instanceMap.put(toInt(SF_BDT), new Identifier(Tag.BDT, SF_BDT));
+		instanceMap.put(toInt(SF_BFG), new Identifier(Tag.BFG, SF_BFG));
 		instanceMap.put(toInt(SF_BPG), new Identifier(Tag.BPG, SF_BPG));
 		instanceMap.put(toInt(SF_BAG), new Identifier(Tag.BAG, SF_BAG));
+		instanceMap.put(toInt(SF_BDG), new Identifier(Tag.BDG, SF_BDG));
 		instanceMap.put(toInt(SF_PGD), new Identifier(Tag.PGD, SF_PGD));
 		instanceMap.put(toInt(SF_PTD), new Identifier(Tag.PTD, SF_PTD));
+		instanceMap.put(toInt(SF_PTD_1), new Identifier(Tag.PTD_1, SF_PTD_1));
 		instanceMap.put(toInt(SF_EAG), new Identifier(Tag.EAG, SF_EAG));
+		instanceMap.put(toInt(SF_EDG), new Identifier(Tag.EDG, SF_EDG));
 		instanceMap.put(toInt(SF_BPT), new Identifier(Tag.BPT, SF_BPT));
 		instanceMap.put(toInt(SF_PTX), new Identifier(Tag.PTX, SF_PTX));
 		instanceMap.put(toInt(SF_EPT), new Identifier(Tag.EPT, SF_EPT));
 		instanceMap.put(toInt(SF_IOB), new Identifier(Tag.IOB, SF_IOB));
 		instanceMap.put(toInt(SF_EPG), new Identifier(Tag.EPG, SF_EPG));
 		instanceMap.put(toInt(SF_MCF), new Identifier(Tag.MCF, SF_MCF));
+		instanceMap.put(toInt(SF_MCF_1), new Identifier(Tag.MCF_1, SF_MCF_1));
 		instanceMap.put(toInt(SF_EDT), new Identifier(Tag.EDT, SF_EDT));
+		instanceMap.put(toInt(SF_EFG), new Identifier(Tag.EFG, SF_EFG));
+		
+		instanceMap.put(toInt(SF_CTC), new Identifier(Tag.CTC, SF_CTC));
 		
 		instanceMap.put(toInt(SF_BNG), new Identifier(Tag.BNG, SF_BNG));
 		instanceMap.put(toInt(SF_ENG), new Identifier(Tag.ENG, SF_ENG));
@@ -187,10 +195,12 @@ public class Identifier {
 		instanceMap.put(toInt(SF_BMM), new Identifier(Tag.BMM, SF_BMM));
 		instanceMap.put(toInt(SF_EMM), new Identifier(Tag.EMM, SF_EMM));
 		instanceMap.put(toInt(SF_PGP), new Identifier(Tag.PGP, SF_PGP));
+		instanceMap.put(toInt(SF_PGP_1), new Identifier(Tag.PGP_1, SF_PGP_1));
 		instanceMap.put(toInt(SF_MDD), new Identifier(Tag.MDD, SF_MDD));
 		instanceMap.put(toInt(SF_MCC), new Identifier(Tag.MCC, SF_MCC));
 		instanceMap.put(toInt(SF_PEC), new Identifier(Tag.PEC, SF_PEC));
 		instanceMap.put(toInt(SF_MMC), new Identifier(Tag.MMC, SF_MMC));
+		instanceMap.put(toInt(SF_MMO), new Identifier(Tag.MMO, SF_MMO));
 		instanceMap.put(toInt(SF_IMM), new Identifier(Tag.IMM, SF_IMM));
 		
 		instanceMap.put(toInt(SF_BGR), new Identifier(Tag.BGR, SF_BGR));
@@ -221,6 +231,7 @@ public class Identifier {
 	
 	public enum Tag {
 		BDT("Begin Document", TagType.begin),
+		BFG("Begin Form Environment Group (O)", TagType.begin),
 		BPG("Begin Page", TagType.begin),
 		BAG("Begin Active Environment Group", TagType.begin),
 		BRG("Begin Resource Group", TagType.begin),
@@ -265,11 +276,13 @@ public class Identifier {
 		EPT("End Presentation Text Object", TagType.end),
 		EPG("End Page", TagType.end),
 		EDT("End Document", TagType.end),
+		EFG("End Form Environment Group (O)", TagType.end),
 		ECP("End Code Page", TagType.end),
 		EFN("End Font", TagType.end),
 		
 		CAT("Color Attribute Table", TagType.obj),
 		CDD("Container Data Descriptor", TagType.obj),
+		CTC("Composed Text Control (O)", TagType.obj),
 		GAD("Graphics Data", TagType.obj),
 		GDD("Graphics Data Descriptor", TagType.obj),
 		IDD("Image Data Descriptor", TagType.obj),
@@ -302,14 +315,17 @@ public class Identifier {
 		PEC("Presentation Environment Control", TagType.obj),
 		PFC("Presentation Fidelity Control", TagType.obj),
 		PGP("Page Position (PGP) Format 2", TagType.obj),
+		PGP_1("Page Position Format-1 (C)", TagType.obj),
 		PMC("Page Modification Control", TagType.obj),
 		PPO("Preprocess Presentation Object", TagType.obj),
 		TLE("Tag Logical Element", TagType.obj),
 		PGD("Page Descriptor", TagType.obj),
 		PTD("Presentation Text Data Descriptor", TagType.obj),
+		PTD_1("Presentation Text Descriptor Format-1 (C)", TagType.obj),
 		PTX("Presentation Text Data", TagType.obj),
 		IOB("Include Object", TagType.obj),
 		MCF("Map Coded Font", TagType.obj),
+		MCF_1("Map Coded Font Format-1 (C)", TagType.obj),
 		CPD("Code Page Descriptor", TagType.obj),
 		CPC("Code Page Control", TagType.obj),
 		CFI("Coded Font Index", TagType.obj),
