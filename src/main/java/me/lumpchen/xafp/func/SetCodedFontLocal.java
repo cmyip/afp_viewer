@@ -41,7 +41,9 @@ public class SetCodedFontLocal extends Function {
 		MapCodedFontFormat2.Attribute mcf = aeg.getMapCodedFont(this.LID);
 		if (mcf != null) {
 			AFPFont font = resourceManager.getFontManager().getFont(mcf.codePageName, mcf.characterSetName);
-			graphics.setAFPFont(font, mcf.fontSize);
+//			if (font != null) {
+				graphics.setAFPFont(font, mcf.fontSize);
+//			}
 		} else {
 			MapDataResource.Attribute mdr = aeg.getMapDataResource(this.LID);
 			if (mdr != null) {

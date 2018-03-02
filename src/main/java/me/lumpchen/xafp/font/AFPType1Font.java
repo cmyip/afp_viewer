@@ -4,6 +4,8 @@ import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.fontbox.type1.Type1Font;
 import org.apache.fontbox.util.BoundingBox;
@@ -11,10 +13,13 @@ import org.apache.fontbox.util.BoundingBox;
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.FontControl.PatTech;
+import me.lumpchen.xafp.render.FontManager;
 import me.lumpchen.xafp.FontPatterns;
 
 public class AFPType1Font implements AFPOutlineFont {
 
+	private static Logger logger = Logger.getLogger(AFPType1Font.class.getName());
+	
 	private String name;
 	private CodePage codePage;
 	private Font charset;
@@ -24,15 +29,11 @@ public class AFPType1Font implements AFPOutlineFont {
 
 	private Map<String, String> nameMap;
 
-	public AFPType1Font(CodePage codePage, Font charset) {
+	public AFPType1Font(CodePage codePage, Font charset) throws IOException {
 		this.codePage = codePage;
 		this.charset = charset;
-		try {
-			this.initBaseFont();
-			this.initEncoding(codePage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.initBaseFont();
+		this.initEncoding(codePage);
 		this.nameMap = this.charset.getNameMap();
 	}
 

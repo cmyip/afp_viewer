@@ -56,15 +56,20 @@ public class FontManager {
 			return null;
 		}
 		AFPFont font = null;
-		if (PatTech.Laser_Matrix_N_bit_Wide == charset.getPatTech()) {
-			font = new AFPBitmapFont(codePage, charset);
-		} else if (PatTech.PFB_Type1 == charset.getPatTech()) {
-			font = new AFPType1Font(codePage, charset);
-		} else if (PatTech.CID_Keyed_font_Type0 == charset.getPatTech()) {
-			throw new java.lang.IllegalArgumentException("CID_Keyed_font_Type0 still not implemented.");
+		try {
+			if (PatTech.Laser_Matrix_N_bit_Wide == charset.getPatTech()) {
+				font = new AFPBitmapFont(codePage, charset);
+			} else if (PatTech.PFB_Type1 == charset.getPatTech()) {
+				font = new AFPType1Font(codePage, charset);
+			} else if (PatTech.CID_Keyed_font_Type0 == charset.getPatTech()) {
+				throw new java.lang.IllegalArgumentException("CID_Keyed_font_Type0 still not implemented.");
+			}
+			this.fontCache.put(key, font);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "font parsing error: " + key, e);
+			return null;
 		}
 		
-		this.fontCache.put(key, font);
 		return font;
 	}
 	
