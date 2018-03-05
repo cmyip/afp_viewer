@@ -4,7 +4,6 @@ import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.fontbox.type1.Type1Font;
@@ -13,7 +12,6 @@ import org.apache.fontbox.util.BoundingBox;
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
 import me.lumpchen.xafp.FontControl.PatTech;
-import me.lumpchen.xafp.render.FontManager;
 import me.lumpchen.xafp.FontPatterns;
 
 public class AFPType1Font implements AFPOutlineFont {
@@ -42,8 +40,12 @@ public class AFPType1Font implements AFPOutlineFont {
 		PatTech patTech = patterns.getPatTech();
 		if (patTech == PatTech.PFB_Type1) {
 			byte[] fdata = patterns.getFontData();
-			Type1Font type1 = Type1Font.createWithPFB(fdata);
+			PFBParser pfbParser = new PFBParser();
+			pfbParser.parse(fdata);
+			Type1Font type1 = Type1Font.createWithSegments(pfbParser.getSegment1(), pfbParser.getSegment2());
 			this.baseFont = new BaseFont(type1);
+		} else {
+			throw new java.lang.IllegalArgumentException(patTech.name() + " still not implemented.");
 		}
 	}
 
