@@ -71,10 +71,10 @@ public class AFPPagePanel extends JPanel implements PageCanvas {
         g2.setColor(Color.WHITE);
         if (rotationAngle == 90 || rotationAngle == 270) {
             g2.clearRect(0, 0, heightPx, widthPx);
-            g.fillRect(0, 0, heightPx, widthPx);
+            g2.fillRect(0, 0, heightPx, widthPx);
         } else {
         	 g2.clearRect(0, 0, widthPx, heightPx);
-             g.fillRect(0, 0, widthPx, heightPx);
+             g2.fillRect(0, 0, widthPx, heightPx);
         }
         
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
