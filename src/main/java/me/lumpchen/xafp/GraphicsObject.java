@@ -89,7 +89,7 @@ public class GraphicsObject extends AFPContainer implements Renderable {
 			double vRes = aeg.gethRes();
 			double hScale = hRes / 72;
 			double vScale = vRes / 72;
-			int widthPx = (int) Math.round(w* hScale);
+			int widthPx = (int) Math.round(w * hScale);
 	        int heightPx = (int) Math.round(h * vScale);
 	        
 	        BufferedImage image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB);

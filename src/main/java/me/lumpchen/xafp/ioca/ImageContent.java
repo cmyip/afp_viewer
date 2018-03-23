@@ -1,22 +1,13 @@
 package me.lumpchen.xafp.ioca;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
-import me.lumpchen.xafp.ioca.ImageEncoding.BitOrder;
-import me.lumpchen.xafp.ioca.ImageEncoding.CompressionAlgrithm;
-import me.lumpchen.xafp.ioca.filter.CCITTFaxxFilter;
-import me.lumpchen.xafp.ioca.filter.TIFFExtension;
 
 public class ImageContent {
 	
@@ -37,6 +28,8 @@ public class ImageContent {
 	private BandImageData[] bandImageDataArray;
 	
 	private List<Tile> tileImageList;
+	
+	private BufferedImage bufferedImage;
 	
 	public ImageContent() {
 	}
@@ -77,27 +70,30 @@ public class ImageContent {
 	}
 	
 	public BufferedImage getBufferedImage() {
-		BufferedImage img = null;
-		try {
-			if (!this.isTile()) {
-				if (!this.isBandImage()) {
-					img = IOCAUtil.getBufferedImage(this.encoding, this.ideStructure,
-							this.size.getCol(), this.size.getRow(), this.imageData);	
+		if (this.bufferedImage == null) {
+			try {
+				if (!this.isTile()) {
+					if (!this.isBandImage()) {
+						this.bufferedImage = IOCAUtil.getBufferedImage(this.encoding, this.ideStructure,
+								this.size.getCol(), this.size.getRow(), this.imageData);	
+					} else {
+						throw new AFPException("Band image not supported now.");
+					}
 				} else {
-					throw new AFPException("Band image not supported now.");
-				}
-			} else {
-				if (!this.tileImageList.isEmpty()) {
-					for (Tile tile : this.tileImageList) {
-						img = IOCAUtil.getBufferedImage(tile.getImageEncoding(), this.ideStructure,
-								tile.getCol(), tile.getRow(), tile.getData());
+					if (!this.tileImageList.isEmpty()) {
+						for (Tile tile : this.tileImageList) {
+							this.bufferedImage = IOCAUtil.getBufferedImage(tile.getImageEncoding(), this.ideStructure,
+									tile.getCol(), tile.getRow(), tile.getData());
+							break; // TODO: handle tile images
+						}
 					}
 				}
+			} catch (IOException e) {
+				throw new AFPException("Image processing error: ", e);
 			}
-		} catch (IOException e) {
-			throw new AFPException("Image processing error: ", e);
 		}
-		return img;
+
+		return this.bufferedImage;
 	}
 	
 	public Tile getTile(int tileIndex) {

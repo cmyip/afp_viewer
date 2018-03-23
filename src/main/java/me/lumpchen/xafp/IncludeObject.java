@@ -4,15 +4,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.spi.IIORegistry;
-
-import com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi;
 
 import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
 import me.lumpchen.xafp.render.AFPGraphics;
@@ -212,23 +207,27 @@ public class IncludeObject extends AFPObject implements Renderable {
 			
 			ObjectTypeIdentifier.Component component = objectTypeIdentifier.getComponent();
 			if (ObjectTypeIdentifier.Component.JFIF == component || ObjectTypeIdentifier.Component.TIFF == component) {
-				byte[] imageData = resourceManager.getObjectData(resName);
-				if (imageData == null) {
-					logger.warning("can't get image data: " + resName);
-					return;
-				}
 				try {
-					BufferedImage bimg = ImageIO.read(new ByteArrayInputStream(imageData));
-					if (bimg == null) {
-						logger.warning("can't read image: " + resName);
-						return;
+					BufferedImage renderImage = resourceManager.getRenderImage(resName);
+					if (renderImage == null) {
+						byte[] imageData = resourceManager.getObjectData(resName);
+						if (imageData == null) {
+							logger.warning("can't get image data: " + resName);
+							return;
+						}
+						renderImage = ImageIO.read(new ByteArrayInputStream(imageData));
+						if (renderImage == null) {
+							logger.warning("can't read image: " + resName);
+							return;
+						}
+						resourceManager.addRenderImage(resName, renderImage);
 					}
 					
 					if (graphics instanceof StructuredAFPGraphics) {
 						((StructuredAFPGraphics) graphics).beginImage();
 					}
 
-					graphics.drawImage(bimg, 0, 0, w, h);
+					graphics.drawImage(renderImage, 0, 0, w, h);
 					
 					if (graphics instanceof StructuredAFPGraphics) {
 						((StructuredAFPGraphics) graphics).endImage();
@@ -239,23 +238,29 @@ public class IncludeObject extends AFPObject implements Renderable {
 				}
 			}
 		} else if (this.objType == ObjectType.IOCA) {
-			ImageObject ioca = resourceManager.getIOCAObject(resName);
-			if (ioca == null) {
-				return;
+			BufferedImage renderImage = resourceManager.getRenderImage(resName);
+			if (renderImage == null) {
+				ImageObject ioca = resourceManager.getIOCAObject(resName);
+				if (ioca == null) {
+					return;
+				}
+				renderImage = ioca.getJavaImage();
+				if (renderImage == null) {
+					logger.warning("can't read image: " + resName);
+					return;
+				} else {
+					resourceManager.addRenderImage(resName, renderImage);
+				}
 			}
-			BufferedImage img = ioca.getJavaImage();
-			if (img != null) {
-				if (graphics instanceof StructuredAFPGraphics) {
-					((StructuredAFPGraphics) graphics).beginImage();
-				}
-				
-				graphics.drawImage(img, 0, 0, w, h);
-				
-				if (graphics instanceof StructuredAFPGraphics) {
-					((StructuredAFPGraphics) graphics).endImage();
-				}
-			} else {
-				throw new AFPException("can't read image data: " + resName);
+
+			if (graphics instanceof StructuredAFPGraphics) {
+				((StructuredAFPGraphics) graphics).beginImage();
+			}
+			
+			graphics.drawImage(renderImage, 0, 0, w, h);
+			
+			if (graphics instanceof StructuredAFPGraphics) {
+				((StructuredAFPGraphics) graphics).endImage();
 			}
 		} else {
 			throw new AFPException("object type not implemented yet: " + this.objType);

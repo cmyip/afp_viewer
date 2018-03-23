@@ -1,5 +1,6 @@
 package me.lumpchen.xafp.render;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -24,6 +25,8 @@ public class ResourceManager {
 	private Map<String, ImageObject> iocaObjMap;
 	private Map<String, PageSegment> psgMap;
 	private Map<String, Overlay> overlayMap;
+	
+	private Map<String, BufferedImage> renderImageCache;
 
 	public ResourceManager(ResourceGroup resourceGroup) {
 		this.fontManager = new FontManager();
@@ -148,5 +151,17 @@ public class ResourceManager {
 		}
 	}
 	
-
+	public void addRenderImage(String key, BufferedImage rendered) {
+		if (this.renderImageCache == null) {
+			this.renderImageCache = new HashMap<String, BufferedImage>();
+		}
+		this.renderImageCache.put(key, rendered);
+	}
+	
+	public BufferedImage getRenderImage(String key) {
+		if (this.renderImageCache != null) {
+			return this.renderImageCache.get(key);
+		}
+		return null;
+	}
 }

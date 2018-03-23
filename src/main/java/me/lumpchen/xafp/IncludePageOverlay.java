@@ -69,26 +69,31 @@ public class IncludePageOverlay extends AFPObject implements Renderable {
 			graphics.rotate(Math.toRadians(rotation));
 		}
 		
-		double hRes = overlay.gethRes();
-		double vRes = overlay.gethRes();
-		double hScale = hRes / 72;
-		double vScale = vRes / 72;
-		
-		int widthPx = (int) Math.round(overlay.getWidth() * hScale);
-        int heightPx = (int) Math.round(overlay.getHeight() * vScale);
-        
-        BufferedImage image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = image.createGraphics();
-        
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.scale(hScale, vScale);
-        
-       	g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, image.getWidth(), image.getHeight());
-        
-        AFPGraphics olyGraphics = new AFPGraphics2D(g, (float) overlay.getWidth(), (float) overlay.getHeight());
-		overlay.render(aeg, olyGraphics, resourceManager);
+		BufferedImage image = resourceManager.getRenderImage(olyName);
+		if (image == null) {
+			double hRes = overlay.gethRes();
+			double vRes = overlay.gethRes();
+			double hScale = hRes / 72;
+			double vScale = vRes / 72;
+			
+			int widthPx = (int) Math.round(overlay.getWidth() * hScale);
+	        int heightPx = (int) Math.round(overlay.getHeight() * vScale);
+	        
+	        image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB);
+	        Graphics2D g = image.createGraphics();
+	        
+	        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+	        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	        g.scale(hScale, vScale);
+	        
+	       	g.setBackground(Color.WHITE);
+	        g.clearRect(0, 0, image.getWidth(), image.getHeight());
+	        
+	        AFPGraphics olyGraphics = new AFPGraphics2D(g, (float) overlay.getWidth(), (float) overlay.getHeight());
+			overlay.render(aeg, olyGraphics, resourceManager);
+			
+			resourceManager.addRenderImage(olyName, image);
+		}
 		
 		graphics.drawImage(AFPConst.makeTransprency(image), 0, 0, (float) overlay.getWidth(), (float) overlay.getHeight());
 		graphics.restore();

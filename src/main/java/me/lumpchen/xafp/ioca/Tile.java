@@ -38,6 +38,8 @@ public class Tile {
 	private List<ImageData> imageDataList;
 	private BandImageData[] bandImageDataArray;
 	
+	private BufferedImage bufferedImage;
+	
 	public Tile() {
 	}
 	
@@ -66,18 +68,20 @@ public class Tile {
 	}
 	
 	public BufferedImage getBufferedImage() {
-		BufferedImage img = null;
-		try {
-			if (!this.isBandImage()) {
-				img = IOCAUtil.getBufferedImage(this.encoding, this.ideStructure,
-							this.getCol(), this.getRow(), this.getData());	
-			} else {
-				img = IOCAUtil.getBandImage(bandImageDataArray, encoding, ideStructure, this.getCol(), this.getRow());
+		if (this.bufferedImage == null) {
+			try {
+				if (!this.isBandImage()) {
+					this.bufferedImage = IOCAUtil.getBufferedImage(this.encoding, this.ideStructure,
+								this.getCol(), this.getRow(), this.getData());	
+				} else {
+					this.bufferedImage = IOCAUtil.getBandImage(bandImageDataArray, encoding, ideStructure, this.getCol(), this.getRow());
+				}
+			} catch (IOException e) {
+				throw new AFPException("Image processing error: ", e);
 			}
-		} catch (IOException e) {
-			throw new AFPException("Image processing error: ", e);
 		}
-		return img;
+
+		return this.bufferedImage;
 	}
 	
 	public byte[] getData() {
