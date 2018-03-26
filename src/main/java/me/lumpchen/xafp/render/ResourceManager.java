@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import me.lumpchen.xafp.AFPObject;
 import me.lumpchen.xafp.CodePage;
 import me.lumpchen.xafp.Font;
+import me.lumpchen.xafp.FormMap;
 import me.lumpchen.xafp.ImageObject;
 import me.lumpchen.xafp.ObjectContainer;
 import me.lumpchen.xafp.ObjectContainer.ObjectTypeIdentifier;
@@ -25,6 +26,7 @@ public class ResourceManager {
 	private Map<String, ImageObject> iocaObjMap;
 	private Map<String, PageSegment> psgMap;
 	private Map<String, Overlay> overlayMap;
+	private Map<String, FormMap> formDefMap;
 	
 	private Map<String, BufferedImage> renderImageCache;
 
@@ -73,6 +75,13 @@ public class ResourceManager {
 	public PageSegment getPageSegment(String resName) {
 		if (this.psgMap != null) {
 			return this.psgMap.get(resName);
+		}
+		return null;
+	}
+	
+	public FormMap getFormDef(String resName) {
+		if (this.formDefMap != null) {
+			return this.formDefMap.get(resName);
 		}
 		return null;
 	}
@@ -142,6 +151,17 @@ public class ResourceManager {
 					for (AFPObject child : children) {
 						if (child instanceof Overlay) {
 							this.overlayMap.put(key, (Overlay) child);
+						}
+					}
+				} else if (Resource.Type.FORMDEF == type) {
+					String key = res.getNameStr();
+					if (this.formDefMap == null) {
+						this.formDefMap = new HashMap<String, FormMap>();
+					}
+					AFPObject[] children = res.getChildren();
+					for (AFPObject child : children) {
+						if (child instanceof FormMap) {
+							this.formDefMap.put(key, (FormMap) child);
 						}
 					}
 				} else {

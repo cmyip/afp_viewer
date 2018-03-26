@@ -106,6 +106,9 @@ public abstract class Triplet {
 		case X8BTriplet.ID:
 			triplet = new X8BTriplet();
 			break;
+		case X68Triplet.ID:
+			triplet = new X68Triplet();
+			break;
 		default:
 			throw new IllegalArgumentException("unknown id: " + AFPConst.bytesToHex((byte) identifier));
 		}
