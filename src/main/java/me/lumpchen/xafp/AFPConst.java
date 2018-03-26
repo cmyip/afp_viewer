@@ -87,6 +87,17 @@ public class AFPConst {
 		}
 		return new String(hexChars);
 	}
+	
+	public static String bytesToHexWithSpace(byte... bytes) {
+		StringBuilder buf = new StringBuilder();
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			buf.append(hexArray[v >>> 4]);
+			buf.append(hexArray[v & 0x0F]);
+			buf.append(" ");
+		}
+		return buf.toString();
+	}
 
 	public static String ebcdic2Ascii(byte[] ebcdicBytes) {
 		if (ebcdicBytes == null) {

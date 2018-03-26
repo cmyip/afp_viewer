@@ -112,7 +112,12 @@ public class ImageEncoding {
 		int length = in.readUBin(1); // 2 or 3
 		
 		int COMPRID = in.readCode();
-		this.setCompessionAlg(COMPRID);
+		try {
+			this.setCompessionAlg(COMPRID);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		length--;
 		
 		int RECID = in.readUBin(1);

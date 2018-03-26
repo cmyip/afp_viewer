@@ -12,7 +12,10 @@ public abstract class AFPObject {
 	}
 	
 	public byte[] getStructureData() {
-		return this.structField.getData();
+		if (this.structField != null) {
+			return this.structField.getData();	
+		}
+		return new byte[0];
 	}
 	
 	public Tag getStructureTag() {
