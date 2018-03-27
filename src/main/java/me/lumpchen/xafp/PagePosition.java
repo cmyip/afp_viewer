@@ -19,21 +19,33 @@ public class PagePosition extends AFPObject {
 	private void parseData(byte[] data) throws IOException {
 		AFPInputStream in = new AFPInputStream(data);
 		
-//		try {
-//			int constant = in.readCode();
-//			if (Constant != constant) {
-//				throw new IOException("Reserved constant; must be X'01'");
-//			}
-//			this.group = new ArrayList<Position>();
-//			if (in.remain() > 0) {
-//				int RGLength = in.readUBin(1);
-//				byte[] repeatBytes = in.readBytes(RGLength - 2);
-//				AFPInputStream repeatStream = new AFPInputStream(repeatBytes);
-//				
-//			}
-//		} finally {
-//			in.close();
-//		}
+		try {
+			int constant = in.readCode();
+			
+			this.group = new ArrayList<Position>();
+			while (in.remain() > 0) {
+				int RGLength = in.readUBin(1);
+				byte[] repeatBytes = in.readBytes(RGLength - 1);
+				AFPInputStream repeatStream = new AFPInputStream(repeatBytes);
+				
+				Position pos = new Position();
+				pos.XmOset = repeatStream.readSBin(3);
+				pos.YmOset = repeatStream.readSBin(3);
+				pos.PGorient = repeatStream.readCode(2);
+				pos.SHside = repeatStream.readCode();
+				if (repeatStream.remain() > 0) {
+					pos.PgFlgs = repeatStream.read();
+				}
+				if (repeatStream.remain() > 0) {
+					pos.PMCid = repeatStream.readCode();
+				}
+				
+				this.group.add(pos);
+				repeatStream.close();
+			}
+		} finally {
+			in.close();
+		}
 	}
 	
 	public static class Position {
