@@ -17,7 +17,7 @@ public class LUTID {
 	}
 	
 	public void read(AFPInputStream in) throws IOException {
-		int length = in.readUBin(2);
+		int length = in.readUBin(1);
 		
 		this.LUTID = in.readCode();
 	}

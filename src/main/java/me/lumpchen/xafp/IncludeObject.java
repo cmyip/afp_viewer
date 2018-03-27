@@ -97,6 +97,10 @@ public class IncludeObject extends AFPObject implements Renderable {
 		}
 	}
 
+	public String getResName() {
+		return AFPConst.ebcdic2Ascii(this.ObjName);
+	}
+	
 	public byte[] getObjName() {
 		return ObjName;
 	}

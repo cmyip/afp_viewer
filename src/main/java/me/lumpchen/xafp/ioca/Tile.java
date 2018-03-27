@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 
@@ -186,6 +187,8 @@ public class Tile {
 			} else if (id == End_ID) {
 				in.readUBin(1);
 				break;
+			} else {
+				throw new IOException("Invalid begin code: " + AFPConst.bytesToHex((byte) id));
 			}
 		}
 	}

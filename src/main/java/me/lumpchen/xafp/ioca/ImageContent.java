@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 
@@ -178,6 +179,8 @@ public class ImageContent {
 					// throw exception
 				}
 				break;
+			} else {
+				throw new IOException("Invalid begin code: " + AFPConst.bytesToHex((byte) id));
 			}
 		}
 		imageDataStream.close();
