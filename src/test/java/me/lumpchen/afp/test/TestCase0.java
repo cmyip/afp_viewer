@@ -154,6 +154,14 @@ public class TestCase0 extends TestCase {
 		compare("/oc_samples/Bank_Statement_REF.afp", para, 1, 10);
 	}
 	
+	public void test_original() {
+		RenderParameter para = new RenderParameter();
+		para.usePageResolution = false;
+		para.resolution = 96f;
+		
+		compare("original.afp", para);
+	}
+	
 	private boolean compare(String afpName, RenderParameter para) {
 		return this.compare(afpName, para, -1, -1);
 	}

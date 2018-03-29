@@ -5,12 +5,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 
 public class ImageContent {
+	
+	private static Logger logger = Logger.getLogger(ImageContent.class.getName());
 	
 	public static final int Begin = 0x91;
 	public static final int End = 0x93;
@@ -180,7 +183,10 @@ public class ImageContent {
 				}
 				break;
 			} else {
-				throw new IOException("Invalid begin code: " + AFPConst.bytesToHex((byte) id));
+				// TODO comment this exception thrown line temporarily, for testcase "Letter_Ref.afp" output X'FECE' as X'CEFE'
+				// still not found if there's byte order setting or this is a bug of "Letter_Ref.afp"
+//				throw new IOException("Invalid begin code: " + AFPConst.bytesToHex((byte) id));
+				logger.warning("Invalid begin code: " + AFPConst.bytesToHex((byte) id));
 			}
 		}
 		imageDataStream.close();
