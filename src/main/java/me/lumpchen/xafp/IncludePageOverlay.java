@@ -106,6 +106,11 @@ public class IncludePageOverlay extends AFPObject implements Renderable {
 	public byte[] getOvlyName() {
 		return OvlyName;
 	}
+	
+	public String getResName() {
+		String resName = AFPConst.ebcdic2Ascii(this.getOvlyName());
+		return resName;
+	}
 
 	public void setOvlyName(byte[] ovlyName) {
 		OvlyName = ovlyName;

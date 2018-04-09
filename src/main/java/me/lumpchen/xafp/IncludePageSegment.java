@@ -61,6 +61,11 @@ public class IncludePageSegment extends AFPObject implements Renderable {
 	public byte[] getPsegName() {
 		return PsegName;
 	}
+	
+	public String getResName() {
+		String resName = AFPConst.ebcdic2Ascii(this.getPsegName());
+		return resName;
+	}
 
 	public void setPsegName(byte[] psegName) {
 		PsegName = psegName;
