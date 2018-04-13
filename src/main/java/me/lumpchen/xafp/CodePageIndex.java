@@ -33,11 +33,25 @@ public class CodePageIndex extends AFPObject {
 			while (in.remain() > 0) {
 				Entry entry = new Entry();
 				entry.GCGID = in.readBytes(8);
+				
+//				String s = entry.getGCGIDStr();
+//				System.out.println(s);
+				
 				entry.PrtFlags = in.read();
 				if (this.repeatingGroupLength == 0x0A || this.repeatingGroupLength == 0xFE) {
 					entry.CodePoint = in.readUBin(1);
 				} else {
 					entry.CodePoint = in.readUBin(2);
+				}
+				
+				if (this.repeatingGroupLength == 0xFE || this.repeatingGroupLength == 0xFF) {
+					int count = in.read();
+					entry.unicodeScalarValue = new byte[count][];
+					int i = 0;
+					while (i < count) {
+						entry.unicodeScalarValue[i] = in.readBytes(4);
+						i++;
+					}
 				}
 				
 				this.entries.add(entry);
@@ -58,6 +72,7 @@ public class CodePageIndex extends AFPObject {
 		public byte[] GCGID;
 		public int PrtFlags;
 		public int CodePoint;
+		public byte[][] unicodeScalarValue;
 		
 		public String getGCGIDStr() {
 			return AFPConst.ebcdic2Ascii(this.GCGID);

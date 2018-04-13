@@ -168,6 +168,7 @@ public class Identifier {
 		instanceMap.put(toInt(SF_EPT), new Identifier(Tag.EPT, SF_EPT));
 		instanceMap.put(toInt(SF_IOB), new Identifier(Tag.IOB, SF_IOB));
 		instanceMap.put(toInt(SF_EPG), new Identifier(Tag.EPG, SF_EPG));
+		instanceMap.put(toInt(SF_MCD), new Identifier(Tag.MCD, SF_MCD));
 		instanceMap.put(toInt(SF_MCF), new Identifier(Tag.MCF, SF_MCF));
 		instanceMap.put(toInt(SF_MCF_1), new Identifier(Tag.MCF_1, SF_MCF_1));
 		instanceMap.put(toInt(SF_EDT), new Identifier(Tag.EDT, SF_EDT));

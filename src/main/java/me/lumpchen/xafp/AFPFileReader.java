@@ -53,9 +53,20 @@ public class AFPFileReader {
 			if (AFPConst.Carriage_Control_Character != first) {
 				break;
 			}
-			StructureField next = this.readNextSF();
 			
+			int remain = this.input.remain();
+
+			StructureField next = this.readNextSF();
 			AFPObject obj = this.createObject(next);
+
+			if (Tag.BCP == next.getStructureTag()) {
+				System.out.println("begin: " + remain);
+			} else if (Tag.ECP == next.getStructureTag()) {
+				remain = this.input.remain();
+				System.out.println("end: " + remain);
+			}
+			
+			
 			if (obj instanceof AFPContainer) {
 				AFPContainer container = (AFPContainer) obj;
 				if (container.isBegin()) {
@@ -70,7 +81,8 @@ public class AFPFileReader {
 						((AFPContainer) last).collect();
 						return (AFPContainer) last;
 					} else {
-						throw new AFPException("Not matched structure: " + next.getStructureTag());
+						throw new AFPException("Not matched structure: begin tag <" + last.getStructureTag()
+								+ "> and end tag <"+ next.getStructureTag() + ">");
 					}
 				}
 			} else {

@@ -94,6 +94,9 @@ public abstract class Triplet {
 		case X4CTriplet.ID:
 			triplet = new X4CTriplet();
 			break;
+		case X5ATriplet.ID:
+			triplet = new X5ATriplet();
+			break;
 		case X62Triplet.ID:
 			triplet = new X62Triplet();
 			break;

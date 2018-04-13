@@ -64,7 +64,7 @@ public class ObjectContainer extends AFPContainer {
 				this.component = Component.TRUETYPE_FONT_COLLECTION;
 				break;
 			default:
-				throw new AFPException("Object Type not implemented yet: " + componentID);
+//				throw new AFPException("Object Type not implemented yet: " + componentID);
 			}
 		}
 	}
