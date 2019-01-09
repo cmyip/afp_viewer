@@ -102,7 +102,10 @@ public abstract class DrawingOrder implements Renderable {
 			order = new SetCurrentPositionOrder();
 			break;
 		default:
-			throw new AFPException("Invalid darwing order command: " + AFPConst.bytesToHex((byte) code));
+//			throw new AFPException("Not implemented darwing order command: " + AFPConst.bytesToHex((byte) code));
+			// not throw exception temporarily
+			System.out.println(new AFPException("Not implemented darwing order command: " + AFPConst.bytesToHex((byte) code)).getMessage());
+			return null;
 		}
 		
 		order.readOperands(in);

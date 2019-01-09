@@ -87,8 +87,9 @@ public class GraphicsSegment implements Renderable {
 		AFPInputStream in = new AFPInputStream(data);
 		while (in.available() > 0) {
 			DrawingOrder order = DrawingOrder.readOrder(in);
-			orders.add(order);
-//			System.out.println(order);
+			if (order != null) {
+				orders.add(order);	
+			}
 		}
 		return orders;
 	}
