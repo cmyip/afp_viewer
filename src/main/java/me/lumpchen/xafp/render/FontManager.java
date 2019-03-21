@@ -35,6 +35,8 @@ public class FontManager {
 	private Map<String, AFPFont> fontCache;
 	private Map<String, TrueTypeFont> ttfCache;
 	
+	private AFPFont lastLoadedFont;
+	
 	public FontManager() {
 		this.codePageMap = new HashMap<String, CodePage>();
 		this.charsetMap = new HashMap<String, Font>();
@@ -70,6 +72,7 @@ public class FontManager {
 			return null;
 		}
 		
+		this.lastLoadedFont = font;
 		return font;
 	}
 	
@@ -88,11 +91,17 @@ public class FontManager {
 		
 		try {
 			AFPTruetypeFont afpTTF = new AFPTruetypeFont(ttf, mdr.encEnv, mdr.encID);
+			
+			this.lastLoadedFont = afpTTF;
 			return afpTTF;
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Failed to load font: " + familyName, e);
 		}
 		return null;
+	}
+	
+	public synchronized AFPFont getLastLoadedFont() {
+		return this.lastLoadedFont;
 	}
 	
 	public synchronized void addCodePage(String resName, CodePage codePage) {

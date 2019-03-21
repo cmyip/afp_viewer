@@ -14,6 +14,7 @@ public class Overlay extends AFPContainer implements Renderable {
 	
 	private ActiveEnvironmentGroup aeg;
 	private List<PresentationTextObject> ptxObjList;
+	private IncludePageSegment includePageSegment;
 	
 	private double scaleRatio;
 	
@@ -51,7 +52,7 @@ public class Overlay extends AFPContainer implements Renderable {
 				}
 				this.ptxObjList.add(((PresentationTextObject) child));
 			} else if (child instanceof IncludePageSegment) {
-				
+				this.includePageSegment = (IncludePageSegment) child;
 			}
 		}
 	}

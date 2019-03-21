@@ -1,6 +1,7 @@
 package me.lumpchen.xafp.func;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPException;
@@ -14,7 +15,7 @@ public abstract class Function implements Renderable {
 
 	// PTOCA SFX record data control sequences
 
-	// Inline Controls Chained Unchained
+	// Inline Controls Chained Unchained, function type unchained not support yet!!!
 	public static final byte PTX_SIM = (byte) 0xC1; // Set Inline Margin 0xC0
 	public static final byte PTX_SIA = (byte) 0xC3; // Set Intercharacter Adjustment 0xC2
 	public static final byte PTX_SVI = (byte) 0xC5; // Set Variable Space Character Increment 0xC4
@@ -28,6 +29,7 @@ public abstract class Function implements Renderable {
 	public static final byte PTX_STO = (byte) 0xF7; // Set Text Orientation 0xF6
 	public static final byte PTX_STO_C = (byte) 0xF6; // Set Text Orientation 0xF6
 	// Controls for Data Strings
+	public static final byte PTX_TRN_UnChained = (byte) 0xDA; // Transparent Data unchained
 	public static final byte PTX_TRN = (byte) 0xDB; // Transparent Data 0xDA
 	public static final byte PTX_RPS = (byte) 0xEF; // Repeat String 0xEE
 	public static final byte PTX_NOP = (byte) 0xF9; // No Operation 0xF8
@@ -103,7 +105,8 @@ public abstract class Function implements Renderable {
 		} else if (TYPE == PTX_NOPU) {
 			func = new NoOperation();
 		} else {
-			throw new AFPException("Not implemented function type: " + AFPConst.bytesToHex(TYPE));
+			Logger.getLogger(Function.class.getName()).warning("Not implemented function type: " + AFPConst.bytesToHex(TYPE));
+			func = new NoOperation(); // for continue parsing here
 		}
 		func.length = LENGTH;
 		func.remain = LENGTH - 2;

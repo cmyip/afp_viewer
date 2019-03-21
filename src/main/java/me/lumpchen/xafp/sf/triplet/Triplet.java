@@ -112,8 +112,14 @@ public abstract class Triplet {
 		case X68Triplet.ID:
 			triplet = new X68Triplet();
 			break;
+			
+		case 0x27:
+		case 0x64:
+		case 0x73:
+			triplet = new RetiredTriplet(identifier);
+			break;
 		default:
-			throw new IllegalArgumentException("unknown id: " + AFPConst.bytesToHex((byte) identifier));
+			throw new IllegalArgumentException("Unknown Triplet id: X'" + AFPConst.bytesToHex((byte) identifier) + "'");
 		}
 		
 		triplet.setLength(length);

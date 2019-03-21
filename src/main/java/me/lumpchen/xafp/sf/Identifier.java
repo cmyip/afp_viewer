@@ -182,8 +182,14 @@ public class Identifier {
 		instanceMap.put(toInt(SF_BOG), new Identifier(Tag.BOG, SF_BOG));
 		instanceMap.put(toInt(SF_EOG), new Identifier(Tag.EOG, SF_EOG));
 		
+		instanceMap.put(toInt(SF_BII), new Identifier(Tag.BII, SF_BII));
+		instanceMap.put(toInt(SF_EII), new Identifier(Tag.EII, SF_EII));
+		
 		instanceMap.put(toInt(SF_BIM), new Identifier(Tag.BIM, SF_BIM));
 		instanceMap.put(toInt(SF_EIM), new Identifier(Tag.EIM, SF_EIM));
+		instanceMap.put(toInt(SF_IOC), new Identifier(Tag.IOC, SF_IOC));
+		instanceMap.put(toInt(SF_IID), new Identifier(Tag.IID, SF_IID));
+		instanceMap.put(toInt(SF_IRD), new Identifier(Tag.IRD, SF_IRD));
 		
 		instanceMap.put(toInt(SF_OBD), new Identifier(Tag.OBD, SF_OBD));
 		instanceMap.put(toInt(SF_OBP), new Identifier(Tag.OBP, SF_OBP));
@@ -257,6 +263,7 @@ public class Identifier {
 		BPT("Begin Presentation Text Object", TagType.begin),
 		BCP("Begin Code Page", TagType.begin),
 		BFN("Begin Font", TagType.begin),
+		BII("Begin IM Image", TagType.begin),
 		
 		EBC("End Bar Code Object", TagType.end),
 		ERS("End Resource", TagType.end),
@@ -280,6 +287,7 @@ public class Identifier {
 		EFG("End Form Environment Group (O)", TagType.end),
 		ECP("End Code Page", TagType.end),
 		EFN("End Font", TagType.end),
+		EII("End IM Image", TagType.end),
 		
 		CAT("Color Attribute Table", TagType.obj),
 		CDD("Container Data Descriptor", TagType.obj),
@@ -325,6 +333,9 @@ public class Identifier {
 		PTD_1("Presentation Text Descriptor Format-1 (C)", TagType.obj),
 		PTX("Presentation Text Data", TagType.obj),
 		IOB("Include Object", TagType.obj),
+		IOC("IM Image Output Control", TagType.obj),
+		IID("Image Input Descriptor", TagType.obj),
+		IRD("IM Image Raster Data", TagType.obj),
 		MCF("Map Coded Font", TagType.obj),
 		MCF_1("Map Coded Font Format-1 (C)", TagType.obj),
 		CPD("Code Page Descriptor", TagType.obj),

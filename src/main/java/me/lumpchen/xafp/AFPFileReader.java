@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.logging.Logger;
 
-import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.Identifier.Tag;
+import me.lumpchen.xafp.sf.StructureField;
 
 public class AFPFileReader {
 
@@ -262,6 +263,8 @@ public class AFPFileReader {
 				obj = new FontPatternsMap(sf);
 			} else if (Tag.MCF == tag) {
 				obj = new MapCodedFontFormat2(sf);
+			} else if (Tag.MCF_1 == tag) {
+				obj = new MapCodedFontFormat1(sf);
 			} else if (Tag.OBD == tag) {
 				obj = new ObjectAreaDescriptor(sf);
 			} else if (Tag.OBP == tag) {
@@ -305,6 +308,9 @@ public class AFPFileReader {
 			}
 		}
 		
+		if (obj == null) {
+			Logger.getLogger(this.getClass().getName()).warning("Tag not implemented yet: " + tag.getDesc());
+		}
 		return obj;
 	}
 	

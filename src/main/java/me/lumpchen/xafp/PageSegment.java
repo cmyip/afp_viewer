@@ -18,6 +18,7 @@ public class PageSegment extends AFPContainer implements Renderable {
 	
 	@Override
 	public void collect() {
+		System.out.print(this.nameStr);
 	}
 	
 	@Override
