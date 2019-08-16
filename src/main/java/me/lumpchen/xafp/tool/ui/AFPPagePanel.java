@@ -123,9 +123,9 @@ public class AFPPagePanel extends JPanel implements PageCanvas {
 	}
 	
 	@Override
-	public void updatePage(PrintFile pf, int docIndex, int pageIndex) {
+	public void updatePage(PrintFile pf, ResourceManager resourceManager, int docIndex, int pageIndex) {
 		this.pf = pf;
-		this.resourceManager = new ResourceManager(this.pf.getResourceGroup());
+		this.resourceManager = resourceManager;
 		Page page = this.pf.getDocuments().get(docIndex).getPageList().get(pageIndex);
 		if (page == this.page) {
 			return;

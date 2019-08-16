@@ -23,6 +23,7 @@ import me.lumpchen.xafp.Document;
 import me.lumpchen.xafp.NoOperation;
 import me.lumpchen.xafp.PrintFile;
 import me.lumpchen.xafp.TagLogicalElement;
+import me.lumpchen.xafp.render.ResourceManager;
 
 public class NavigatorPanel extends JPanel {
 
@@ -41,6 +42,7 @@ public class NavigatorPanel extends JPanel {
 	private JTable nopTable;
 	
 	private PrintFile pf;
+	private ResourceManager resourceManager;
 	private PageCanvas canvas;
 
 	public NavigatorPanel() {
@@ -140,7 +142,7 @@ public class NavigatorPanel extends JPanel {
 					return;
 				}
 				int docIndex = docIndexList.getSelectedIndex();
-				canvas.updatePage(pf, docIndex, pageIndex);
+				canvas.updatePage(pf, resourceManager, docIndex, pageIndex);
 			}
 		});
 	}
@@ -169,6 +171,7 @@ public class NavigatorPanel extends JPanel {
 	
 	public void updateDocument(PrintFile pf, PageCanvas canvas) {
 		this.pf = pf;
+		this.resourceManager = new ResourceManager(this.pf.getResourceGroup());
 		this.canvas = canvas;
 		this.docIndexList.setListData(new String[0]);
 		this.pageIndexList.setListData(new String[0]);
