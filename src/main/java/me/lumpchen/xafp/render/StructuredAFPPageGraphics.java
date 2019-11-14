@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import me.lumpchen.xafp.AFPColor;
 import me.lumpchen.xafp.AFPException;
+import me.lumpchen.xafp.GCGIDDatabase;
 import me.lumpchen.xafp.font.AFPBitmapFont;
 import me.lumpchen.xafp.font.AFPFont;
 import me.lumpchen.xafp.font.AFPOutlineFont;
@@ -90,6 +91,7 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		
 		Color awtColor = c.toJavaColor();
 		this.state.color = awtColor;
+		this.state.afpColor = c;
 	}
 	
 	@Override
@@ -121,6 +123,7 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
 		
 		Color awtColor = c.toJavaColor();
 		this.state.textState.color = awtColor;
+		this.state.textState.afpColor = c;
 	}
 
 	@Override
@@ -176,7 +179,7 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
         float xUnitScale = 1 / this.state.textState.font.getXUnitPerEm();
         float yUnitScale = 1 / this.state.textState.font.getYUnitPerEm();
         
-        StringBuilder sb = new StringBuilder();
+//        StringBuilder sb = new StringBuilder();
 		for (char b : text) {
 			int cid = (int) (b & 0xFFFF);
 			int unicode = this.state.textState.font.getEncoding().getUnicode(b & 0xFFFF);
@@ -186,11 +189,10 @@ public abstract class StructuredAFPPageGraphics implements StructuredAFPGraphics
     		if (unicode != 0xFFFF) {
     			unicodeString = new String(Character.toChars(unicode));	
     		} else {
-    			unicodeString = Integer.toHexString(b & 0xFFFF);
+    			unicodeString = new String(Character.toChars(GCGIDDatabase.EBCDICToASCII(cid)));
     		}
     		
-			sb.append(Character.toChars(unicode)[0]);
-//			sb.append(gcgid);
+//			sb.append(unicodeString);
 			try {
 				Matrix ctm = this.state.getCTM();
 				Matrix textRenderingMatrix = parameters.multiply(this.textLineMatrix).multiply(this.textMatrix).multiply(ctm);
