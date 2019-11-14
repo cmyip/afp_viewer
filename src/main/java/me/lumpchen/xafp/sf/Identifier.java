@@ -130,6 +130,10 @@ public class Identifier {
 	
 	private static final Map<Integer, Identifier> instanceMap = new HashMap<Integer, Identifier>();
 	static {
+		instanceMap.put(toInt(SF_BDI), new Identifier(Tag.BDI, SF_BDI));
+		instanceMap.put(toInt(SF_EDI), new Identifier(Tag.EDI, SF_EDI));
+		instanceMap.put(toInt(SF_IEL), new Identifier(Tag.IEL, SF_IEL));
+		
 		instanceMap.put(toInt(SF_BRG), new Identifier(Tag.BRG, SF_BRG));
 		instanceMap.put(toInt(SF_ERG), new Identifier(Tag.ERG, SF_ERG));
 		instanceMap.put(toInt(SF_BRS), new Identifier(Tag.BRS, SF_BRS));
