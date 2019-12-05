@@ -26,7 +26,9 @@ IBM AFP 打印格式文件解析库，可渲染，分析，AFP文件转图片等
 # build
       Clone or download project, run maven:
             npm clean install
-
+# binary download
+[xafp]("./dst/xafp.jar")
+      
 # maven dependency
 ------------------
 ## Release
