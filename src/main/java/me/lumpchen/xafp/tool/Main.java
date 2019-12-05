@@ -80,26 +80,31 @@ public class Main {
 		String dumpNopFile = null;
 		String dumpTLEFile = null;
 		String afpFile = null;
-		for (int i = 0; i < args.length; i++) {
-			String arg = args[i];
-			
-			if (arg.equals("-page")) {
-				pageOpt = true;
-				from = Integer.parseInt(args[++i].trim());
-				to = Integer.parseInt(args[++i].trim());
-			} else if (arg.equals("-dpi")) {
-				usePageResolution = false;
-				dpi = Integer.parseInt(args[++i].trim());
-			} else if (arg.equals("-dumpNop")) {
-				dumpNop = true;
-				dumpNopFile = args[++i];
-			} else if (arg.equals("-dumpTLE")) {
-				dumpTLE = true;
-				dumpTLEFile = args[++i];
-			} else {
-				afpFile = args[i];
+		try {
+			for (int i = 0; i < args.length; i++) {
+				String arg = args[i];
+				
+				if (arg.equals("-page")) {
+					pageOpt = true;
+					from = Integer.parseInt(args[++i].trim());
+					to = Integer.parseInt(args[++i].trim());
+				} else if (arg.equals("-dpi")) {
+					usePageResolution = false;
+					dpi = Integer.parseInt(args[++i].trim());
+				} else if (arg.equals("-dumpNop")) {
+					dumpNop = true;
+					dumpNopFile = args[++i];
+				} else if (arg.equals("-dumpTLE")) {
+					dumpTLE = true;
+					dumpTLEFile = args[++i];
+				} else {
+					afpFile = args[i];
+				}
 			}
+		} catch (Exception e) {
+			showUsage();
 		}
+		
 		
 		if (afpFile == null
 				|| (!usePageResolution && dpi < 0)

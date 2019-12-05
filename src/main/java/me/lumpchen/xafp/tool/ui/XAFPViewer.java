@@ -40,7 +40,7 @@ public class XAFPViewer {
 	private File openedFile;
 	
 	public XAFPViewer() {
-		JFrame frame = new JFrame("JFrame");
+		JFrame frame = new JFrame("xAFP viewer");
 		frame.setSize(800, 600);
 		frame.setLocationRelativeTo(null);
 		
