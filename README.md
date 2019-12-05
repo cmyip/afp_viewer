@@ -1,7 +1,7 @@
 # xafp
 An AFP print file renderer, AFP to image converter, AFP file parser. <br>
 IBM AFP 打印格式文件解析库，可渲染，分析，AFP文件转图片等。<br>
-<img src="./afpv.png" height="180" width="360">
+<img src="./afpv.png" height="360" width="540">
 # Usage
       Usage: java -jar xafp.jar [options] [afp_file_path]
 
