@@ -6,37 +6,37 @@ import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPInputStream;
 
 public abstract class Triplet {
-	
+
 	protected int length;
-	
+
 	/**
-	 * Identifies the triplet: 
+	 * Identifies the triplet:
 	 * X'01' Coded Graphic Character Set Global Identifier
-	 * 
+	 *
 	 * */
 	protected int identifier;
-	
+
 	protected String name;
-	
+
 	protected int remain;
-	
+
 	Triplet() {
 	}
-	
+
 	public void setLength(int length) {
 		this.length = length;
 	}
-	
+
 	public int getIdentifier() {
 		return this.identifier;
 	}
-	
+
 	public String toString() {
 		return this.name + ": " + Integer.toHexString(this.identifier);
 	}
-	
+
 	abstract protected void readContents(AFPInputStream in) throws IOException;
-	
+
 	protected void read(AFPInputStream in) throws IOException {
 		this.remain = this.length - 2;
 		this.readContents(in);
@@ -44,15 +44,15 @@ public abstract class Triplet {
 			throw new IOException("Triplet reading error: " + this.toString());
 		}
 	}
-	
+
 	public static Triplet readTriple(AFPInputStream in) throws IOException {
 		int length = in.readUBin(1);
 		if (length < 3 || length > 254) {
 			throw new IOException("Invalid triplet length (3-254): " + length);
 		}
-		
+
 		int identifier = in.readUBin(1);
-		
+
 		Triplet triplet;
 		switch (identifier) {
 		case X01Triplet.ID:
@@ -112,20 +112,21 @@ public abstract class Triplet {
 		case X68Triplet.ID:
 			triplet = new X68Triplet();
 			break;
-			
+
 		case 0x27:
 		case 0x64:
 		case 0x73:
 			triplet = new RetiredTriplet(identifier);
 			break;
 		default:
-			throw new IllegalArgumentException("Unknown Triplet id: X'" + AFPConst.bytesToHex((byte) identifier) + "'");
+			triplet = new UnknownTriplet(0xFF);
+			break;
 		}
-		
+
 		triplet.setLength(length);
 		triplet.read(in);
-		
+
 		return triplet;
 	}
-	
+
 }

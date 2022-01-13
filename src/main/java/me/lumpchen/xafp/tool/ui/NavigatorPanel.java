@@ -33,14 +33,18 @@ public class NavigatorPanel extends JPanel {
 	private JList<String> docIndexList;
 	private JList<String> pageIndexList;
 
+	private static Object[] retiredTableColumnHeaderLabels = new Object[]{"Name", "Value"};
+	private DefaultTableModel retiredTableModel;
+	private JTable retiredTable;
+
 	private static Object[] tleTableColumnHeaderLabels = new Object[]{"Name", "Value"};
 	private DefaultTableModel tleTableModel;
 	private JTable tleTable;
-	
+
 	private static Object[] nopTableColumnHeaderLabels = new Object[]{"Value"};
 	private DefaultTableModel nopTableModel;
 	private JTable nopTable;
-	
+
 	private PrintFile pf;
 	private ResourceManager resourceManager;
 	private PageCanvas canvas;
@@ -80,24 +84,32 @@ public class NavigatorPanel extends JPanel {
 		this.tabbedPane = new JTabbedPane();
 		this.tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		this.tabbedPane.add("Index", indexPanel);
-		
+
 		this.initTLETable();
 		this.tabbedPane.add("TLE", new JScrollPane(this.tleTable));
-		
+
 		this.initNOPTable();
 		this.tabbedPane.add("NOP", new JScrollPane(this.nopTable));
 
+		this.initRETTable();
+		this.tabbedPane.add("Retired", new JScrollPane(this.retiredTable));
+
 		this.add(tabbedPane, BorderLayout.CENTER);
 	}
-	
+
 	private void initTLETable() {
 		this.tleTableModel = new DefaultTableModel(tleTableColumnHeaderLabels, 0);
 		this.tleTable = new JTable(this.tleTableModel);
 	}
-	
+
 	private void initNOPTable() {
 		this.nopTableModel = new DefaultTableModel(nopTableColumnHeaderLabels, 0);
 		this.nopTable = new JTable(this.nopTableModel);
+	}
+
+	private void initRETTable() {
+		this.retiredTableModel = new DefaultTableModel(retiredTableColumnHeaderLabels, 0);
+		this.retiredTable = new JTable(this.retiredTableModel);
 	}
 
 	private void updateDocumentIndex() {
@@ -157,7 +169,18 @@ public class NavigatorPanel extends JPanel {
 			this.tleTableModel.addRow(new String[]{tle.getAttributeName(), tle.getAttributeValue()});
 		}
 	}
-	
+
+	private void updateRetired() {
+		if (this.pf == null) {
+			return;
+		}
+		List<TagLogicalElement> tleList = this.pf.getAllTLEs();
+		for (int i = 0; i < tleList.size(); i++) {
+			TagLogicalElement tle = tleList.get(i);
+			this.tleTableModel.addRow(new String[]{tle.getAttributeName(), tle.getAttributeValue()});
+		}
+	}
+
 	private void updateNOP() {
 		if (this.pf == null) {
 			return;
@@ -168,7 +191,7 @@ public class NavigatorPanel extends JPanel {
 			this.nopTableModel.addRow(new String[]{nop.getString()});
 		}
 	}
-	
+
 	public void updateDocument(PrintFile pf, PageCanvas canvas) {
 		this.pf = pf;
 		this.resourceManager = new ResourceManager(this.pf.getResourceGroup());
@@ -178,9 +201,9 @@ public class NavigatorPanel extends JPanel {
 		this.tleTableModel.setRowCount(0);
 		this.updateTLE();
 		this.updateNOP();
-		this.updateDocumentIndex(); 
+		this.updateDocumentIndex();
 	}
-	
+
 	public void closeFile() {
 		this.docIndexList.setListData(new String[0]);
 		this.pageIndexList.setListData(new String[0]);

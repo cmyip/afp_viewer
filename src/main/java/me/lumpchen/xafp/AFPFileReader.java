@@ -16,24 +16,24 @@ public class AFPFileReader {
 	private AFPInputStream input;
 	private Stack<AFPObject> objStack;
 	private PrintFile printFile;
-	
+
 	public AFPFileReader() {
 		this.objStack = new Stack<AFPObject>();
 		this.printFile = new PrintFile();
 	}
-	
+
 	public PrintFile getPrintFile() {
 		return this.printFile;
 	}
 
 	/**
 	 * Read all structure fields at once, all structure fields will be collected into printFile.
-	 * This method might have memory limitation problem if input file size is extreme huge, in that case, 
-	 * try using open/readNextPage/close methods to read page by page. 
+	 * This method might have memory limitation problem if input file size is extreme huge, in that case,
+	 * try using open/readNextPage/close methods to read page by page.
 	 * */
 	public void read(File file) throws IOException {
 		this.readBegin(file);
-		
+
 		while (true) {
 			AFPContainer next = this.readNext();
 			if (next == null) {
@@ -44,17 +44,17 @@ public class AFPFileReader {
 		}
 		this.readEnd();
 	}
-	
+
 	private AFPContainer readNext() throws IOException {
 		while (true) {
 			if (this.input.available() <= 0) {
 				break;
 			}
-			byte first = this.input.readByte();
-			if (AFPConst.Carriage_Control_Character != first) {
-				break;
-			}
-			
+			// byte first = this.input.readByte();
+			// if (AFPConst.Carriage_Control_Character != first) {
+				// break;
+			//}
+
 			int remain = this.input.remain();
 
 			StructureField next = this.readNextSF();
@@ -66,8 +66,8 @@ public class AFPFileReader {
 				remain = this.input.remain();
 				System.out.println("end: " + remain);
 			}
-			
-			
+
+
 			if (obj instanceof AFPContainer) {
 				AFPContainer container = (AFPContainer) obj;
 				if (container.isBegin()) {
@@ -93,17 +93,17 @@ public class AFPFileReader {
 		}
 		return null;
 	}
-	
+
 	public void readBegin(File file) throws IOException {
 		this.input = new AFPInputStream(new FileInputStream(file));
 		this.objStack.push(this.printFile);
 	}
-	
+
 	public void readEnd() {
 		this.printFile.collect();
 		this.objStack.pop();
 	}
-	
+
 	public ResourceGroup readResourceGroup() throws IOException {
 		while (true) {
 			AFPContainer next = this.readNext();
@@ -117,10 +117,10 @@ public class AFPFileReader {
 				this.addToParent(parent, next);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public Page readNextPage() throws IOException {
 		while (true) {
 			AFPContainer next = this.readNext();
@@ -136,7 +136,7 @@ public class AFPFileReader {
 		}
 		return null;
 	}
-	
+
 	private void addToParent(AFPObject parent, AFPObject child) {
 		if (parent instanceof AFPContainer) {
 			((AFPContainer) parent).addChild(child);
@@ -144,12 +144,12 @@ public class AFPFileReader {
 			throw new AFPException("Not matched structure.");
 		}
 	}
-	
+
 	private StructureField readNextSF() throws IOException {
 		StructureField sf = StructureFieldReader.read(this.input);
 		return sf;
 	}
-	
+
 	public static final Map<Tag, Tag> pairedStructureField = new HashMap<Tag, Tag>();
 	static {
 		pairedStructureField.put(Tag.BRG, Tag.ERG);
@@ -171,7 +171,7 @@ public class AFPFileReader {
 		pairedStructureField.put(Tag.BMO, Tag.EMO);
 		pairedStructureField.put(Tag.BSG, Tag.ESG);
 	}
-	
+
 	private boolean isMatchedStructure(AFPObject begin, AFPObject end) {
 		if (pairedStructureField.containsKey(begin.getStructureTag())) {
 			if (end.getStructureTag() == pairedStructureField.get(begin.getStructureTag())) {
@@ -180,18 +180,18 @@ public class AFPFileReader {
 		}
 		return false;
 	}
-	
+
 	public void close() throws IOException {
 		if (this.input != null) {
 			this.input.close();
 		}
 	}
-	
+
 	private AFPObject createObject(StructureField sf) throws IOException {
 		Tag tag = sf.getStructureTag();
 		AFPObject obj = null;
 		if (Tag.BRG == tag || Tag.ERG == tag) {
-			obj = new ResourceGroup(sf);	
+			obj = new ResourceGroup(sf);
 		} else if (Tag.BRS == tag || Tag.ERS == tag) {
 			obj = new Resource(sf);
 		} else if (Tag.BOC == tag || Tag.EOC == tag) {
@@ -286,7 +286,7 @@ public class AFPFileReader {
 			} else if (Tag.MMC == tag) {
 				obj = new MediumModificationControl(sf);
 			} else if (Tag.IMM == tag) {
-				obj = new InvokeMediumMap(sf);	
+				obj = new InvokeMediumMap(sf);
 			} else if (Tag.TLE == tag) {
 				obj = new TagLogicalElement(sf);
 			} else if (Tag.GDD == tag) {
@@ -307,11 +307,11 @@ public class AFPFileReader {
 				obj = new MapGraphicsObject(sf);
 			}
 		}
-		
+
 		if (obj == null) {
 			Logger.getLogger(this.getClass().getName()).warning("Tag not implemented yet: " + tag.getDesc());
 		}
 		return obj;
 	}
-	
+
 }

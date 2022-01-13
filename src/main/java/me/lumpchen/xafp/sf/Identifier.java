@@ -6,7 +6,7 @@ import java.util.Map;
 import me.lumpchen.xafp.AFPConst;
 
 public class Identifier {
-	
+
 	public static final byte[] SF_BAG = {(byte)0xD3, (byte)0xA8, (byte)0xC9}; //Begin Active Environment Group
 	public static final byte[] SF_BBC = {(byte)0xD3, (byte)0xA8, (byte)0xEB}; //Begin Bar Code Object
 	public static final byte[] SF_BCA = {(byte)0xD3, (byte)0xA8, (byte)0x77}; //Begin Color Attribute Table
@@ -127,13 +127,14 @@ public class Identifier {
 	public static final byte[] SF_FNN = {(byte)0xD3, (byte)0xAB, (byte)0x89}; //Font Name Map (FNN)
 	public static final byte[] SF_FNO = {(byte)0xD3, (byte)0xAE, (byte)0x89}; //Font Orientation (FNO)
 	public static final byte[] SF_FNP = {(byte)0xD3, (byte)0xAC, (byte)0x89}; //Font Position (FNP)
-	
+	public static final byte[] UNKNOWN = {(byte)0xFF}; //Font Position (FNP)
+
 	private static final Map<Integer, Identifier> instanceMap = new HashMap<Integer, Identifier>();
 	static {
 		instanceMap.put(toInt(SF_BDI), new Identifier(Tag.BDI, SF_BDI));
 		instanceMap.put(toInt(SF_EDI), new Identifier(Tag.EDI, SF_EDI));
 		instanceMap.put(toInt(SF_IEL), new Identifier(Tag.IEL, SF_IEL));
-		
+
 		instanceMap.put(toInt(SF_BRG), new Identifier(Tag.BRG, SF_BRG));
 		instanceMap.put(toInt(SF_ERG), new Identifier(Tag.ERG, SF_ERG));
 		instanceMap.put(toInt(SF_BRS), new Identifier(Tag.BRS, SF_BRS));
@@ -177,30 +178,30 @@ public class Identifier {
 		instanceMap.put(toInt(SF_MCF_1), new Identifier(Tag.MCF_1, SF_MCF_1));
 		instanceMap.put(toInt(SF_EDT), new Identifier(Tag.EDT, SF_EDT));
 		instanceMap.put(toInt(SF_EFG), new Identifier(Tag.EFG, SF_EFG));
-		
+
 		instanceMap.put(toInt(SF_CTC), new Identifier(Tag.CTC, SF_CTC));
-		
+
 		instanceMap.put(toInt(SF_BNG), new Identifier(Tag.BNG, SF_BNG));
 		instanceMap.put(toInt(SF_ENG), new Identifier(Tag.ENG, SF_ENG));
-		
+
 		instanceMap.put(toInt(SF_BOG), new Identifier(Tag.BOG, SF_BOG));
 		instanceMap.put(toInt(SF_EOG), new Identifier(Tag.EOG, SF_EOG));
-		
+
 		instanceMap.put(toInt(SF_BII), new Identifier(Tag.BII, SF_BII));
 		instanceMap.put(toInt(SF_EII), new Identifier(Tag.EII, SF_EII));
-		
+
 		instanceMap.put(toInt(SF_BIM), new Identifier(Tag.BIM, SF_BIM));
 		instanceMap.put(toInt(SF_EIM), new Identifier(Tag.EIM, SF_EIM));
 		instanceMap.put(toInt(SF_IOC), new Identifier(Tag.IOC, SF_IOC));
 		instanceMap.put(toInt(SF_IID), new Identifier(Tag.IID, SF_IID));
 		instanceMap.put(toInt(SF_IRD), new Identifier(Tag.IRD, SF_IRD));
-		
+
 		instanceMap.put(toInt(SF_OBD), new Identifier(Tag.OBD, SF_OBD));
 		instanceMap.put(toInt(SF_OBP), new Identifier(Tag.OBP, SF_OBP));
 		instanceMap.put(toInt(SF_MIO), new Identifier(Tag.MIO, SF_MIO));
 		instanceMap.put(toInt(SF_IDD), new Identifier(Tag.IDD, SF_IDD));
 		instanceMap.put(toInt(SF_IPD), new Identifier(Tag.IPD, SF_IPD));
-		
+
 		instanceMap.put(toInt(SF_BFM), new Identifier(Tag.BFM, SF_BFM));
 		instanceMap.put(toInt(SF_EFM), new Identifier(Tag.EFM, SF_EFM));
 		instanceMap.put(toInt(SF_BMM), new Identifier(Tag.BMM, SF_BMM));
@@ -213,33 +214,33 @@ public class Identifier {
 		instanceMap.put(toInt(SF_MMC), new Identifier(Tag.MMC, SF_MMC));
 		instanceMap.put(toInt(SF_MMO), new Identifier(Tag.MMO, SF_MMO));
 		instanceMap.put(toInt(SF_IMM), new Identifier(Tag.IMM, SF_IMM));
-		
+
 		instanceMap.put(toInt(SF_BGR), new Identifier(Tag.BGR, SF_BGR));
 		instanceMap.put(toInt(SF_EGR), new Identifier(Tag.EGR, SF_EGR));
 		instanceMap.put(toInt(SF_GDD), new Identifier(Tag.GDD, SF_GDD));
 		instanceMap.put(toInt(SF_GAD), new Identifier(Tag.GAD, SF_GAD));
-		
+
 		instanceMap.put(toInt(SF_BPS), new Identifier(Tag.BPS, SF_BPS));
 		instanceMap.put(toInt(SF_EPS), new Identifier(Tag.EPS, SF_EPS));
 		instanceMap.put(toInt(SF_MPS), new Identifier(Tag.MPS, SF_MPS));
 		instanceMap.put(toInt(SF_IPS), new Identifier(Tag.IPS, SF_IPS));
-		
+
 		instanceMap.put(toInt(SF_BMO), new Identifier(Tag.BMO, SF_BMO));
 		instanceMap.put(toInt(SF_EMO), new Identifier(Tag.EMO, SF_EMO));
 		instanceMap.put(toInt(SF_MPO), new Identifier(Tag.MPO, SF_MPO));
 		instanceMap.put(toInt(SF_IPO), new Identifier(Tag.IPO, SF_IPO));
-		
+
 		instanceMap.put(toInt(SF_BSG), new Identifier(Tag.BSG, SF_BSG));
 		instanceMap.put(toInt(SF_ESG), new Identifier(Tag.ESG, SF_ESG));
-		
+
 		instanceMap.put(toInt(SF_MGO), new Identifier(Tag.MGO, SF_MGO));
-		
+
 		instanceMap.put(toInt(SF_MDR), new Identifier(Tag.MDR, SF_MDR));
-		
+
 		instanceMap.put(toInt(SF_TLE), new Identifier(Tag.TLE, SF_TLE));
 		instanceMap.put(toInt(SF_NOP), new Identifier(Tag.NOP, SF_NOP));
 	}
-	
+
 	public enum Tag {
 		BDT("Begin Document", TagType.begin),
 		BFG("Begin Form Environment Group (O)", TagType.begin),
@@ -268,7 +269,7 @@ public class Identifier {
 		BCP("Begin Code Page", TagType.begin),
 		BFN("Begin Font", TagType.begin),
 		BII("Begin IM Image", TagType.begin),
-		
+
 		EBC("End Bar Code Object", TagType.end),
 		ERS("End Resource", TagType.end),
 		EOC("End Object Container", TagType.end),
@@ -292,7 +293,7 @@ public class Identifier {
 		ECP("End Code Page", TagType.end),
 		EFN("End Font", TagType.end),
 		EII("End IM Image", TagType.end),
-		
+
 		CAT("Color Attribute Table", TagType.obj),
 		CDD("Container Data Descriptor", TagType.obj),
 		CTC("Composed Text Control (O)", TagType.obj),
@@ -355,57 +356,57 @@ public class Identifier {
 		FNG("Font Patterns", TagType.obj),
 		FNM("Font Patterns Map", TagType.obj),
 		NOP("No Operation", TagType.obj);
-		
+
 		private String description;
 		private TagType type;
-		
+
 		private Tag(String description, TagType type) {
 			this.description = description;
 			this.type = type;
 		}
-		
+
 		public String getDesc() {
 			return this.description;
 		}
-		
+
 		public TagType getType() {
 			return this.type;
 		}
 	};
-	
+
 	public enum TagType {
 		begin, end, obj
 	};
-	
+
 	private Tag tag;
 	private byte[] bytes;
-	
+
 	private Identifier(Tag tag, byte[] bytes) {
 		this.tag = tag;
 		this.bytes = bytes;
 	}
-	
+
 	public static Identifier instance(byte[] bytes) {
 		if (bytes == null || bytes.length != 3) {
 			throw new java.lang.IllegalArgumentException("Invalid arguments!");
 		}
-		
+
 		int v = toInt(bytes);
 		if (!instanceMap.containsKey(v)) {
 			throw new java.lang.IllegalArgumentException("Invalid identifier: "
 					+ AFPConst.bytesToHex(bytes));
 		}
-		
+
 		return instanceMap.get(v);
 	}
-	
+
 	public static boolean isContainerTag(Tag tag) {
 		if (tag.getType() == TagType.begin || tag.getType() == TagType.end) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private static int toInt(byte[] bytes) {
 		int v = 0;
 		v |= (bytes[0] & 0x000000FF) << 16;
@@ -421,6 +422,5 @@ public class Identifier {
 	public byte[] getBytes() {
 		return bytes;
 	}
-	
+
 }
- 

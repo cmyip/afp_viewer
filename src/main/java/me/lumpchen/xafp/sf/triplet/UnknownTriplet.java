@@ -1,8 +1,8 @@
 package me.lumpchen.xafp.sf.triplet;
 
-import java.io.IOException;
-
 import me.lumpchen.xafp.AFPInputStream;
+
+import java.io.IOException;
 
 /**
  * The following triplets have been retired:
@@ -13,13 +13,13 @@ import me.lumpchen.xafp.AFPInputStream;
 	Object Origin Identifier Triplet X'64'
 	IMM Insertion Triplet X'73'
 */
-public class RetiredTriplet extends Triplet {
+public class UnknownTriplet extends Triplet {
 	byte[] payloadData;
 
-	public RetiredTriplet(int ID) {
+	public UnknownTriplet(int ID) {
 		super();
 		this.identifier = ID;
-		this.name = "Retired triplet";
+		this.name = "Unknown triplet";
 	}
 
 	@Override

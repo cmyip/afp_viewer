@@ -14,22 +14,22 @@ public class PrintFile extends AFPContainer {
 		this.documents = new ArrayList<Document>();
 		this.pageList = new ArrayList<Page>();
 	}
-	
+
 	public ResourceGroup getResourceGroup() {
 		return resourceGroup;
 	}
-	
+
 	public Resource getResource(String resName) {
 		if (this.resourceGroup != null) {
 			return this.resourceGroup.getResource(resName);
 		}
 		return null;
 	}
-	
+
 	public int getPageCount() {
 		return this.pageList.size();
 	}
-	
+
 	public Page getPage(int pageNo) {
 		if (pageNo < 0 || pageNo >= this.pageList.size()) {
 			throw new java.lang.IllegalArgumentException("Invalid page number: " + pageNo);
@@ -40,7 +40,7 @@ public class PrintFile extends AFPContainer {
 	public List<Document> getDocuments() {
 		return documents;
 	}
-	
+
 	public List<NoOperation> getAllNOPs() {
 		List<NoOperation> nopList = new ArrayList<NoOperation>();
 		for (AFPObject obj : this.children) {
@@ -56,7 +56,7 @@ public class PrintFile extends AFPContainer {
 		}
 		return nopList;
 	}
-	
+
 	private void findNOP(AFPObject obj, List<NoOperation> nopList) {
 		if (obj instanceof NoOperation) {
 			NoOperation nop = (NoOperation) obj;
@@ -69,7 +69,7 @@ public class PrintFile extends AFPContainer {
 			}
 		}
 	}
-	
+
 	public List<TagLogicalElement> getAllTLEs() {
 		List<TagLogicalElement> tleList = new ArrayList<TagLogicalElement>();
 		for (AFPObject obj : this.children) {
@@ -85,7 +85,23 @@ public class PrintFile extends AFPContainer {
 		}
 		return tleList;
 	}
-	
+
+	public List<TagLogicalElement> getAllRetired() {
+		List<TagLogicalElement> tleList = new ArrayList<TagLogicalElement>();
+		for (AFPObject obj : this.children) {
+			if (obj instanceof ResourceGroup || obj instanceof Resource) {
+				continue;
+			}
+			if (obj instanceof TagLogicalElement) {
+				TagLogicalElement tle = (TagLogicalElement) obj;
+				tleList.add(tle);
+			} else {
+				findTLE(obj, tleList);
+			}
+		}
+		return tleList;
+	}
+
 	private void findTLE(AFPObject obj, List<TagLogicalElement> tleList) {
 		if (obj instanceof TagLogicalElement) {
 			TagLogicalElement tle = (TagLogicalElement) obj;
@@ -98,17 +114,17 @@ public class PrintFile extends AFPContainer {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean addChild(AFPObject child) {
 		boolean ret = super.addChild(child);
-		
+
 		if (child instanceof ResourceGroup) {
 			this.resourceGroup = (ResourceGroup) child;
 		}
 		return ret;
 	}
-	
+
 	@Override
 	public String toString() {
 		if (this.structField != null) {
@@ -116,12 +132,12 @@ public class PrintFile extends AFPContainer {
 		}
 		return "";
 	}
-	
+
 	@Override
 	public boolean isBegin() {
 		return true;
 	}
-	
+
 	@Override
 	public void collect() {
 		for (AFPObject child : this.children) {
@@ -131,11 +147,10 @@ public class PrintFile extends AFPContainer {
 				this.documents.add((Document) child);
 			}
 		}
-		
+
 		for (Document doc : this.documents) {
 			this.pageList.addAll(doc.getPageList());
 		}
 	}
-	
+
 }
- 

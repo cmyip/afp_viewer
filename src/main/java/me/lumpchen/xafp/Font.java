@@ -8,16 +8,16 @@ import me.lumpchen.xafp.sf.StructureField;
 import me.lumpchen.xafp.sf.Identifier.Tag;
 
 public class Font extends AFPContainer {
-	
-	private FontDescriptor desciptor;
-	private FontControl control;
-	private FontOrientation orientation;
-	private FontPosition position;
-	private FontIndex index;
-	private FontNameMap nameMap;
-	private FontPatterns patterns;
-	private FontPatternsMap patternsMap;
-	
+
+	protected FontDescriptor desciptor;
+	protected FontControl control;
+	protected FontOrientation orientation;
+	protected FontPosition position;
+	protected FontIndex index;
+	protected FontNameMap nameMap;
+	protected FontPatterns patterns;
+	protected FontPatternsMap patternsMap;
+
 	public Font(StructureField structField) {
 		super(structField);
 		this.structField = structField;
@@ -25,14 +25,14 @@ public class Font extends AFPContainer {
 			this.nameStr = this.structField.getNameStr();
 		}
 	}
-	
+
 	public Map<String, String> getNameMap() {
 		if (this.nameMap != null) {
 			return this.nameMap.getNameMap();
 		}
 		return null;
 	}
-	
+
 	public String getTypefaceStr() {
 		if (this.desciptor == null) {
 			return "";
@@ -40,31 +40,31 @@ public class Font extends AFPContainer {
 		String face = AFPConst.ebcdic2Ascii(this.desciptor.getTypeFcDesc());
 		return face;
 	}
-	
+
 	public float getPointSize() {
 		return this.desciptor.getNormalVerticalSize();
 	}
-	
+
 	public FontPatterns getFontPatterns() {
 		return this.patterns;
 	}
-	
+
 	public FontPatternsMap getPatternsMap() {
 		return this.patternsMap;
 	}
-	
+
 	public FontControl getFontControl() {
 		return this.control;
 	}
-	
+
 	public FontIndex getFontIndex() {
 		return this.index;
 	}
-	
+
 	public PatTech getPatTech() {
 		return this.control.getPatTech();
 	}
-	
+
 	@Override
 	public boolean isBegin() {
 		if (Tag.BFN == this.structField.getStructureTag()) {
@@ -80,7 +80,7 @@ public class Font extends AFPContainer {
 		try {
 			for (int i = 0; i < this.children.size(); i++) {
 				AFPObject child = this.children.get(i);
-				
+
 				if (child instanceof FontDescriptor) {
 					this.desciptor = (FontDescriptor) child;
 				} else if (child instanceof FontControl) {
@@ -117,7 +117,7 @@ public class Font extends AFPContainer {
 					}
 				}
 			}
-			
+
 			if (this.index != null) {
 				this.index.parseData(this.control.getFNIRGLen());
 			}
@@ -125,7 +125,7 @@ public class Font extends AFPContainer {
 				this.nameMap.parseData(this.control.getFNNMapCnt());
 			}
 			if (this.patterns != null) {
-				this.patterns.parseData(this.control.getPatTech(), this.control.getPatternDataAlignment(), 
+				this.patterns.parseData(this.control.getPatTech(), this.control.getPatternDataAlignment(),
 						this.control.getRasterPatternDataCount());
 			}
 			if (this.patternsMap != null) {

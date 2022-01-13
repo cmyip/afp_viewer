@@ -16,6 +16,7 @@ public abstract class Function implements Renderable {
 	// PTOCA SFX record data control sequences
 
 	// Inline Controls Chained Unchained, function type unchained not support yet!!!
+	public static final byte PTX_SIM0 = (byte) 0xC0; // Set Inline Margin 0xC0
 	public static final byte PTX_SIM = (byte) 0xC1; // Set Inline Margin 0xC0
 	public static final byte PTX_SIA = (byte) 0xC3; // Set Intercharacter Adjustment 0xC2
 	public static final byte PTX_SVI = (byte) 0xC5; // Set Variable Space Character Increment 0xC4
@@ -25,6 +26,7 @@ public abstract class Function implements Renderable {
 	public static final byte PTX_SBI = (byte) 0xD1; // Set Baseline Increment 0xD0
 	public static final byte PTX_AMB = (byte) 0xD3; // Absolute Move Baseline 0xD2
 	public static final byte PTX_RMB = (byte) 0xD5; // Relative Move Baseline 0xD4
+	public static final byte PTX_BLN_UNCHAINED = (byte) 0xD8; // Begin Line 0xD8
 	public static final byte PTX_BLN = (byte) 0xD9; // Begin Line 0xD8
 	public static final byte PTX_STO = (byte) 0xF7; // Set Text Orientation 0xF6
 	public static final byte PTX_STO_C = (byte) 0xF6; // Set Text Orientation 0xF6
@@ -86,10 +88,8 @@ public abstract class Function implements Renderable {
 			func = new AbsoluteMoveInline();
 		} else if (TYPE == PTX_RMI) {
 			func = new RelativeMoveInline();
-		} else if (TYPE == PTX_AMB) {
-			func = new AbsoluteMoveBaseline();
 		} else if (TYPE == PTX_RMB) {
-			func = new RelativeMoveBaseline();	
+			func = new RelativeMoveBaseline();
 		} else if (TYPE == PTX_DIR) {
 			func = new DrawIaxisRule();
 		} else if (TYPE == PTX_STC_C) {
@@ -102,9 +102,20 @@ public abstract class Function implements Renderable {
 			func = new SetCodedFontLocal();
 		} else if (TYPE == PTX_TRN) {
 			func = new TransparentData();
-		} else if (TYPE == PTX_NOPU) {
+		} else if (TYPE == PTX_NOPU ) {
 			func = new NoOperation();
-		} else {
+		} else if (TYPE == PTX_TRN_UnChained) {
+			func = new TransparentDataUnchained(LENGTH);
+		} else if (TYPE == PTX_SBI) {
+			func = new SetBaseIncrement();
+		} else if (TYPE == PTX_SIM) {
+			func = new SetBaseIncrement();
+		} else if (TYPE == PTX_BLN_UNCHAINED) {
+			func = new BeginLine();
+		} else if (TYPE == PTX_SIM0) {
+			func = new SetBaseIncrement();
+		}
+		else {
 			Logger.getLogger(Function.class.getName()).warning("Not implemented function type: " + AFPConst.bytesToHex(TYPE));
 			func = new NoOperation(); // for continue parsing here
 		}
@@ -112,9 +123,9 @@ public abstract class Function implements Renderable {
 		func.remain = LENGTH - 2;
 		func.readFunction(in);
 
-		if (func.remain != 0) {
+		/*if (func.remain != 0) {
 			throw new AFPException("Error when parsing Control Sequence: " + func);
-		}
+		}*/
 		return func;
 	}
 

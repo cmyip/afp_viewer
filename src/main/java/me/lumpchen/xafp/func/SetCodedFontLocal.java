@@ -15,22 +15,22 @@ import me.lumpchen.xafp.sf.triplet.X01Triplet;
 public class SetCodedFontLocal extends Function {
 
 	private int LID;
-	
+
 	public SetCodedFontLocal() {
 		this.type = PTX_SCFL;
 	}
-	
+
 	@Override
 	void readFunction(AFPInputStream in) throws IOException {
 		this.LID = in.readCode();
-		this.remain -= 1;
+		this.remain -= 2;
 	}
-	
+
 	@Override
 	public String getCommandString() {
 		return "SCFL";
 	}
-	
+
 	@Override
 	public String getCommandDesc() {
 		return "Set Coded Font Local";

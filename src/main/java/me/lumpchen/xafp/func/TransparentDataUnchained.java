@@ -1,21 +1,25 @@
 package me.lumpchen.xafp.func;
 
-import java.io.IOException;
-
 import me.lumpchen.xafp.AFPConst;
 import me.lumpchen.xafp.AFPException;
 import me.lumpchen.xafp.AFPInputStream;
 import me.lumpchen.xafp.ActiveEnvironmentGroup;
 import me.lumpchen.xafp.render.AFPGraphics;
+import me.lumpchen.xafp.render.GraphicsState;
 import me.lumpchen.xafp.render.ResourceManager;
 import me.lumpchen.xafp.render.StructuredAFPGraphics;
 
-public class TransparentData extends Function {
+import java.io.IOException;
+import java.util.logging.Logger;
+
+public class TransparentDataUnchained extends Function {
 
 	private byte[] TRNDATA;
+	private int headlength;
 
-	public TransparentData() {
+	public TransparentDataUnchained(int headlength) {
 		this.type = PTX_TRN;
+		this.headlength = headlength;
 	}
 
 	@Override
@@ -33,6 +37,8 @@ public class TransparentData extends Function {
 			String s = AFPConst.toUincode16BEString(this.TRNDATA);
 			str = s.toCharArray();
 		}
+		GraphicsState state = graphics.getGraphicsState();
+		// state.textState.font = resourceManager.getFontManager().getFont();
 		graphics.drawString(str, 0, 0);
 
 		if (graphics instanceof StructuredAFPGraphics) {
@@ -42,16 +48,8 @@ public class TransparentData extends Function {
 
 	@Override
 	void readFunction(AFPInputStream in) throws IOException {
-		/*if (this.remain > 0) {
-			this.TRNDATA = in.readBytes(this.remain);
-			this.remain = 0;
-		}*/
-		int length = in.readByte();
-		int code = in.readByte();
-		if (length < 4) {
-			throw new AFPException("Invalid length for TransparentData");
-		}
-		this.TRNDATA = in.readBytes(length);
+		this.TRNDATA = in.readBytes(headlength - 2);
+		int bytes = in.readSBin(2);
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class TransparentData extends Function {
 
 	@Override
 	public String getCommandDesc() {
-		return "Transparent Data";
+		return "Transparent Data Unchained";
 	}
 
 }
